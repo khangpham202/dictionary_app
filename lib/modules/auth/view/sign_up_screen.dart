@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:training/modules/auth/view/login_screen.dart';
 import 'package:training/widget/navigation.dart';
+import 'package:email_validator/email_validator.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -88,10 +89,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
               color: myColor, fontSize: 32, fontWeight: FontWeight.w500),
         ),
         Text(
-          "If you don't have account, sign up below",
+          "If you don't have account, sign-up below",
           style: TextStyle(color: Colors.grey),
         ),
         SignUpForm(),
+        const Gap(
+          10,
+        ),
         SignUpScreenFooter()
       ],
     );
@@ -113,6 +117,7 @@ class _SignUpFormState extends State<SignUpForm> {
   final emailController = TextEditingController(text: '');
 
   final passwordController = TextEditingController(text: '');
+  final confirmPasswordController = TextEditingController(text: '');
 
   late bool _passwordInVisible;
   @override
@@ -128,61 +133,99 @@ class _SignUpFormState extends State<SignUpForm> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 5),
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: 'Enter your name',
+          padding: const EdgeInsets.only(top: 15),
+          child: TextFormField(
+            controller: null,
+            style: const TextStyle(
+              color: Colors.black, // set the color of the text
             ),
-            controller: nameController,
+            decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.person),
+                labelText: "Enter your name",
+                hintText: "Enter your name",
+                border: OutlineInputBorder()),
+            autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 10),
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: 'Enter your email address',
+          child: TextFormField(
+            controller: null,
+            style: const TextStyle(
+              color: Colors.black, // set the color of the text
             ),
-            controller: emailController,
+            decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.email),
+                labelText: "Email address",
+                hintText: "Enter email address",
+                border: OutlineInputBorder()),
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (email) =>
+                email != null && !EmailValidator.validate(email)
+                    ? 'Enter a valid email'
+                    : null,
           ),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 10),
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: 'Password',
-              suffixIcon: IconButton(
-                onPressed: () {
-                  setState(() {
-                    _passwordInVisible = !_passwordInVisible;
-                  });
-                },
-                icon: Icon(
-                  _passwordInVisible ? Icons.visibility_off : Icons.visibility,
-                ),
-              ),
-            ),
+          child: TextFormField(
             controller: passwordController,
+            style: const TextStyle(
+              color: Colors.black, // set the color of the text
+            ),
             obscureText: _passwordInVisible,
+            decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.password),
+                labelText: "Password",
+                hintText: "Enter your password",
+                border: const OutlineInputBorder(),
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _passwordInVisible = !_passwordInVisible;
+                    });
+                  },
+                  icon: Icon(
+                    _passwordInVisible
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                  ),
+                )),
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (value) => value != null && value.length < 6
+                ? 'Enter min 6 characters'
+                : null,
           ),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 10),
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: 'Confirm Password',
-              suffixIcon: IconButton(
-                onPressed: () {
-                  setState(() {
-                    _passwordInVisible = !_passwordInVisible;
-                  });
-                },
-                icon: Icon(
-                  _passwordInVisible ? Icons.visibility_off : Icons.visibility,
-                ),
-              ),
+          child: TextFormField(
+            controller: confirmPasswordController,
+            style: const TextStyle(
+              color: Colors.black, // set the color of the text
             ),
-            controller: passwordController,
             obscureText: _passwordInVisible,
+            decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.password),
+                labelText: "Confirm password",
+                hintText: "Enter confirm password",
+                border: const OutlineInputBorder(),
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _passwordInVisible = !_passwordInVisible;
+                    });
+                  },
+                  icon: Icon(
+                    _passwordInVisible
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                  ),
+                )),
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (value) => value != passwordController.text
+                ? '2 passwords do not match'
+                : null,
           ),
         ),
         const SizedBox(

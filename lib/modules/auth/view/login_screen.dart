@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:training/modules/auth/view/sign_up_screen.dart';
@@ -96,6 +97,9 @@ class _LoginScreenState extends State<LoginScreen> {
           style: TextStyle(color: Colors.grey),
         ),
         LoginForm(),
+        const Gap(
+          10,
+        ),
         LoginScreenFooter()
       ],
     );
@@ -129,34 +133,49 @@ class _LoginFormState extends State<LoginForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Enter email address',
+            padding: const EdgeInsets.only(top: 15),
+            child: TextFormField(
+              controller: null,
+              style: const TextStyle(
+                color: Colors.black,
               ),
-              controller: emailController,
+              decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.email),
+                  labelText: "Email address",
+                  hintText: "Enter email address",
+                  border: OutlineInputBorder()),
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (email) =>
+                  email != null && !EmailValidator.validate(email)
+                      ? 'Enter a valid email'
+                      : null,
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 10),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Enter password',
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _passwordInVisible = !_passwordInVisible;
-                    });
-                  },
-                  icon: Icon(
-                    _passwordInVisible
-                        ? Icons.visibility_off
-                        : Icons.visibility,
-                  ),
-                ),
-              ),
+            child: TextFormField(
               controller: passwordController,
+              style: const TextStyle(
+                color: Colors.black, // set the color of the text
+              ),
               obscureText: _passwordInVisible,
+              decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.password),
+                  labelText: "Password",
+                  hintText: "Enter your password",
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _passwordInVisible = !_passwordInVisible;
+                      });
+                    },
+                    icon: Icon(
+                      _passwordInVisible
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                  )),
             ),
           ),
           Padding(
