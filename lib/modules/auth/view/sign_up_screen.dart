@@ -1,11 +1,7 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:email_validator/email_validator.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:training/modules/auth/view/login_screen.dart';
 import 'package:training/widget/navigation.dart';
-// import 'package:firebase_database/firebase_database.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -15,35 +11,198 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  late Color myColor;
+  late Size mediaSize;
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return SafeArea(
+    myColor = Theme.of(context).primaryColor;
+    mediaSize = MediaQuery.of(context).size;
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: const AssetImage(
+              "assets/image/intro/onboarding-screen-image1.jpg"),
+          fit: BoxFit.cover,
+          colorFilter:
+              ColorFilter.mode(myColor.withOpacity(0.7), BlendMode.dstATop),
+        ),
+      ),
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: size.height * 0.05,
-                ),
-                Text(
-                  'Create \nyour account',
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SignUpForm(),
-                const SignUpScreenFooter()
-              ],
-            ),
+        backgroundColor: Colors.transparent,
+        body: Stack(children: [
+          Positioned(top: 70, child: _buildTop()),
+          Positioned(bottom: 0, child: _buildBottom()),
+        ]),
+      ),
+    );
+  }
+
+  Widget _buildTop() {
+    return SizedBox(
+      width: mediaSize.width,
+      child: const Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.g_translate,
+            size: 100,
+            color: Colors.white,
           ),
+          Text(
+            "Khationary",
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 40,
+                letterSpacing: 2),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottom() {
+    return SizedBox(
+      width: mediaSize.width,
+      child: Card(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        )),
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: _buildForm(),
         ),
       ),
     );
+  }
+
+  Widget _buildForm() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Welcome",
+          style: TextStyle(
+              color: myColor, fontSize: 32, fontWeight: FontWeight.w500),
+        ),
+        Text(
+          "If you don't have account, sign up below",
+          style: TextStyle(color: Colors.grey),
+        ),
+        SignUpForm(),
+        SignUpScreenFooter()
+      ],
+    );
+  }
+}
+
+class SignUpForm extends StatefulWidget {
+  const SignUpForm({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<SignUpForm> createState() => _SignUpFormState();
+}
+
+class _SignUpFormState extends State<SignUpForm> {
+  final nameController = TextEditingController(text: '');
+
+  final emailController = TextEditingController(text: '');
+
+  final passwordController = TextEditingController(text: '');
+
+  late bool _passwordInVisible;
+  @override
+  void initState() {
+    super.initState();
+    _passwordInVisible = true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 5),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Enter your name',
+            ),
+            controller: nameController,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Enter your email address',
+            ),
+            controller: emailController,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Password',
+              suffixIcon: IconButton(
+                onPressed: () {
+                  setState(() {
+                    _passwordInVisible = !_passwordInVisible;
+                  });
+                },
+                icon: Icon(
+                  _passwordInVisible ? Icons.visibility_off : Icons.visibility,
+                ),
+              ),
+            ),
+            controller: passwordController,
+            obscureText: _passwordInVisible,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Confirm Password',
+              suffixIcon: IconButton(
+                onPressed: () {
+                  setState(() {
+                    _passwordInVisible = !_passwordInVisible;
+                  });
+                },
+                icon: Icon(
+                  _passwordInVisible ? Icons.visibility_off : Icons.visibility,
+                ),
+              ),
+            ),
+            controller: passwordController,
+            obscureText: _passwordInVisible,
+          ),
+        ),
+        const SizedBox(
+          height: 30,
+        ),
+        SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: const Color(0xFF272727),
+                  side: const BorderSide(color: Colors.white),
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5))),
+              child: const Text("SIGN-UP"),
+            )),
+      ],
+    ));
   }
 }
 
@@ -85,7 +244,7 @@ class SignUpScreenFooter extends StatelessWidget {
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text("Already have account? ",
+          const Text("Already have an account? ",
               style:
                   TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
           const Icon(Icons.arrow_right_alt),
@@ -122,203 +281,4 @@ class SignUpScreenFooter extends StatelessWidget {
       )
     ]);
   }
-}
-
-class SignUpForm extends StatefulWidget {
-  const SignUpForm({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<SignUpForm> createState() => _SignUpFormState();
-}
-
-class _SignUpFormState extends State<SignUpForm> {
-  final fullName = TextEditingController(text: '');
-
-  final emailController = TextEditingController(text: '');
-
-  final passwordController = TextEditingController(text: '');
-
-  // final ref = FirebaseDatabase.instance.ref().child("Users");
-  late bool _passwordInVisible;
-  @override
-  void initState() {
-    super.initState();
-    _passwordInVisible = true;
-  }
-
-  // @override
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-        child: Container(
-      padding: const EdgeInsets.symmetric(vertical: 15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // TextFormField(
-          //   style: const TextStyle(
-          //     color: Colors.black, // set the color of the text
-          //   ),
-          //   controller: fullName,
-          //   decoration: const InputDecoration(
-          //       prefixIcon: Icon(Icons.person_outline_outlined),
-          //       labelText: "FullName",
-          //       hintText: "FullName",
-          //       border: OutlineInputBorder()),
-          // ),
-          // const SizedBox(
-          //   height: 10,
-          // ),
-          // TextFormField(
-          //   style: const TextStyle(
-          //     color: Colors.black, // set the color of the text
-          //   ),
-          //   controller: emailController,
-          //   decoration: const InputDecoration(
-          //       prefixIcon: Icon(Icons.email),
-          //       labelText: "E-Mail",
-          //       hintText: "E-mail",
-          //       border: OutlineInputBorder()),
-          //   autovalidateMode: AutovalidateMode.onUserInteraction,
-          //   // validator: (email) =>
-          //   //     email != null && !EmailValidator.validate(email)
-          //   //         ? 'Enter a valid email'
-          //   //         : null,
-          // ),
-          // const SizedBox(
-          //   height: 10,
-          // ),
-          // TextFormField(
-          //   style: const TextStyle(
-          //     color: Colors.black, // set the color of the text
-          //   ),
-          //   controller: passwordController,
-          //   decoration: InputDecoration(
-          //       prefixIcon: const Icon(Icons.lock),
-          //       labelText: "Password",
-          //       hintText: "Password",
-          //       border: const OutlineInputBorder(),
-          //       suffixIcon: IconButton(
-          //         onPressed: () {
-          //           setState(() {
-          //             _passwordInVisible = !_passwordInVisible;
-          //           });
-          //         },
-          //         icon: Icon(
-          //           _passwordInVisible
-          //               ? Icons.visibility_off
-          //               : Icons.visibility,
-          //         ),
-          //       )),
-          //   autovalidateMode: AutovalidateMode.onUserInteraction,
-          //   validator: (value) => value != null && value.length < 6
-          //       ? 'Enter.min 6 characters'
-          //       : null,
-          // obscureText: _passwordInVisible,
-          // ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Enter your name',
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Enter your email address',
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Password',
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _passwordInVisible = !_passwordInVisible;
-                    });
-                  },
-                  icon: Icon(
-                    _passwordInVisible
-                        ? Icons.visibility_off
-                        : Icons.visibility,
-                  ),
-                ),
-              ),
-              obscureText: _passwordInVisible,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Confirm Password',
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _passwordInVisible = !_passwordInVisible;
-                    });
-                  },
-                  icon: Icon(
-                    _passwordInVisible
-                        ? Icons.visibility_off
-                        : Icons.visibility,
-                  ),
-                ),
-              ),
-              obscureText: _passwordInVisible,
-            ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor: const Color(0xFF272727),
-                    side: const BorderSide(color: Colors.white),
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5))),
-                child: const Text("SIGN-UP"),
-              )),
-        ],
-      ),
-    ));
-  }
-
-  // Future signUp() async {
-  //   try {
-  //     await FirebaseAuth.instance.createUserWithEmailAndPassword(
-  //       email: emailController.text.trim(),
-  //       password: passwordController.text.trim(),
-  //     );
-  //     final Map<String, dynamic> userData = {
-  //       'name': fullName.text.trim(),
-  //       'email': emailController.text.trim(),
-  //     };
-
-  //     scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
-  //         content: Text("Sign-up successfully"),
-  //         backgroundColor: Colors.green));
-  //     FirebaseFirestore firestore = FirebaseFirestore.instance;
-  //     await firestore
-  //         .collection('users')
-  //         .doc(FirebaseAuth.instance.currentUser!.uid)
-  //         .set(userData);
-  //   } on FirebaseAuthException catch (e) {
-  //     scaffoldMessengerKey.currentState?.showSnackBar(
-  //         SnackBar(content: Text("${e.message}"), backgroundColor: Colors.red));
-  //   }
-  // }
 }
