@@ -39,6 +39,7 @@ dependencies:
   gap: ^3.0.1
   http: ^1.1.0
   equatable:
+  email_validator: ^2.1.17
 dev_dependencies:
   flutter_test:
     sdk: flutter
