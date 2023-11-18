@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:training/modules/translatePage/view/translate_screen.dart';
+import 'package:training/widget/navigation.dart';
 
 import 'modules/intro/welcome_screen.dart';
 
@@ -11,7 +13,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: WelcomeScreen(),
+      home: NavigationBottomBar(
+        indexScreen: 1,
+      ),
     );
   }
 }

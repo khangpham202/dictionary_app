@@ -75,7 +75,7 @@ class LoginScreenFooter extends StatelessWidget {
               width: 20,
             ),
             onPressed: () {},
-            label: const Text("Sign-In with Google"),
+            label: const Text("Login with Google"),
             style: ElevatedButton.styleFrom(
                 elevation: 0,
                 backgroundColor: Colors.white,
