@@ -69,14 +69,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildBottom() {
     return SizedBox(
       width: mediaSize.width,
-      child: Card(
-        shape: const RoundedRectangleBorder(
+      child: Container(
+        decoration: const BoxDecoration(
+            color: Colors.white,
             borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        )),
+              topLeft: Radius.circular(35),
+              topRight: Radius.circular(35),
+            )),
         child: Padding(
-          padding: const EdgeInsets.all(32.0),
+          padding: const EdgeInsets.all(25),
           child: _buildForm(),
         ),
       ),
