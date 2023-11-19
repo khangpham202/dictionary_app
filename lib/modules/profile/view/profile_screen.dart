@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:training/modules/auth/view/login_screen.dart';
-import 'package:training/widget/navigation.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

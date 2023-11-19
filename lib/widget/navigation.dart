@@ -42,7 +42,7 @@ class NavigationBottomBarState extends State<NavigationBottomBar> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Color.fromARGB(219, 39, 39, 221),
+        selectedItemColor: Color.fromRGBO(18, 55, 149, 0.914),
         currentIndex: _currentIndex,
         onTap: (index) {
           _pageController.animateToPage(
