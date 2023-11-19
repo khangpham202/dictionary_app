@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:training/modules/auth/view/login_screen.dart';
+import 'package:training/modules/auth/view/sign_up_screen.dart';
 import 'package:training/modules/translatePage/view/translate_screen.dart';
 import 'package:training/widget/navigation.dart';
 
@@ -13,9 +15,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: NavigationBottomBar(
-        indexScreen: 1,
-      ),
+      // home: NavigationBottomBar(
+      //   indexScreen: 2,
+      // ),
+      home: WelcomeScreen(),
     );
   }
 }
