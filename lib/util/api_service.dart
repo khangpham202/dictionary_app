@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-// API này chỉ có thể dịch sang tiếng việt
 class TranslationService {
   Future<String> translate(String text, String targetLanguage) async {
     final response = await http.get(
@@ -14,6 +13,22 @@ class TranslationService {
       return data['responseData']['translatedText'];
     } else {
       throw Exception('Failed to translate text');
+    }
+  }
+}
+
+class WordSuggestion {
+  Future<List<String>> getSuggestions(String query) async {
+    final response =
+        await http.get(Uri.parse('https://api.datamuse.com/sug?s=$query'));
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonResponse = json.decode(response.body);
+      List<String> suggestionsList =
+          jsonResponse.map((dynamic item) => item['word'].toString()).toList();
+      return suggestionsList;
+    } else {
+      throw Exception('Failed to load suggestions');
     }
   }
 }
