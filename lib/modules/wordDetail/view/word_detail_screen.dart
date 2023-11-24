@@ -91,15 +91,33 @@ class _WordDetailScreenState extends State<WordDetailScreen>
           ),
           TabBar(
             controller: _tabController,
-            tabs: const <Widget>[
+            indicatorColor: Color.fromRGBO(18, 55, 149, 0.914),
+            labelColor: Color.fromRGBO(18, 55, 149, 0.914),
+            unselectedLabelColor: Colors.grey.shade400,
+            tabs: const [
               Tab(
-                child: Text('data'),
+                child: Text(
+                  'English - Vietnamese',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
               Tab(
-                icon: Icon(Icons.beach_access_sharp),
+                child: Text(
+                  'WordNet',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
               Tab(
-                icon: Icon(Icons.brightness_5_sharp),
+                child: Text(
+                  'Note',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
             ],
           ),
