@@ -124,7 +124,13 @@ class _WordDetailScreenState extends State<WordDetailScreen>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [WordMeaningWidget(), WordNetWidget(), NoteWidget()],
+              children: [
+                WordMeaningWidget(
+                  word: widget.word,
+                ),
+                WordNetWidget(),
+                NoteWidget()
+              ],
             ),
           )
         ],
