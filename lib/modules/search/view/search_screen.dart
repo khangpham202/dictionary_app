@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:gap/gap.dart';
+import 'package:training/modules/wordDetail/view/word_detail_screen.dart';
 import 'package:training/util/api_service.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,13 +16,10 @@ class _HomeScreenState extends State<HomeScreen> {
   late String dictionaryType;
   List<String> suggestions = [];
   TextEditingController searchController = TextEditingController();
-  // final videoUrl = 'https://www.youtube.com/watch?v=YMx8Bbev6T4&t=95s';
-  // late YoutubePlayerController _youtubeController;
+  
 
   @override
   void initState() {
-    // final videoId = YoutubePlayer.convertUrlToId(videoUrl);
-
     selectedItemColor = Color.fromARGB(255, 19, 21, 123);
     searchController.addListener(() {
       if (searchController.text.isNotEmpty) {
@@ -36,9 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
     dictionaryType = "EV";
-    // _youtubeController = YoutubePlayerController(
-    //     initialVideoId: videoId!,
-    //     flags: const YoutubePlayerFlags(autoPlay: false));
+  
     super.initState();
   }
 
@@ -192,7 +187,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                       },
                       onSuggestionSelected: (suggestion) {
-                        print(suggestion);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  WordDetailScreen(word: suggestion)),
+                        );
                       },
                       suggestionsBoxDecoration: SuggestionsBoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(5)),
