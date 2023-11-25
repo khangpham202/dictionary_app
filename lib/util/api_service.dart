@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class TranslationService {
-  Future<String> translate(String text, String targetLanguage) async {
+  Future<String> translate(
+      String text, String sourceLanguage, String targetLanguage) async {
     final response = await http.get(
       Uri.parse(
-          'https://api.mymemory.translated.net/get?q=$text&langpair=en|$targetLanguage'),
+          'https://api.mymemory.translated.net/get?q=$text&langpair=$sourceLanguage|$targetLanguage'),
     );
 
     if (response.statusCode == 200) {
