@@ -15,7 +15,6 @@ class _TranslateScreenState extends State<TranslateScreen> {
   TextEditingController originalSentenceController = TextEditingController();
   late String sourceLanguage;
   late String targetLanguage;
-  bool shouldUpdateTranslateFlow = true;
   bool isLanguageSwapped = false;
   late String translateFlow;
   @override
@@ -32,25 +31,12 @@ class _TranslateScreenState extends State<TranslateScreen> {
       sourceLanguage = targetLanguage;
       targetLanguage = temp;
       isLanguageSwapped = !isLanguageSwapped;
-      if (isLanguageSwapped && shouldUpdateTranslateFlow) {
+      if (isLanguageSwapped) {
         translateFlow = 'English to Vietnamese';
-        shouldUpdateTranslateFlow = false;
-      } else if (!isLanguageSwapped && shouldUpdateTranslateFlow) {
+      } else {
         translateFlow = 'Vietnamese to English';
-        shouldUpdateTranslateFlow = false; 
       }
     });
-  }
-
-  Future<String> translateText(
-      String sentence, String country1, String country2) async {
-    try {
-      final result =
-          await TranslationService().translate(sentence, country1, country2);
-      return result;
-    } catch (error) {
-      return '$error';
-    }
   }
 
   @override
@@ -198,8 +184,8 @@ class _TranslateScreenState extends State<TranslateScreen> {
 
                     late Translation translation;
                     if (sourceLanguage == 'Vietnamese') {
-                      translatedSentence =
-                          translateText(originalSentence, 'vi', 'en');
+                      translatedSentence = TranslationService()
+                          .translate(originalSentence, 'vi', 'en');
 
                       setState(() {
                         translation = Translation(
@@ -209,8 +195,8 @@ class _TranslateScreenState extends State<TranslateScreen> {
                             'assets/image/logo/uk_logo.png');
                       });
                     } else {
-                      translatedSentence =
-                          translateText(originalSentence, 'en', 'vi');
+                      translatedSentence = TranslationService()
+                          .translate(originalSentence, 'en', 'vi');
                       setState(() {
                         translation = Translation(
                             originalSentence,
