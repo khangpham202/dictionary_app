@@ -13,12 +13,16 @@ class TranslateScreen extends StatefulWidget {
 class _TranslateScreenState extends State<TranslateScreen> {
   List<Translation> translationHistory = [];
   TextEditingController originalSentenceController = TextEditingController();
-  String sourceLanguage = 'Vietnamese';
-  String targetLanguage = 'English';
-
+  late String sourceLanguage;
+  late String targetLanguage;
+  bool shouldUpdateTranslateFlow = true;
+  bool isLanguageSwapped = false;
+  late String translateFlow;
   @override
   void initState() {
-    // TODO: implement initState
+    sourceLanguage = 'English';
+    targetLanguage = 'Vietnamese';
+    translateFlow = 'English to Vietnamese';
     super.initState();
   }
 
@@ -27,14 +31,27 @@ class _TranslateScreenState extends State<TranslateScreen> {
       String temp = sourceLanguage;
       sourceLanguage = targetLanguage;
       targetLanguage = temp;
+      isLanguageSwapped = !isLanguageSwapped;
+      if (isLanguageSwapped && shouldUpdateTranslateFlow) {
+        translateFlow = 'English to Vietnamese';
+        shouldUpdateTranslateFlow = false;
+      } else if (!isLanguageSwapped && shouldUpdateTranslateFlow) {
+        translateFlow = 'Vietnamese to English';
+        shouldUpdateTranslateFlow = false; 
+      }
     });
   }
 
-  // void translate(sentence) {
-  //   setState(() async {
-  //     translationHistory.translatedSentence = await TranslationService().translate(sentence, 'vi');
-  //   });
-  // }
+  Future<String> translateText(
+      String sentence, String country1, String country2) async {
+    try {
+      final result =
+          await TranslationService().translate(sentence, country1, country2);
+      return result;
+    } catch (error) {
+      return '$error';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +104,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
                         return Column(children: [
                           Gap(30),
                           Text(
-                            'Vietnamese to English',
+                            translateFlow,
                             style: TextStyle(
                                 color: Colors.grey.shade700, fontSize: 15),
                           ),
@@ -181,8 +198,9 @@ class _TranslateScreenState extends State<TranslateScreen> {
 
                     late Translation translation;
                     if (sourceLanguage == 'Vietnamese') {
-                      translatedSentence = TranslationService()
-                          .translate(originalSentence, 'vi', 'en');
+                      translatedSentence =
+                          translateText(originalSentence, 'vi', 'en');
+
                       setState(() {
                         translation = Translation(
                             originalSentence,
@@ -191,8 +209,8 @@ class _TranslateScreenState extends State<TranslateScreen> {
                             'assets/image/logo/uk_logo.png');
                       });
                     } else {
-                      translatedSentence = TranslationService()
-                          .translate(originalSentence, 'en', 'vi');
+                      translatedSentence =
+                          translateText(originalSentence, 'en', 'vi');
                       setState(() {
                         translation = Translation(
                             originalSentence,
@@ -202,7 +220,6 @@ class _TranslateScreenState extends State<TranslateScreen> {
                       });
                     }
                     translationHistory.add(translation);
-
                     originalSentenceController.clear();
                   },
                   child: Icon(
