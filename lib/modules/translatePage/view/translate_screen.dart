@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:gap/gap.dart';
 import 'package:training/core/common/model/translation.dart';
 import 'package:training/util/api_service.dart';
@@ -16,27 +17,29 @@ class _TranslateScreenState extends State<TranslateScreen> {
   late String sourceLanguage;
   late String targetLanguage;
   bool isLanguageSwapped = false;
-  late String translateFlow;
+
   @override
   void initState() {
     sourceLanguage = 'English';
     targetLanguage = 'Vietnamese';
-    translateFlow = 'English to Vietnamese';
     super.initState();
   }
 
   void swapLanguage() {
     setState(() {
+      isLanguageSwapped = !isLanguageSwapped;
       String temp = sourceLanguage;
       sourceLanguage = targetLanguage;
       targetLanguage = temp;
-      isLanguageSwapped = !isLanguageSwapped;
-      if (isLanguageSwapped) {
-        translateFlow = 'English to Vietnamese';
-      } else {
-        translateFlow = 'Vietnamese to English';
-      }
     });
+  }
+
+  void sentenceToSpeech(String sentence) async {
+    await FlutterTts().setLanguage("en-US");
+    await FlutterTts().setSpeechRate(1);
+    await FlutterTts().setVolume(1);
+    await FlutterTts().setPitch(1);
+    await FlutterTts().speak(sentence);
   }
 
   @override
@@ -89,8 +92,9 @@ class _TranslateScreenState extends State<TranslateScreen> {
                       if (snapshot.connectionState == ConnectionState.done) {
                         return Column(children: [
                           Gap(30),
+                          // if (translation.isLanguageSwapped)
                           Text(
-                            translateFlow,
+                            translation.translateFlow,
                             style: TextStyle(
                                 color: Colors.grey.shade700, fontSize: 15),
                           ),
@@ -119,7 +123,10 @@ class _TranslateScreenState extends State<TranslateScreen> {
                                 ),
                                 Gap(10),
                                 GestureDetector(
-                                  onTap: null,
+                                  onTap: () {
+                                    sentenceToSpeech(
+                                        translation.originalSentence);
+                                  },
                                   child: Icon(
                                     Icons.volume_up_outlined,
                                     color: Colors.grey.shade400,
@@ -189,20 +196,24 @@ class _TranslateScreenState extends State<TranslateScreen> {
 
                       setState(() {
                         translation = Translation(
-                            originalSentence,
-                            translatedSentence,
-                            'assets/image/logo/vn_logo.png',
-                            'assets/image/logo/uk_logo.png');
+                          originalSentence,
+                          translatedSentence,
+                          'assets/image/logo/vn_logo.png',
+                          'assets/image/logo/uk_logo.png',
+                          'Vietnamese to English',
+                        );
                       });
                     } else {
                       translatedSentence = TranslationService()
                           .translate(originalSentence, 'en', 'vi');
                       setState(() {
                         translation = Translation(
-                            originalSentence,
-                            translatedSentence,
-                            'assets/image/logo/uk_logo.png',
-                            'assets/image/logo/vn_logo.png');
+                          originalSentence,
+                          translatedSentence,
+                          'assets/image/logo/uk_logo.png',
+                          'assets/image/logo/vn_logo.png',
+                          'English to Vietnamese',
+                        );
                       });
                     }
                     translationHistory.add(translation);
