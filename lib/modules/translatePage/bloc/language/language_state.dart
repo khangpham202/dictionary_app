@@ -1,21 +1,14 @@
 part of 'language_bloc.dart';
 
 sealed class LanguageState extends Equatable {
-  final String sourceLanguage;
-  final String targetLanguage;
+  final Language language;
 
-  const LanguageState({
-    required this.sourceLanguage,
-    required this.targetLanguage,
-  });
+  const LanguageState(this.language);
 
   @override
-  List<Object?> get props => [sourceLanguage, targetLanguage];
+  List<Object> get props => [language];
 }
 
-class LanguageInitial extends LanguageState {
-  const LanguageInitial({
-    String sourceLanguage = 'English',
-    String targetLanguage = 'Vietnamese',
-  }) : super(sourceLanguage: sourceLanguage, targetLanguage: targetLanguage);
+class LanguageSelected extends LanguageState {
+  const LanguageSelected(Language language) : super(language);
 }

@@ -1,20 +1,17 @@
 part of 'language_bloc.dart';
 
-sealed class LanguageEvent extends Equatable {
-  const LanguageEvent();
+abstract class LanguageEvent {}
 
-  @override
-  List<Object> get props => [];
+class ChangeSourceLanguageEvent extends LanguageEvent {
+  final Language selectedLanguage;
+
+  ChangeSourceLanguageEvent(this.selectedLanguage);
+  List<Object> get props => [selectedLanguage];
 }
 
-class ChangeLanguageEvent extends LanguageEvent {
-  final String sourceLanguage;
-  final String targetLanguage;
+class ChangeTargetLanguageEvent extends LanguageEvent {
+  final Language selectedLanguage;
 
-  const ChangeLanguageEvent({
-    required this.sourceLanguage,
-    required this.targetLanguage,
-  });
-  @override
-  List<Object> get props => [sourceLanguage, targetLanguage];
+  ChangeTargetLanguageEvent(this.selectedLanguage);
+  List<Object> get props => [selectedLanguage];
 }
