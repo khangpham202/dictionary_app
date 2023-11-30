@@ -23,14 +23,14 @@ class _TranslateScreenState extends State<TranslateScreen> {
   Language selectedSourceLanguage = Language.English;
   Language selectedTargetLanguage = Language.Vietnamese;
 
-  // void swapLanguage() {
-  //   setState(() {
-  //     isLanguageSwapped = !isLanguageSwapped;
-  //     String temp = sourceLanguage;
-  //     sourceLanguage = targetLanguage;
-  //     targetLanguage = temp;
-  //   });
-  // }
+  void swapLanguage() {
+    setState(() {
+      isLanguageSwapped = !isLanguageSwapped;
+      Language temp = selectedSourceLanguage;
+      selectedSourceLanguage = selectedTargetLanguage;
+      selectedTargetLanguage = temp;
+    });
+  }
 
   void sentenceToSpeech() async {
     await FlutterTts().setLanguage("ja-JP");
@@ -62,7 +62,6 @@ class _TranslateScreenState extends State<TranslateScreen> {
                     setState(() {
                       selectedSourceLanguage = newLanguage;
                     });
-                    print(selectedSourceLanguage.name);
                   },
                 ),
                 LanguageSelector(
@@ -72,13 +71,12 @@ class _TranslateScreenState extends State<TranslateScreen> {
                     setState(() {
                       selectedTargetLanguage = newLanguage;
                     });
-                    print(selectedTargetLanguage);
                   },
                 )
               ],
             ),
             GestureDetector(
-              onTap: null,
+              onTap: swapLanguage,
               child: Icon(
                 Icons.swap_horiz,
                 color: Colors.white,
