@@ -16,6 +16,24 @@ class TranslationService {
       throw Exception('Failed to translate text');
     }
   }
+
+  Future<String> getISOCountryCodeByLanguage(String language) async {
+    final response = await http
+        .get(Uri.parse('https://restcountries.com/v3.1/lang/$language'));
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body);
+
+      if (data.isNotEmpty) {
+        String isoCode = data[0]['cca2'] ?? '';
+        return isoCode;
+      } else {
+        throw Exception('Country not found for the given language');
+      }
+    } else {
+      throw Exception('Failed to load country information');
+    }
+  }
 }
 
 class WordSuggestion {
