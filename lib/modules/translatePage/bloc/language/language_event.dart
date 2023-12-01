@@ -3,15 +3,15 @@ part of 'language_bloc.dart';
 abstract class LanguageEvent {}
 
 class ChangeSourceLanguageEvent extends LanguageEvent {
-  final Language selectedLanguage;
+  final Country selectedCountry;
 
-  ChangeSourceLanguageEvent(this.selectedLanguage);
-  List<Object> get props => [selectedLanguage];
+  ChangeSourceLanguageEvent(this.selectedCountry);
+  List<Object> get props => [selectedCountry];
 }
 
 class ChangeTargetLanguageEvent extends LanguageEvent {
-  final Language selectedLanguage;
+  final Country selectedCountry;
 
-  ChangeTargetLanguageEvent(this.selectedLanguage);
-  List<Object> get props => [selectedLanguage];
+  ChangeTargetLanguageEvent(this.selectedCountry);
+  List<Object> get props => [selectedCountry];
 }
