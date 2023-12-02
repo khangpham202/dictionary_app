@@ -1,14 +1,14 @@
 part of 'language_bloc.dart';
 
 sealed class LanguageState extends Equatable {
-  final Language language;
+  final Country country;
 
-  const LanguageState(this.language);
+  const LanguageState(this.country);
 
   @override
-  List<Object> get props => [language];
+  List<Object> get props => [country];
 }
 
 class LanguageSelected extends LanguageState {
-  const LanguageSelected(Language language) : super(language);
+  const LanguageSelected(Country country) : super(country);
 }

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:training/core/enum/language.dart';
+import 'package:training/core/enum/country.dart';
 import 'package:training/modules/translatePage/bloc/language/language_bloc.dart';
 
 class LanguageSelector extends StatelessWidget {
-  final Language selectedLanguage;
+  final Country selectedLanguage;
   final bool isSourceLanguage;
-  final Function(Language) onLanguageChanged;
+  final Function(Country) onLanguageChanged;
 
   const LanguageSelector({
     super.key,
@@ -19,9 +19,9 @@ class LanguageSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<LanguageBloc, LanguageState>(
       builder: (context, state) {
-        return PopupMenuButton<Language>(
+        return PopupMenuButton<Country>(
           constraints: BoxConstraints(maxHeight: 400),
-          onSelected: (Language value) {
+          onSelected: (Country value) {
             onLanguageChanged(value);
             if (isSourceLanguage) {
               BlocProvider.of<LanguageBloc>(context)
@@ -32,10 +32,10 @@ class LanguageSelector extends StatelessWidget {
             }
           },
           itemBuilder: (BuildContext context) {
-            return Language.values.map((Language value) {
-              return PopupMenuItem<Language>(
+            return Country.values.map((Country value) {
+              return PopupMenuItem<Country>(
                 value: value,
-                child: Text(value.name.toString()),
+                child: Text(value.format),
               );
             }).toList();
           },
@@ -43,7 +43,7 @@ class LanguageSelector extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                selectedLanguage.name.toString(),
+                selectedLanguage.format,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -57,38 +57,3 @@ class LanguageSelector extends StatelessWidget {
     );
   }
 }
-
-        // return DropdownButton<Language>(
-        //   value: selectedLanguage,
-        //   items:
-        //       Language.values.map<DropdownMenuItem<Language>>((Language value) {
-        //     return DropdownMenuItem<Language>(
-        //       value: value,
-        //       child: Text(
-        //         value.name.toString(),
-                // style: TextStyle(
-                //   color: Colors.white,
-                //   fontSize: 20,
-                // ),
-        //       ),
-        //     );
-        //   }).toList(),
-        //   underline: Container(
-        //     color: Colors.transparent,
-        //   ),
-        //   focusColor: Colors.transparent,
-        //   menuMaxHeight: MediaQuery.of(context).size.height / 2,
-        //   iconEnabledColor: Colors.white,
-        //   dropdownColor: Colors.black,
-        //   // dropdownColor: Color.fromRGBO(18, 55, 149, 0.914),
-        //   onChanged: (Language? value) {
-        //     onLanguageChanged(value!);
-        //     if (isSourceLanguage) {
-        //       BlocProvider.of<LanguageBloc>(context)
-        //           .add(ChangeSourceLanguageEvent(value));
-        //     } else {
-        //       BlocProvider.of<LanguageBloc>(context)
-        //           .add(ChangeTargetLanguageEvent(value));
-        //     }
-        //   },
-        // );
