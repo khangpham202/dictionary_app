@@ -20,10 +20,9 @@ class _TranslateScreenState extends State<TranslateScreen> {
   bool isLanguageSwapped = false;
 
   LanguageBloc languageBloc = LanguageBloc();
-  // String selectedSourceLanguage = Country.United_Kingdom.format;
-  // String selectedTargetLanguage = Country.Vietnam.format;
   late Country selectedSourceLanguage;
   late Country selectedTargetLanguage;
+
   bool isLoading = false;
 
   @override
@@ -42,13 +41,14 @@ class _TranslateScreenState extends State<TranslateScreen> {
     });
   }
 
-  void sentenceToSpeech() async {
-    await FlutterTts().setLanguage("vi-VN");
-    await FlutterTts().setSpeechRate(1);
-    await FlutterTts().setVolume(1);
-    await FlutterTts().setPitch(1);
-    await FlutterTts().speak(
-        'Lưu ý rằng nếu nội dung vượt quá chiều rộng của Container, nó có thể ảnh hưởng đến giao diện người dùng của bạn. Hãy đảm bảo kiểm tra và điều chỉnh chiều rộng của Container để đảm bảo trải nghiệm người dùng tốt nhất.');
+  void _playTts(String language, String sentence) async {
+    FlutterTts tts = FlutterTts();
+    await tts.setLanguage(language);
+    (language == 'en')
+        ? await tts.setSpeechRate(0.5)
+        : await tts.setSpeechRate(0.8);
+    await tts.setPitch(1);
+    await tts.speak(sentence);
   }
 
   @override
@@ -136,7 +136,8 @@ class _TranslateScreenState extends State<TranslateScreen> {
                       Gap(10),
                       GestureDetector(
                         onTap: () {
-                          sentenceToSpeech();
+                          _playTts(selectedSourceLanguage.countryCode,
+                              translation.originalSentence);
                         },
                         child: Icon(
                           Icons.volume_up_outlined,
@@ -173,7 +174,10 @@ class _TranslateScreenState extends State<TranslateScreen> {
                       ),
                       Gap(10),
                       GestureDetector(
-                        onTap: null,
+                        onTap: () {
+                          _playTts(selectedTargetLanguage.countryCode,
+                              translation.translatedSentence);
+                        },
                         child: Icon(
                           Icons.volume_up_outlined,
                           color: Colors.grey.shade400,
@@ -197,7 +201,6 @@ class _TranslateScreenState extends State<TranslateScreen> {
                 setState(() {
                   isLoading = true;
                 });
-
                 late String isoSourceCountryCode, isoTargetCountryCode;
                 late String translatedSentence;
                 late Translation translation;
@@ -208,6 +211,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
                     selectedTargetLanguage.countryCode;
                 String formatedSourceLanguage = selectedSourceLanguage.format;
                 String formatedTargetLanguage = selectedTargetLanguage.format;
+
                 try {
                   isoSourceCountryCode = await TranslationService()
                       .getISOCountryCode(formatedSourceLanguage);
@@ -224,8 +228,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
                     isLoading = false;
                   });
                 }
-                print(isoTargetCountryCode);
-                print(selectedTargetLanguageCode);
+
                 setState(() {
                   translation = Translation(
                     originalSentence,
