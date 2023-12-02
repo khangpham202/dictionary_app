@@ -20,7 +20,6 @@ class TranslationService {
   Future<String> getISOCountryCode(String countryName) async {
     final response = await http.get(Uri.parse(
         'https://restcountries.com/v3.1/name/$countryName?fullText=true'));
-
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
 
