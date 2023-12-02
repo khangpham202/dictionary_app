@@ -73,7 +73,85 @@ enum Country {
 }
 
 extension CountryEnumExtension on Country {
-  String get formatCountryVariable {
+  String get format {
     return toString().split('.').last.replaceAll('_', ' ');
+  }
+
+  String get countryCode {
+    final countryCodes = {
+      Country.Afghanistan: 'af',
+      Country.Albania: 'sq',
+      Country.Armenia: 'hy',
+      Country.Azerbaijan: 'az',
+      Country.Bangladesh: 'bn',
+      Country.Belarus: 'be',
+      Country.Bosnia_and_Herzegovina: 'bs',
+      Country.Brazil: 'pt',
+      Country.Bulgaria: 'bg',
+      Country.Cambodia: 'km',
+      Country.China: 'zh',
+      Country.Croatia: 'hr',
+      Country.Czech_Republic: 'cs',
+      Country.Denmark: 'da',
+      Country.Estonia: 'et',
+      Country.Ethiopia: 'am',
+      Country.Finland: 'fi',
+      Country.France: 'fr',
+      Country.Georgia: 'ka',
+      Country.Germany: 'de',
+      Country.Greece: 'el',
+      Country.Hungary: 'hu',
+      Country.Iceland: 'is',
+      Country.India: 'hi',
+      Country.Indonesia: 'id',
+      Country.Iran: 'fa',
+      Country.Iraq: 'ar',
+      Country.Ireland: 'ga',
+      Country.Israel: 'he',
+      Country.Italy: 'it',
+      Country.Japan: 'ja',
+      Country.Kazakhstan: 'kk',
+      Country.Kenya: 'sw',
+      Country.Kyrgyzstan: 'ky',
+      Country.Laos: 'lo',
+      Country.Latvia: 'lv',
+      Country.Lithuania: 'lt',
+      Country.Madagascar: 'mg',
+      Country.Malaysia: 'ms',
+      Country.Malta: 'mt',
+      Country.Mongolia: 'mn',
+      Country.Myanmar: 'my',
+      Country.Nepal: 'ne',
+      Country.Netherlands: 'nl',
+      Country.Nigeria: 'en',
+      Country.North_Macedonia: 'mk',
+      Country.Norway: 'no',
+      Country.Pakistan: 'ur',
+      Country.Philippines: 'tl',
+      Country.Poland: 'pl',
+      Country.Romania: 'ro',
+      Country.Russia: 'ru',
+      Country.Samoa: 'sm',
+      Country.Saudi_Arabia: 'ar',
+      Country.Serbia: 'sr',
+      Country.Slovakia: 'sk',
+      Country.Slovenia: 'sl',
+      Country.Somalia: 'so',
+      Country.South_Africa: 'af',
+      Country.South_Korea: 'ko',
+      Country.Spain: 'es',
+      Country.Sri_Lanka: 'si',
+      Country.Sweden: 'sv',
+      Country.Tajikistan: 'tg',
+      Country.Thailand: 'th',
+      Country.Turkey: 'tr',
+      Country.Turkmenistan: 'tr',
+      Country.Ukraine: 'uk',
+      Country.United_Kingdom: 'en',
+      Country.Uzbekistan: 'uz',
+      Country.Vietnam: 'vi'
+    };
+
+    return countryCodes[this] ?? '';
   }
 }
