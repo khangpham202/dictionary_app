@@ -36,17 +36,56 @@ class TranslationService {
 }
 
 class WordSuggestion {
-  Future<List<String>> getSuggestions(String query) async {
+  Future<List<String>> getSuggestions(String word) async {
     final response =
-        await http.get(Uri.parse('https://api.datamuse.com/sug?s=$query'));
+        await http.get(Uri.parse('https://api.datamuse.com/sug?s=$word'));
 
     if (response.statusCode == 200) {
-      List<dynamic> jsonResponse = json.decode(response.body);
+      List<dynamic> data = json.decode(response.body);
       List<String> suggestionsList =
-          jsonResponse.map((dynamic item) => item['word'].toString()).toList();
+          data.map((dynamic item) => item['word'].toString()).toList();
       return suggestionsList;
     } else {
       throw Exception('Failed to load suggestions');
     }
+  }
+}
+
+class WordDetail {
+  Future<List<String>> getSynonyms(String word) async {
+    const apiKey = '0a948b2cd94a9bbd4647a02eb555165f';
+    final response = await http.get(
+      Uri.parse('http://words.bighugelabs.com/api/2/$apiKey/$word/json'),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      if (data.containsKey('noun') &&
+          data['noun'].containsKey('syn') &&
+          data['noun']['syn'] is List) {
+        return List<String>.from(data['noun']['syn']);
+      }
+    }
+    return [];
+  }
+
+  Future<List<String>> getAntonyms(String word) async {
+    const apiKey = '0a948b2cd94a9bbd4647a02eb555165f';
+    final response = await http.get(
+      Uri.parse('http://words.bighugelabs.com/api/2/$apiKey/$word/json'),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      if (data.containsKey('noun') &&
+          data['noun'].containsKey('ant') &&
+          data['noun']['ant'] is List) {
+        return List<String>.from(data['noun']['ant']);
+      }
+    }
+
+    return [];
   }
 }
