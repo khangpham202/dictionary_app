@@ -52,7 +52,7 @@ class WordSuggestion {
 }
 
 class WordDetail {
-  Future<List<String>> getSynonyms(String word) async {
+  Future<Map<String, List<String>>> getSynonyms(String word) async {
     const apiKey = '0a948b2cd94a9bbd4647a02eb555165f';
     final response = await http.get(
       Uri.parse('http://words.bighugelabs.com/api/2/$apiKey/$word/json'),
@@ -61,16 +61,26 @@ class WordDetail {
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
 
-      if (data.containsKey('noun') &&
-          data['noun'].containsKey('syn') &&
-          data['noun']['syn'] is List) {
-        return List<String>.from(data['noun']['syn']);
+      Map<String, List<String>> synonymsMap = {};
+      void extractWords(String type) {
+        if (data.containsKey(type) &&
+            data[type].containsKey('syn') &&
+            data[type]['syn'] is List) {
+          synonymsMap[type] = List<String>.from(data[type]['syn']);
+        }
       }
+
+      extractWords('noun');
+      extractWords('verb');
+      extractWords('adjective');
+
+      return synonymsMap;
+    } else {
+      throw Exception('Failed to load synonyms');
     }
-    return [];
   }
 
-  Future<List<String>> getAntonyms(String word) async {
+  Future<Map<String, List<String>>> getAntonyms(String word) async {
     const apiKey = '0a948b2cd94a9bbd4647a02eb555165f';
     final response = await http.get(
       Uri.parse('http://words.bighugelabs.com/api/2/$apiKey/$word/json'),
@@ -79,13 +89,22 @@ class WordDetail {
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
 
-      if (data.containsKey('noun') &&
-          data['noun'].containsKey('ant') &&
-          data['noun']['ant'] is List) {
-        return List<String>.from(data['noun']['ant']);
+      Map<String, List<String>> antonymsMap = {};
+      void extractWords(String type) {
+        if (data.containsKey(type) &&
+            data[type].containsKey('ant') &&
+            data[type]['ant'] is List) {
+          antonymsMap[type] = List<String>.from(data[type]['ant']);
+        }
       }
-    }
 
-    return [];
+      extractWords('noun');
+      extractWords('verb');
+      extractWords('adjective');
+
+      return antonymsMap;
+    } else {
+      throw Exception('Failed to load synonyms');
+    }
   }
 }
