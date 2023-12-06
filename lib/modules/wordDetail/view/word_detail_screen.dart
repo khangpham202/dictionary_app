@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:gap/gap.dart';
 import 'package:training/util/api_service.dart';
-import 'package:training/widget/tarbar_view.dart';
+import 'package:training/components/tarbar_view.dart';
 
 class WordDetailScreen extends StatefulWidget {
   final String word;
