@@ -128,7 +128,9 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                 WordMeaningWidget(
                   word: widget.word,
                 ),
-                WordNetWidget(),
+                WordNetWidget(
+                  word: widget.word
+                ),
                 NoteWidget()
               ],
             ),
