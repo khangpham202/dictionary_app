@@ -201,8 +201,9 @@ class _TranslateScreenState extends State<TranslateScreen> {
                 setState(() {
                   isLoading = true;
                 });
-                late String isoSourceCountryCode, isoTargetCountryCode;
-                late String translatedSentence;
+                late String isoSourceCountryCode,
+                    isoTargetCountryCode,
+                    translatedSentence;
                 late Translation translation;
                 String originalSentence = originalSentenceController.text;
                 String selectedSourceLanguageCode =
