@@ -52,59 +52,72 @@ class WordSuggestion {
 }
 
 class WordDetail {
-  Future<Map<String, List<String>>> getSynonyms(String word) async {
-    const apiKey = '0a948b2cd94a9bbd4647a02eb555165f';
-    final response = await http.get(
-      Uri.parse('http://words.bighugelabs.com/api/2/$apiKey/$word/json'),
-    );
+  Future<String?> getSpelling(String word) async {
+    final apiUrl = "https://api.dictionaryapi.dev/api/v2/entries/en/$word";
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-
-      Map<String, List<String>> synonymsMap = {};
-      void extractWords(String type) {
-        if (data.containsKey(type) &&
-            data[type].containsKey('syn') &&
-            data[type]['syn'] is List) {
-          synonymsMap[type] = List<String>.from(data[type]['syn']);
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final phonetics = data[0]['phonetics'];
+        String pronunciation;
+        if (phonetics != null && phonetics.isNotEmpty) {
+          if (phonetics[0]['text'] != null && phonetics.isNotEmpty) {
+            pronunciation = phonetics[0]['text'];
+            return pronunciation;
+          } else {
+            pronunciation = phonetics[1]['text'];
+            return pronunciation;
+          }
         }
+      } else {
+        return 'cannot get data';
       }
-
-      extractWords('noun');
-      extractWords('verb');
-      extractWords('adjective');
-
-      return synonymsMap;
-    } else {
-      throw Exception('Failed to load synonyms');
+    } catch (e) {
+      return e.toString();
     }
+    return null;
   }
 
-  Future<Map<String, List<String>>> getAntonyms(String word) async {
-    const apiKey = '0a948b2cd94a9bbd4647a02eb555165f';
-    final response = await http.get(
-      Uri.parse('http://words.bighugelabs.com/api/2/$apiKey/$word/json'),
-    );
+  Future<List<Map<String, dynamic>>?> fetchMeanings(String word) async {
+    final apiUrl = "https://api.dictionaryapi.dev/api/v2/entries/en/$word";
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
 
-      Map<String, List<String>> antonymsMap = {};
-      void extractWords(String type) {
-        if (data.containsKey(type) &&
-            data[type].containsKey('ant') &&
-            data[type]['ant'] is List) {
-          antonymsMap[type] = List<String>.from(data[type]['ant']);
+        if (data is List && data.isNotEmpty) {
+          final firstEntry = data[0];
+
+          if (firstEntry.containsKey('meanings')) {
+            return List<Map<String, dynamic>>.from(
+                firstEntry['meanings'].map((meaning) => {
+                      'partOfSpeech': meaning['partOfSpeech'],
+                      'definitions': List<Map<String, dynamic>>.from(
+                          meaning['definitions'].map((def) => {
+                                'definition': def['definition'],
+                                'synonyms':
+                                    List<String>.from(def['synonyms'] ?? []),
+                                'antonyms':
+                                    List<String>.from(def['antonyms'] ?? []),
+                              })),
+                      'synonyms': List<String>.from(meaning['synonyms'] ?? []),
+                      'antonyms': List<String>.from(meaning['antonyms'] ?? []),
+                    }));
+          } else {
+            print("No meanings available");
+          }
+        } else {
+          print("Invalid response format");
         }
+      } else {
+        print("Error: ${response.reasonPhrase}");
       }
-
-      extractWords('noun');
-      extractWords('verb');
-      extractWords('adjective');
-
-      return antonymsMap;
-    } else {
-      throw Exception('Failed to load synonyms');
+    } catch (e) {
+      print("Error: $e");
     }
+
+    return null;
   }
 }
