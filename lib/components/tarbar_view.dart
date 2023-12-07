@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:gap/gap.dart';
 import 'package:training/util/api_service.dart';
+import 'package:training/util/speech.dart';
 
 class WordMeaningWidget extends StatefulWidget {
   final String word;
@@ -12,14 +12,6 @@ class WordMeaningWidget extends StatefulWidget {
 }
 
 class _WordMeaningWidgetState extends State<WordMeaningWidget> {
-  void _playTts(String text) async {
-    FlutterTts tts = FlutterTts();
-    await tts.setLanguage('en');
-    await tts.setSpeechRate(0.5);
-    await tts.setPitch(1);
-    await tts.speak(text);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -71,7 +63,7 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            _playTts(widget.word);
+                            TextToSpeechService().playTts('en', widget.word);
                           },
                           child: Icon(
                             Icons.volume_up_outlined,
@@ -150,39 +142,183 @@ class _WordNetWidgetState extends State<WordNetWidget> {
             width: 20,
             child: CircularProgressIndicator(),
           )
-        : ListView.builder(
-            itemCount: meanings!.length,
-            itemBuilder: (context, index) {
-              final meaning = meanings![index];
-              return ListTile(
-                title: Text("Part of Speech: ${meaning['partOfSpeech']}"),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        : Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ...meaning['definitions'].map<Widget>((def) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    Text(
+                      widget.word,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(
+                      child: Row(
                         children: [
-                          Text("Definition: ${def['definition']}"),
-                          if ((def['synonyms'] as List).isNotEmpty)
-                            Text(
-                                "Synonyms: ${(def['synonyms'] as List).join(', ')}"),
-                          if ((def['antonyms'] as List).isNotEmpty)
-                            Text(
-                                "Antonyms: ${(def['antonyms'] as List).join(', ')}"),
+                          GestureDetector(
+                            onTap: null,
+                            child: Icon(Icons.note_alt_sharp),
+                          ),
+                          GestureDetector(
+                            onTap: null,
+                            child: Icon(Icons.save),
+                          ),
                         ],
-                      );
-                    }).toList(),
-                    if ((meaning['synonyms'] as List).isNotEmpty)
-                      Text(
-                          "Synonyms: ${(meaning['synonyms'] as List).join(', ')}"),
-                    if ((meaning['antonyms'] as List).isNotEmpty)
-                      Text(
-                          "Antonyms: ${(meaning['antonyms'] as List).join(', ')}"),
+                      ),
+                    )
                   ],
                 ),
-              );
-            },
+                Gap(10),
+                FutureBuilder(
+                    future: WordDetail().getSpelling(widget.word),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        if (snapshot.data != null) {
+                          return Row(
+                            children: [
+                              Text(
+                                snapshot.data!,
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 185, 178, 178),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 20),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  TextToSpeechService()
+                                      .playTts('en', widget.word);
+                                },
+                                child: Icon(
+                                  Icons.volume_up_outlined,
+                                  color: Color.fromRGBO(99, 115, 156, 0.914),
+                                  size: 25,
+                                ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Gap(5);
+                        }
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    }),
+                Expanded(
+                  child: meanings != null
+                      ? ListView.builder(
+                          itemCount: meanings!.length,
+                          itemBuilder: (context, index) {
+                            final meaning = meanings![index];
+                            return ListTile(
+                              title: Text(
+                                meaning['partOfSpeech']
+                                    .toString()
+                                    .toUpperCase(),
+                                style: TextStyle(
+                                    color: Color.fromRGBO(18, 55, 149, 0.914),
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ...meaning['definitions'].map<Widget>((def) {
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.circle,
+                                              size: 10,
+                                            ),
+                                            Gap(5),
+                                            Container(
+                                              constraints: BoxConstraints(
+                                                maxWidth: MediaQuery.of(context)
+                                                        .size
+                                                        .width -
+                                                    100,
+                                              ),
+                                              child: Text(
+                                                "${def['definition']}",
+                                                style: TextStyle(
+                                                    color: Color.fromARGB(
+                                                        255, 61, 61, 61),
+                                                    fontSize: 18),
+                                                overflow: TextOverflow.visible,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        if ((def['synonyms'] as List)
+                                            .isNotEmpty)
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 20),
+                                            child: Text(
+                                              "synonyms: ${(def['synonyms'] as List).join(', ')}",
+                                              style: TextStyle(
+                                                color: Color.fromRGBO(
+                                                    39, 64, 128, 0.914),
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        if ((def['antonyms'] as List)
+                                            .isNotEmpty)
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 20),
+                                            child: Text(
+                                              "antonyms: ${(def['antonyms'] as List).join(', ')}",
+                                              style: TextStyle(
+                                                color: Color.fromRGBO(
+                                                    39, 64, 128, 0.914),
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    );
+                                  }).toList(),
+                                  if ((meaning['synonyms'] as List).isNotEmpty)
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 20),
+                                      child: Text(
+                                        "synonyms: ${(meaning['synonyms'] as List).join(', ')}",
+                                        style: TextStyle(
+                                          color: Color.fromRGBO(
+                                              39, 64, 128, 0.914),
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  if ((meaning['antonyms'] as List).isNotEmpty)
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 20),
+                                      child: Text(
+                                        "antonyms: ${(meaning['antonyms'] as List).join(', ')}",
+                                        style: TextStyle(
+                                          color: Color.fromRGBO(
+                                              39, 64, 128, 0.914),
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            );
+                          },
+                        )
+                      : Text("Loading..."),
+                ),
+              ],
+            ),
           );
   }
 }
