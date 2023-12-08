@@ -48,7 +48,7 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
           ),
           Gap(10),
           FutureBuilder(
-              future: WordDetail().getSpelling(widget.word),
+              future: WordDetail().fetchPronunciation(widget.word),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.data != null) {
@@ -57,7 +57,7 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                         Text(
                           snapshot.data!,
                           style: TextStyle(
-                              color: Color.fromARGB(255, 185, 178, 178),
+                              color: Color.fromARGB(255, 111, 104, 104),
                               fontWeight: FontWeight.w700,
                               fontSize: 20),
                         ),
@@ -174,7 +174,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                 ),
                 Gap(10),
                 FutureBuilder(
-                    future: WordDetail().getSpelling(widget.word),
+                    future: WordDetail().fetchPronunciation(widget.word),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.data != null) {
@@ -183,7 +183,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                               Text(
                                 snapshot.data!,
                                 style: TextStyle(
-                                    color: Color.fromARGB(255, 185, 178, 178),
+                                    color: Color.fromARGB(255, 111, 104, 104),
                                     fontWeight: FontWeight.w700,
                                     fontSize: 20),
                               ),
@@ -207,6 +207,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                         return CircularProgressIndicator();
                       }
                     }),
+                Gap(10),
                 Expanded(
                   child: meanings != null
                       ? ListView.builder(
@@ -214,13 +215,20 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                           itemBuilder: (context, index) {
                             final meaning = meanings![index];
                             return ListTile(
-                              title: Text(
-                                meaning['partOfSpeech']
-                                    .toString()
-                                    .toUpperCase(),
-                                style: TextStyle(
-                                    color: Color.fromRGBO(18, 55, 149, 0.914),
-                                    fontWeight: FontWeight.w600),
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    meaning['partOfSpeech']
+                                        .toString()
+                                        .toUpperCase(),
+                                    style: TextStyle(
+                                        color:
+                                            Color.fromRGBO(18, 55, 149, 0.914),
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  Gap(3),
+                                ],
                               ),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,13 +252,19 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                                         .width -
                                                     100,
                                               ),
-                                              child: Text(
-                                                "${def['definition']}",
-                                                style: TextStyle(
-                                                    color: Color.fromARGB(
-                                                        255, 61, 61, 61),
-                                                    fontSize: 18),
-                                                overflow: TextOverflow.visible,
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    "${def['definition']}",
+                                                    style: TextStyle(
+                                                        color: Color.fromARGB(
+                                                            255, 61, 61, 61),
+                                                        fontSize: 18),
+                                                    overflow:
+                                                        TextOverflow.visible,
+                                                  ),
+                                                  Gap(3),
+                                                ],
                                               ),
                                             ),
                                           ],
@@ -264,8 +278,8 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                               "synonyms: ${(def['synonyms'] as List).join(', ')}",
                                               style: TextStyle(
                                                 color: Color.fromRGBO(
-                                                    39, 64, 128, 0.914),
-                                                fontSize: 16,
+                                                    25, 66, 172, 0.914),
+                                                fontSize: 17,
                                               ),
                                             ),
                                           ),
@@ -278,8 +292,8 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                               "antonyms: ${(def['antonyms'] as List).join(', ')}",
                                               style: TextStyle(
                                                 color: Color.fromRGBO(
-                                                    39, 64, 128, 0.914),
-                                                fontSize: 16,
+                                                    25, 66, 172, 0.914),
+                                                fontSize: 17,
                                               ),
                                             ),
                                           ),
@@ -293,8 +307,8 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                         "synonyms: ${(meaning['synonyms'] as List).join(', ')}",
                                         style: TextStyle(
                                           color: Color.fromRGBO(
-                                              39, 64, 128, 0.914),
-                                          fontSize: 16,
+                                              25, 66, 172, 0.914),
+                                          fontSize: 17,
                                         ),
                                       ),
                                     ),
@@ -305,8 +319,8 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                         "antonyms: ${(meaning['antonyms'] as List).join(', ')}",
                                         style: TextStyle(
                                           color: Color.fromRGBO(
-                                              39, 64, 128, 0.914),
-                                          fontSize: 16,
+                                              25, 66, 172, 0.914),
+                                          fontSize: 17,
                                         ),
                                       ),
                                     ),
