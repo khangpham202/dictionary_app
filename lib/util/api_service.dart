@@ -52,30 +52,24 @@ class WordSuggestion {
 }
 
 class WordDetail {
-  Future<String?> getSpelling(String word) async {
-    final apiUrl = "https://api.dictionaryapi.dev/api/v2/entries/en/$word";
+  Future<String?> fetchPronunciation(String word) async {
+    const String apiKey = '72a6cffe-88e8-42b4-b631-358d181aa2bd';
 
-    try {
-      final response = await http.get(Uri.parse(apiUrl));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final phonetics = data[0]['phonetics'];
-        String pronunciation;
-        if (phonetics != null && phonetics.isNotEmpty) {
-          if (phonetics[0]['text'] != null && phonetics.isNotEmpty) {
-            pronunciation = phonetics[0]['text'];
-            return pronunciation;
-          } else {
-            pronunciation = phonetics[1]['text'];
-            return pronunciation;
-          }
-        }
-      } else {
-        return 'cannot get data';
+    final response = await http.get(
+      Uri.parse(
+          'https://dictionaryapi.com/api/v3/references/sd3/json/$word?key=$apiKey'),
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> definitions = json.decode(response.body);
+
+      if (definitions.isNotEmpty) {
+        final pronunciation = definitions[0]['hwi']['prs'][0]['mw'];
+        return pronunciation;
       }
-    } catch (e) {
-      return e.toString();
     }
+
+    print('Error: ${response.statusCode}');
     return null;
   }
 
