@@ -16,7 +16,6 @@ class _HomeScreenState extends State<HomeScreen> {
   late String dictionaryType;
   List<String> suggestions = [];
   TextEditingController searchController = TextEditingController();
-  
 
   @override
   void initState() {
@@ -33,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
     dictionaryType = "EV";
-  
+
     super.initState();
   }
 
@@ -164,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 children: [
                   SizedBox(
-                    width: 450,
+                    width: 340,
                     height: 35,
                     child: TypeAheadField(
                       textFieldConfiguration: TextFieldConfiguration(

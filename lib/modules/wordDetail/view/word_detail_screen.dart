@@ -51,7 +51,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                     iconSize: 30,
                   ),
                   SizedBox(
-                    width: 430,
+                    width: 320,
                     height: 35,
                     child: TypeAheadField(
                       textFieldConfiguration: TextFieldConfiguration(
@@ -77,7 +77,12 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                         );
                       },
                       onSuggestionSelected: (suggestion) {
-                        print(suggestion);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  WordDetailScreen(word: suggestion)),
+                        );
                       },
                       suggestionsBoxDecoration: SuggestionsBoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -94,12 +99,16 @@ class _WordDetailScreenState extends State<WordDetailScreen>
             indicatorColor: Color.fromRGBO(18, 55, 149, 0.914),
             labelColor: Color.fromRGBO(18, 55, 149, 0.914),
             unselectedLabelColor: Colors.grey.shade400,
+            isScrollable: true,
             tabs: const [
-              Tab(
-                child: Text(
-                  'English - Vietnamese',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
+              SizedBox(
+                width: 140,
+                child: Tab(
+                  child: Text(
+                    'English - Vietnamese',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
@@ -110,10 +119,27 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                     fontWeight: FontWeight.w700,
                   ),
                 ),
+                
               ),
               Tab(
                 child: Text(
                   'Note',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              Tab(
+                child: Text(
+                  '',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              Tab(
+                child: Text(
+                  '',
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                   ),
@@ -128,9 +154,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                 WordMeaningWidget(
                   word: widget.word,
                 ),
-                WordNetWidget(
-                  word: widget.word
-                ),
+                WordNetWidget(word: widget.word),
                 NoteWidget()
               ],
             ),
