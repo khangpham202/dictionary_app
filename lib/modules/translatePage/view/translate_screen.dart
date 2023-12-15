@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:gap/gap.dart';
 import 'package:training/components/language_selector.dart';
 import 'package:training/core/common/model/translation.dart';
 import 'package:training/core/enum/country.dart';
 import 'package:training/modules/translatePage/bloc/language/language_bloc.dart';
 import 'package:training/util/api_service.dart';
+import 'package:training/util/speech.dart';
 
 class TranslateScreen extends StatefulWidget {
   const TranslateScreen({super.key});
@@ -39,16 +39,6 @@ class _TranslateScreenState extends State<TranslateScreen> {
       selectedSourceLanguage = selectedTargetLanguage;
       selectedTargetLanguage = temp;
     });
-  }
-
-  void _playTts(String language, String sentence) async {
-    FlutterTts tts = FlutterTts();
-    await tts.setLanguage(language);
-    (language == 'en')
-        ? await tts.setSpeechRate(0.5)
-        : await tts.setSpeechRate(0.8);
-    await tts.setPitch(1);
-    await tts.speak(sentence);
   }
 
   @override
@@ -136,7 +126,8 @@ class _TranslateScreenState extends State<TranslateScreen> {
                       Gap(10),
                       GestureDetector(
                         onTap: () {
-                          _playTts(selectedSourceLanguage.countryCode,
+                          TextToSpeechService().playTts(
+                              selectedSourceLanguage.countryCode,
                               translation.originalSentence);
                         },
                         child: Icon(
@@ -175,7 +166,8 @@ class _TranslateScreenState extends State<TranslateScreen> {
                       Gap(10),
                       GestureDetector(
                         onTap: () {
-                          _playTts(selectedTargetLanguage.countryCode,
+                          TextToSpeechService().playTts(
+                              selectedTargetLanguage.countryCode,
                               translation.translatedSentence);
                         },
                         child: Icon(

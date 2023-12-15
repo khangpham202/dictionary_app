@@ -35,7 +35,7 @@ class NavigationBottomBarState extends State<NavigationBottomBar> {
             _currentIndex = index;
           });
         },
-        children:  [
+        children:  const [
           HomeScreen(),
           TranslateScreen(),
           ProfileScreen(),

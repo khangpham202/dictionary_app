@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:training/modules/auth/view/login_screen.dart';
-import 'package:training/widget/navigation.dart';
+import 'package:training/components/navigation.dart';
 import 'package:email_validator/email_validator.dart';
 
 class SignUpScreen extends StatefulWidget {
