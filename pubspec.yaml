@@ -71,7 +71,7 @@ flutter:
     - assets/
     - assets/image/intro/
     - assets/image/logo/
-    - assets/database/dict_bilingual.db
+    - assets/data/
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a
