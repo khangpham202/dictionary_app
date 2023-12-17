@@ -35,45 +35,8 @@ class TranslationService {
   }
 }
 
-class WordSuggestion {
-  Future<List<String>> getSuggestions(String word) async {
-    final response =
-        await http.get(Uri.parse('https://api.datamuse.com/sug?s=$word'));
-
-    if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      List<String> suggestionsList =
-          data.map((dynamic item) => item['word'].toString()).toList();
-      return suggestionsList;
-    } else {
-      throw Exception('Failed to load suggestions');
-    }
-  }
-}
-
 class WordDetail {
-  Future<String?> fetchPronunciation(String word) async {
-    const String apiKey = '72a6cffe-88e8-42b4-b631-358d181aa2bd';
-
-    final response = await http.get(
-      Uri.parse(
-          'https://dictionaryapi.com/api/v3/references/sd3/json/$word?key=$apiKey'),
-    );
-
-    if (response.statusCode == 200) {
-      final List<dynamic> definitions = json.decode(response.body);
-
-      if (definitions.isNotEmpty) {
-        final pronunciation = definitions[0]['hwi']['prs'][0]['mw'];
-        return pronunciation;
-      }
-    }
-
-    print('Error: ${response.statusCode}');
-    return null;
-  }
-
-  Future<List<Map<String, dynamic>>?> fetchMeanings(String word) async {
+  Future<List<Map<String, dynamic>>?> getWordNet(String word) async {
     final apiUrl = "https://api.dictionaryapi.dev/api/v2/entries/en/$word";
 
     try {
