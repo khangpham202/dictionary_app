@@ -44,6 +44,7 @@ dependencies:
   flutter_tts: ^3.8.5
   sqflite: ^2.3.0
   path: ^1.8.3
+  connectivity_plus: ^5.0.2
 
 dev_dependencies:
   flutter_test:
