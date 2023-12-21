@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:gap/gap.dart';
 import 'package:training/components/blur_image_container.dart';
+import 'package:training/modules/home/view/conversation_screen.dart';
 import 'package:training/modules/home/view/essential_word_screen.dart';
+import 'package:training/modules/home/view/tip_screen.dart';
 import 'package:training/modules/wordDetail/view/word_detail_screen.dart';
 import 'package:training/util/data_service.dart';
 
@@ -247,7 +249,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 Gap(20),
                 BlurredImageContainer(
                   onTap: () {
-                    print('Container tapped!');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ConversationScreen()),
+                    );
                   },
                   imagePath: 'assets/image/homescreen/conversation.jpg',
                   text: 'Conversation',
@@ -255,7 +261,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 Gap(20),
                 BlurredImageContainer(
                   onTap: () {
-                    print('Container tapped!');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TipLeaningScreen()),
+                    );
                   },
                   imagePath: 'assets/image/homescreen/motivation.png',
                   text: 'Leaning Tips and Motivation',
