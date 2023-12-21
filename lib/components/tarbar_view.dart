@@ -33,7 +33,7 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
             child: CircularProgressIndicator(),
           );
         } else if (snapshot.hasError) {
-          return Center(child: Text('No data'));
+          return Center(child: Text(''));
         } else {
           Word data = snapshot.data!;
 
@@ -133,22 +133,15 @@ class WordNetWidget extends StatefulWidget {
 
 class _WordNetWidgetState extends State<WordNetWidget> {
   List<Map<String, dynamic>>? meanings;
-  late Word _data;
   Future<bool> checkInternet() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     return connectivityResult != ConnectivityResult.none;
   }
 
-  void getWordData() async {
+  Future<Word> getWordData() async {
     DatabaseHelper databaseHelper = DatabaseHelper();
     Word? result = await databaseHelper.getWordData(widget.word);
-    if (result != null) {
-      setState(() {
-        _data = result;
-      });
-    } else {
-      return null;
-    }
+    return result!;
   }
 
   Future<void> getWordNet() async {
@@ -161,7 +154,6 @@ class _WordNetWidgetState extends State<WordNetWidget> {
   @override
   void initState() {
     super.initState();
-    getWordData();
     getWordNet();
   }
 
@@ -171,7 +163,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
         future: checkInternet(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Text('loading...');
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           } else {
@@ -181,7 +173,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                   ? SizedBox(
                       height: 10,
                       width: 20,
-                      child: CircularProgressIndicator(),
+                      child: Text(''),
                     )
                   : Padding(
                       padding: const EdgeInsets.all(15),
@@ -214,28 +206,37 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                             ],
                           ),
                           Gap(10),
-                          Row(
-                            children: [
-                              Text(
-                                _data.pronounce,
-                                style: TextStyle(
-                                    color: Color.fromARGB(255, 111, 104, 104),
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 20),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  TextToSpeechService()
-                                      .playTts('en', widget.word);
-                                },
-                                child: Icon(
-                                  Icons.volume_up_outlined,
-                                  color: Color.fromRGBO(99, 115, 156, 0.914),
-                                  size: 25,
-                                ),
-                              ),
-                            ],
-                          ),
+                          FutureBuilder(
+                              future: getWordData(),
+                              builder: (context, snapshot) {
+                                Word? data = snapshot.data;
+                                return data != null
+                                    ? Row(
+                                        children: [
+                                          Text(
+                                            data.pronounce,
+                                            style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    255, 111, 104, 104),
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 20),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              TextToSpeechService()
+                                                  .playTts('en', widget.word);
+                                            },
+                                            child: Icon(
+                                              Icons.volume_up_outlined,
+                                              color: Color.fromRGBO(
+                                                  99, 115, 156, 0.914),
+                                              size: 25,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : Gap(0);
+                              }),
                           Gap(10),
                           Expanded(
                             child: meanings != null
@@ -380,7 +381,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                       );
                                     },
                                   )
-                                : Text("Loading..."),
+                                : Text(""),
                           ),
                         ],
                       ),
