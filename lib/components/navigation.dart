@@ -1,5 +1,5 @@
-import 'package:training/modules/search/view/search_screen.dart';
 import 'package:training/modules/profile/view/profile_screen.dart';
+import 'package:training/modules/home/view/home_screen.dart';
 import 'package:training/modules/translatePage/view/translate_screen.dart';
 import 'package:flutter/material.dart';
 

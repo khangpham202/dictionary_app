@@ -58,8 +58,33 @@ class DatabaseHelper {
 
 class WordSuggestion {
   Future<List<String>> getEnglishWord() async {
-    String data = await rootBundle.loadString('assets/data/en_vi_109k.txt');
+    String data = await rootBundle.loadString('assets/data/en_sug_109k.txt');
     List<String> suggestions = LineSplitter.split(data).toList();
     return suggestions;
   }
+}
+
+Future<Map<String, List<Map<String, dynamic>>>> loadVocabulary() async {
+  String jsonString =
+      await rootBundle.loadString('assets/data/essential_words.json');
+
+  Map<String, dynamic> jsonData = json.decode(jsonString);
+
+  Map<String, List<Map<String, dynamic>>> vocabulary = {};
+
+  for (String key in jsonData.keys) {
+    List<dynamic> itemsJson = jsonData[key];
+
+    List<Map<String, dynamic>> items = itemsJson.map((json) {
+      return {
+        'english': json['english'],
+        'phonetic': json['phonetic'],
+        'vietnamese': json['vietnamese'],
+      };
+    }).toList();
+
+    vocabulary[key] = items;
+  }
+
+  return vocabulary;
 }
