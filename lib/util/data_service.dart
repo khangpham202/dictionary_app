@@ -64,7 +64,7 @@ class WordSuggestion {
   }
 }
 
-Future<Map<String, List<Map<String, dynamic>>>> loadVocabulary() async {
+Future<Map<String, List<Map<String, dynamic>>>> getEssentialWord() async {
   String jsonString =
       await rootBundle.loadString('assets/data/essential_words.json');
 
@@ -87,4 +87,55 @@ Future<Map<String, List<Map<String, dynamic>>>> loadVocabulary() async {
   }
 
   return vocabulary;
+}
+
+Future<List<Map<String, dynamic>>> getTipLeanrning() async {
+  String jsonString =
+      await rootBundle.loadString('assets/data/tips_learning_English.json');
+
+  Map<String, dynamic> jsonData = json.decode(jsonString);
+
+  List<dynamic> itemsJson = jsonData['tips_to_learn_english'];
+
+  List<Map<String, dynamic>> items = itemsJson.map((json) {
+    return {
+      'english': json['english'],
+      'vietnamese': json['vietnamese'],
+    };
+  }).toList();
+
+  return items;
+}
+
+Future<List<Map<String, dynamic>>> getConversationPhrase() async {
+  String jsonString =
+      await rootBundle.loadString('assets/data/conversation_phrases.json');
+
+  List<dynamic> jsonData = json.decode(jsonString);
+
+  List<Map<String, dynamic>> items = jsonData.map((json) {
+    return {
+      'english': json['english'],
+      'phonetic': json['phonetic'],
+      'vietnamese': json['vietnamese'],
+    };
+  }).toList();
+
+  return items;
+}
+
+Future<List<Map<String, dynamic>>> getConversationQuestion() async {
+  String jsonString =
+      await rootBundle.loadString('assets/data/conversation_question.json');
+
+  List<dynamic> jsonData = json.decode(jsonString);
+
+  List<Map<String, dynamic>> items = jsonData.map((json) {
+    return {
+      'english': json['English'],
+      'vietnamese': json['Vietnamese'],
+    };
+  }).toList();
+
+  return items;
 }
