@@ -50,32 +50,34 @@ class _TranslateScreenState extends State<TranslateScreen> {
         Container(
           color: Color.fromRGBO(18, 55, 149, 0.914),
           height: MediaQuery.of(context).size.height / 12,
-          child: Center(
-              child: Stack(
+          child: Stack(
             alignment: Alignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  LanguageSelector(
-                    selectedLanguage: selectedSourceLanguage,
-                    isSourceLanguage: true,
-                    onLanguageChanged: (newLanguage) {
-                      setState(() {
-                        selectedSourceLanguage = newLanguage;
-                      });
-                    },
-                  ),
-                  LanguageSelector(
-                    selectedLanguage: selectedTargetLanguage,
-                    isSourceLanguage: false,
-                    onLanguageChanged: (newLanguage) {
-                      setState(() {
-                        selectedTargetLanguage = newLanguage;
-                      });
-                    },
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    LanguageSelector(
+                      selectedLanguage: selectedSourceLanguage,
+                      isSourceLanguage: true,
+                      onLanguageChanged: (newLanguage) {
+                        setState(() {
+                          selectedSourceLanguage = newLanguage;
+                        });
+                      },
+                    ),
+                    LanguageSelector(
+                      selectedLanguage: selectedTargetLanguage,
+                      isSourceLanguage: false,
+                      onLanguageChanged: (newLanguage) {
+                        setState(() {
+                          selectedTargetLanguage = newLanguage;
+                        });
+                      },
+                    )
+                  ],
+                ),
               ),
               GestureDetector(
                 onTap: swapLanguage,
@@ -86,7 +88,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
                 ),
               ),
             ],
-          )),
+          ),
         ),
         Expanded(
           child: ListView.builder(
