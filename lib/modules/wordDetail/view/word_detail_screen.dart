@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:gap/gap.dart';
-import 'package:training/util/api_service.dart';
 import 'package:training/components/tarbar_view.dart';
+import 'package:training/util/data_service.dart';
 
 class WordDetailScreen extends StatefulWidget {
   final String word;
@@ -69,7 +69,14 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                         ),
                       ),
                       suggestionsCallback: (pattern) async {
-                        return WordSuggestion().getSuggestions(pattern);
+                        return await WordSuggestion()
+                            .getEnglishWord()
+                            .then((List<String> suggestions) {
+                          return suggestions
+                              .where((suggestion) =>
+                                  suggestion.startsWith(pattern))
+                              .toList();
+                        });
                       },
                       itemBuilder: (context, suggestion) {
                         return ListTile(
@@ -119,7 +126,6 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                
               ),
               Tab(
                 child: Text(
