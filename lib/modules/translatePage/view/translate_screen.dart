@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:gap/gap.dart';
 import 'package:training/components/language_selector.dart';
 import 'package:training/core/common/model/translation.dart';
 import 'package:training/core/enum/country.dart';
 import 'package:training/modules/translatePage/bloc/language/language_bloc.dart';
 import 'package:training/util/api_service.dart';
+import 'package:training/util/speech.dart';
 
 class TranslateScreen extends StatefulWidget {
   const TranslateScreen({super.key});
@@ -41,16 +41,6 @@ class _TranslateScreenState extends State<TranslateScreen> {
     });
   }
 
-  void _playTts(String language, String sentence) async {
-    FlutterTts tts = FlutterTts();
-    await tts.setLanguage(language);
-    (language == 'en')
-        ? await tts.setSpeechRate(0.5)
-        : await tts.setSpeechRate(0.8);
-    await tts.setPitch(1);
-    await tts.speak(sentence);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,32 +50,34 @@ class _TranslateScreenState extends State<TranslateScreen> {
         Container(
           color: Color.fromRGBO(18, 55, 149, 0.914),
           height: MediaQuery.of(context).size.height / 12,
-          child: Center(
-              child: Stack(
+          child: Stack(
             alignment: Alignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  LanguageSelector(
-                    selectedLanguage: selectedSourceLanguage,
-                    isSourceLanguage: true,
-                    onLanguageChanged: (newLanguage) {
-                      setState(() {
-                        selectedSourceLanguage = newLanguage;
-                      });
-                    },
-                  ),
-                  LanguageSelector(
-                    selectedLanguage: selectedTargetLanguage,
-                    isSourceLanguage: false,
-                    onLanguageChanged: (newLanguage) {
-                      setState(() {
-                        selectedTargetLanguage = newLanguage;
-                      });
-                    },
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    LanguageSelector(
+                      selectedLanguage: selectedSourceLanguage,
+                      isSourceLanguage: true,
+                      onLanguageChanged: (newLanguage) {
+                        setState(() {
+                          selectedSourceLanguage = newLanguage;
+                        });
+                      },
+                    ),
+                    LanguageSelector(
+                      selectedLanguage: selectedTargetLanguage,
+                      isSourceLanguage: false,
+                      onLanguageChanged: (newLanguage) {
+                        setState(() {
+                          selectedTargetLanguage = newLanguage;
+                        });
+                      },
+                    )
+                  ],
+                ),
               ),
               GestureDetector(
                 onTap: swapLanguage,
@@ -96,7 +88,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
                 ),
               ),
             ],
-          )),
+          ),
         ),
         Expanded(
           child: ListView.builder(
@@ -136,7 +128,8 @@ class _TranslateScreenState extends State<TranslateScreen> {
                       Gap(10),
                       GestureDetector(
                         onTap: () {
-                          _playTts(selectedSourceLanguage.countryCode,
+                          TextToSpeechService().playTts(
+                              selectedSourceLanguage.countryCode,
                               translation.originalSentence);
                         },
                         child: Icon(
@@ -175,7 +168,8 @@ class _TranslateScreenState extends State<TranslateScreen> {
                       Gap(10),
                       GestureDetector(
                         onTap: () {
-                          _playTts(selectedTargetLanguage.countryCode,
+                          TextToSpeechService().playTts(
+                              selectedTargetLanguage.countryCode,
                               translation.translatedSentence);
                         },
                         child: Icon(
@@ -201,8 +195,9 @@ class _TranslateScreenState extends State<TranslateScreen> {
                 setState(() {
                   isLoading = true;
                 });
-                late String isoSourceCountryCode, isoTargetCountryCode;
-                late String translatedSentence;
+                late String isoSourceCountryCode,
+                    isoTargetCountryCode,
+                    translatedSentence;
                 late Translation translation;
                 String originalSentence = originalSentenceController.text;
                 String selectedSourceLanguageCode =

@@ -35,18 +35,46 @@ class TranslationService {
   }
 }
 
-class WordSuggestion {
-  Future<List<String>> getSuggestions(String query) async {
-    final response =
-        await http.get(Uri.parse('https://api.datamuse.com/sug?s=$query'));
+class WordDetail {
+  Future<List<Map<String, dynamic>>?> getWordNet(String word) async {
+    final apiUrl = "https://api.dictionaryapi.dev/api/v2/entries/en/$word";
 
-    if (response.statusCode == 200) {
-      List<dynamic> jsonResponse = json.decode(response.body);
-      List<String> suggestionsList =
-          jsonResponse.map((dynamic item) => item['word'].toString()).toList();
-      return suggestionsList;
-    } else {
-      throw Exception('Failed to load suggestions');
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        if (data is List && data.isNotEmpty) {
+          final firstEntry = data[0];
+
+          if (firstEntry.containsKey('meanings')) {
+            return List<Map<String, dynamic>>.from(
+                firstEntry['meanings'].map((meaning) => {
+                      'partOfSpeech': meaning['partOfSpeech'],
+                      'definitions': List<Map<String, dynamic>>.from(
+                          meaning['definitions'].map((def) => {
+                                'definition': def['definition'],
+                                'synonyms':
+                                    List<String>.from(def['synonyms'] ?? []),
+                                'antonyms':
+                                    List<String>.from(def['antonyms'] ?? []),
+                              })),
+                      'synonyms': List<String>.from(meaning['synonyms'] ?? []),
+                      'antonyms': List<String>.from(meaning['antonyms'] ?? []),
+                    }));
+          } else {
+            print("No meanings available");
+          }
+        } else {
+          print("Invalid response format");
+        }
+      } else {
+        print("Error: ${response.reasonPhrase}");
+      }
+    } catch (e) {
+      print("Error: $e");
     }
+
+    return null;
   }
 }

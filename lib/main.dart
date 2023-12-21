@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:training/modules/auth/view/login_screen.dart';
-import 'package:training/modules/auth/view/sign_up_screen.dart';
-import 'package:training/modules/translatePage/view/translate_screen.dart';
-import 'package:training/widget/navigation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:training/components/tarbar_view.dart';
+import 'package:training/modules/intro/note.dart';
+import 'package:training/modules/translatePage/bloc/language/language_bloc.dart';
+import 'package:training/components/navigation.dart';
 
-import 'modules/intro/welcome_screen.dart';
-
-void main() => runApp(MyApp());
+void mainExampleApp() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // debugAutoStartRouteName = testOpenRoute;
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -15,10 +18,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // home: NavigationBottomBar(
-      //   indexScreen: 2,
+      // home: BlocProvider(
+      //   create: (context) => LanguageBloc(),
+      //   child: NavigationBottomBar(
+      //     indexScreen: 0,
+      //   ),
       // ),
-      home: WelcomeScreen(),
+      // home: WordDetailScreen(
+      //   word: '',
+      // ),
+      // home: BlocProvider(
+      //   create: (context) => LanguageBloc(),
+      //   child: DropdownMenuApp(),
+      // ),
+      home: DropdownMenuApp(),
+      // home: Scaffold(body: WordNetWidget(word: 'orange')),
     );
   }
 }

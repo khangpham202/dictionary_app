@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:gap/gap.dart';
-import 'package:training/util/api_service.dart';
-import 'package:training/widget/tarbar_view.dart';
+import 'package:training/components/tarbar_view.dart';
+import 'package:training/util/data_service.dart';
 
 class WordDetailScreen extends StatefulWidget {
   final String word;
@@ -51,7 +51,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                     iconSize: 30,
                   ),
                   SizedBox(
-                    width: 430,
+                    width: 320,
                     height: 35,
                     child: TypeAheadField(
                       textFieldConfiguration: TextFieldConfiguration(
@@ -69,7 +69,14 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                         ),
                       ),
                       suggestionsCallback: (pattern) async {
-                        return WordSuggestion().getSuggestions(pattern);
+                        return await WordSuggestion()
+                            .getEnglishWord()
+                            .then((List<String> suggestions) {
+                          return suggestions
+                              .where((suggestion) =>
+                                  suggestion.startsWith(pattern))
+                              .toList();
+                        });
                       },
                       itemBuilder: (context, suggestion) {
                         return ListTile(
@@ -77,7 +84,12 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                         );
                       },
                       onSuggestionSelected: (suggestion) {
-                        print(suggestion);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  WordDetailScreen(word: suggestion)),
+                        );
                       },
                       suggestionsBoxDecoration: SuggestionsBoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -94,12 +106,16 @@ class _WordDetailScreenState extends State<WordDetailScreen>
             indicatorColor: Color.fromRGBO(18, 55, 149, 0.914),
             labelColor: Color.fromRGBO(18, 55, 149, 0.914),
             unselectedLabelColor: Colors.grey.shade400,
+            isScrollable: true,
             tabs: const [
-              Tab(
-                child: Text(
-                  'English - Vietnamese',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
+              SizedBox(
+                width: 140,
+                child: Tab(
+                  child: Text(
+                    'English - Vietnamese',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
@@ -119,6 +135,22 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                   ),
                 ),
               ),
+              Tab(
+                child: Text(
+                  '',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              Tab(
+                child: Text(
+                  '',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
             ],
           ),
           Expanded(
@@ -128,7 +160,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                 WordMeaningWidget(
                   word: widget.word,
                 ),
-                WordNetWidget(),
+                WordNetWidget(word: widget.word),
                 NoteWidget()
               ],
             ),
