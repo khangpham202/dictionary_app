@@ -30,7 +30,7 @@ class ConversationScreen extends StatelessWidget {
                             ListTile(
                               title: Row(
                                 children: [
-                                  Text(item['english']),
+                                  Expanded(child: Text(item['english'])),
                                   GestureDetector(
                                     onTap: () {
                                       TextToSpeechService()
@@ -49,7 +49,7 @@ class ConversationScreen extends StatelessWidget {
                                   Row(
                                     children: [
                                       Icon(Icons.arrow_right),
-                                      Text(item['vietnamese']),
+                                      Expanded(child: Text(item['vietnamese'])),
                                     ],
                                   ),
                                 ],
@@ -81,7 +81,7 @@ class ConversationScreen extends StatelessWidget {
                             ListTile(
                               title: Row(
                                 children: [
-                                  Text(item['english']),
+                                  Expanded(child: Text(item['english'])),
                                   GestureDetector(
                                     onTap: () {
                                       TextToSpeechService()
@@ -98,7 +98,7 @@ class ConversationScreen extends StatelessWidget {
                                   Row(
                                     children: [
                                       Icon(Icons.arrow_right),
-                                      Text(item['vietnamese']),
+                                      Expanded(child: Text(item['vietnamese'])),
                                     ],
                                   ),
                                 ],
