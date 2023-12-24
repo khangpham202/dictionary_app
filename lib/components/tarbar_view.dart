@@ -7,24 +7,21 @@ import 'package:training/util/speech.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 class WordMeaningWidget extends StatefulWidget {
-  final String word;
-  const WordMeaningWidget({super.key, required this.word});
+  final String word, dictionaryType;
+  const WordMeaningWidget(
+      {super.key, required this.word, required this.dictionaryType});
 
   @override
   State<WordMeaningWidget> createState() => _WordMeaningWidgetState();
 }
 
 class _WordMeaningWidgetState extends State<WordMeaningWidget> {
-  Future<Word> getWordData() async {
-    DatabaseHelper databaseHelper = DatabaseHelper();
-    Word? result = await databaseHelper.getWordData(widget.word);
-    return result!;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Word>(
-      future: getWordData(),
+    return FutureBuilder<Word?>(
+      future: widget.dictionaryType == "EV"
+          ? DatabaseHelper().getEVWordData(widget.word)
+          : DatabaseHelper().getVEWordData(widget.word),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return SizedBox(
@@ -138,9 +135,9 @@ class _WordNetWidgetState extends State<WordNetWidget> {
     return connectivityResult != ConnectivityResult.none;
   }
 
-  Future<Word> getWordData() async {
+  Future<Word> getEnglishWordData() async {
     DatabaseHelper databaseHelper = DatabaseHelper();
-    Word? result = await databaseHelper.getWordData(widget.word);
+    Word? result = await databaseHelper.getEVWordData(widget.word);
     return result!;
   }
 
@@ -149,6 +146,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
     setState(() {
       meanings = result;
     });
+    print(meanings);
   }
 
   @override
@@ -170,11 +168,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
             bool isConnected = snapshot.data ?? false;
             if (isConnected) {
               return meanings == null
-                  ? SizedBox(
-                      height: 10,
-                      width: 20,
-                      child: Text(''),
-                    )
+                  ? SizedBox(height: 10, width: 20, child: Text(''))
                   : Padding(
                       padding: const EdgeInsets.all(15),
                       child: Column(
@@ -207,7 +201,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                           ),
                           Gap(10),
                           FutureBuilder(
-                              future: getWordData(),
+                              future: getEnglishWordData(),
                               builder: (context, snapshot) {
                                 Word? data = snapshot.data;
                                 return data != null

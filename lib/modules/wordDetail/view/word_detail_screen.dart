@@ -6,7 +6,9 @@ import 'package:training/util/data_service.dart';
 
 class WordDetailScreen extends StatefulWidget {
   final String word;
-  const WordDetailScreen({super.key, required this.word});
+  final String dictionaryType;
+  const WordDetailScreen(
+      {super.key, required this.word, required this.dictionaryType});
   @override
   State<WordDetailScreen> createState() => _WordDetailScreenState();
 }
@@ -87,8 +89,10 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  WordDetailScreen(word: suggestion)),
+                              builder: (context) => WordDetailScreen(
+                                    word: suggestion,
+                                    dictionaryType: widget.dictionaryType,
+                                  )),
                         );
                       },
                       suggestionsBoxDecoration: SuggestionsBoxDecoration(
@@ -107,12 +111,14 @@ class _WordDetailScreenState extends State<WordDetailScreen>
             labelColor: Color.fromRGBO(18, 55, 149, 0.914),
             unselectedLabelColor: Colors.grey.shade400,
             isScrollable: true,
-            tabs: const [
+            tabs: [
               SizedBox(
                 width: 140,
                 child: Tab(
                   child: Text(
-                    'English - Vietnamese',
+                    widget.dictionaryType == "EV"
+                        ? 'English - Vietnamese'
+                        : 'Vietnamese - English',
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                     ),
@@ -121,7 +127,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
               ),
               Tab(
                 child: Text(
-                  'WordNet',
+                  widget.dictionaryType == "EV" ? 'WordNet' : '',
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                   ),
@@ -135,22 +141,6 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                   ),
                 ),
               ),
-              Tab(
-                child: Text(
-                  '',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              Tab(
-                child: Text(
-                  '',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
             ],
           ),
           Expanded(
@@ -159,6 +149,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
               children: [
                 WordMeaningWidget(
                   word: widget.word,
+                  dictionaryType: widget.dictionaryType,
                 ),
                 WordNetWidget(word: widget.word),
                 NoteWidget()
