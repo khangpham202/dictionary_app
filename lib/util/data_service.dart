@@ -36,10 +36,29 @@ class DatabaseHelper {
     await File(path).writeAsBytes(bytes, flush: true);
   }
 
-  Future<Word?> getWordData(String word) async {
+  Future<Word?> getEVWordData(String word) async {
     Database db = await database;
     List<Map<String, dynamic>> result = await db.query(
       'av',
+      where: 'word = ?',
+      whereArgs: [word],
+    );
+
+    if (result.isNotEmpty) {
+      return Word(
+        word: result[0]['word'],
+        pronounce: result[0]['pronounce'],
+        description: result[0]['description'],
+      );
+    } else {
+      return null;
+    }
+  }
+
+  Future<Word?> getVEWordData(String word) async {
+    Database db = await database;
+    List<Map<String, dynamic>> result = await db.query(
+      'va',
       where: 'word = ?',
       whereArgs: [word],
     );
