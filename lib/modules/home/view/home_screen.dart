@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:gap/gap.dart';
 import 'package:training/components/blur_image_container.dart';
+import 'package:training/core/common/model/word.dart';
 import 'package:training/modules/home/view/conversation_screen.dart';
 import 'package:training/modules/home/view/essential_word_screen.dart';
 import 'package:training/modules/home/view/tip_screen.dart';
 import 'package:training/modules/wordDetail/view/word_detail_screen.dart';
 import 'package:training/util/data_service.dart';
+import 'package:video_player/video_player.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late String dictionaryType;
   List<String> suggestions = [];
   TextEditingController searchController = TextEditingController();
-
+  late VideoPlayerController _controller;
   @override
   void initState() {
     super.initState();
@@ -35,11 +37,22 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
     dictionaryType = "EV";
+    _controller = VideoPlayerController.asset('assets/video/matgoc.mp4')
+      ..initialize().then((_) {
+        setState(() {});
+      });
+  }
+
+  String formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$twoDigitMinutes:$twoDigitSeconds";
   }
 
   @override
   Widget build(BuildContext context) {
-    void scaleDialog() {
+    void showDictionaryFlowOption() {
       showGeneralDialog(
         context: context,
         pageBuilder: (ctx, a1, a2) {
@@ -163,53 +176,98 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(8),
               child: Row(
                 children: [
-                  SizedBox(
-                    width: 340,
-                    height: 35,
-                    child: TypeAheadField(
-                      textFieldConfiguration: TextFieldConfiguration(
-                        controller: searchController,
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          prefixIcon: Icon(Icons.search),
-                          hintText: 'Search any words',
-                          contentPadding: EdgeInsets.symmetric(vertical: 10),
-                          border: OutlineInputBorder(),
+                  dictionaryType == "EV"
+                      ? SizedBox(
+                          width: 340,
+                          height: 35,
+                          child: TypeAheadField(
+                            textFieldConfiguration: TextFieldConfiguration(
+                              controller: searchController,
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                prefixIcon: Icon(Icons.search),
+                                hintText: 'Search any words',
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 10),
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                            suggestionsCallback: (pattern) async {
+                              return await WordSuggestion()
+                                  .getEnglishWord()
+                                  .then((List<String> suggestions) {
+                                return suggestions
+                                    .where((suggestion) =>
+                                        suggestion.startsWith(pattern))
+                                    .toList();
+                              });
+                            },
+                            itemBuilder: (context, suggestion) {
+                              return ListTile(
+                                title: Text(suggestion),
+                              );
+                            },
+                            onSuggestionSelected: (suggestion) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => WordDetailScreen(
+                                          word: suggestion,
+                                          dictionaryType: dictionaryType,
+                                        )),
+                              );
+                            },
+                            suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)),
+                            ),
+                          ),
+                        )
+                      : SizedBox(
+                          width: 340,
+                          height: 35,
+                          child: TypeAheadField(
+                            textFieldConfiguration: TextFieldConfiguration(
+                              controller: searchController,
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                prefixIcon: Icon(Icons.search),
+                                hintText: 'Search any words',
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 10),
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                            suggestionsCallback: (pattern) async {
+                              return [pattern];
+                            },
+                            itemBuilder: (context, suggestion) {
+                              return ListTile(
+                                title: Text(suggestion),
+                              );
+                            },
+                            onSuggestionSelected: (suggestion) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => WordDetailScreen(
+                                          word: suggestion,
+                                          dictionaryType: dictionaryType,
+                                        )),
+                              );
+                            },
+                            suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)),
+                            ),
+                          ),
                         ),
-                      ),
-                      suggestionsCallback: (pattern) async {
-                        return await WordSuggestion()
-                            .getEnglishWord()
-                            .then((List<String> suggestions) {
-                          return suggestions
-                              .where((suggestion) =>
-                                  suggestion.startsWith(pattern))
-                              .toList();
-                        });
-                      },
-                      itemBuilder: (context, suggestion) {
-                        return ListTile(
-                          title: Text(suggestion),
-                        );
-                      },
-                      onSuggestionSelected: (suggestion) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  WordDetailScreen(word: suggestion)),
-                        );
-                      },
-                      suggestionsBoxDecoration: SuggestionsBoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                      ),
-                    ),
-                  ),
                   Gap(5),
                   SizedBox(
                     child: GestureDetector(
-                      onTap: scaleDialog,
+                      onTap: showDictionaryFlowOption,
                       child: Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
@@ -268,8 +326,86 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   },
                   imagePath: 'assets/image/homescreen/motivation.png',
-                  text: 'Leaning Tips and Motivation',
+                  text: 'Leaning Tips',
                 ),
+                Gap(10),
+                _controller.value.isInitialized
+                    ? Column(
+                        children: [
+                          Center(
+                            child: Text(
+                              "Mất Gốc Tiếng Anh, video này dành cho bạn",
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Stack(
+                            children: [
+                              AspectRatio(
+                                aspectRatio: _controller.value.aspectRatio,
+                                child: VideoPlayer(_controller),
+                              ),
+                              Positioned.fill(
+                                bottom: 0,
+                                child: Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: AnimatedBuilder(
+                                    animation: _controller,
+                                    builder:
+                                        (BuildContext context, Widget? child) {
+                                      return Row(
+                                        children: [
+                                          IconButton(
+                                            icon: Icon(
+                                              _controller.value.isPlaying
+                                                  ? Icons.pause
+                                                  : Icons.play_arrow,
+                                            ),
+                                            color: Colors.white,
+                                            onPressed: () {
+                                              setState(() {
+                                                if (_controller
+                                                    .value.isPlaying) {
+                                                  _controller.pause();
+                                                } else {
+                                                  _controller.play();
+                                                }
+                                              });
+                                            },
+                                          ),
+                                          Text(
+                                            formatDuration(
+                                                _controller.value.position),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: VideoProgressIndicator(
+                                              _controller,
+                                              allowScrubbing: true,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 8.0),
+                                            ),
+                                          ),
+                                          Text(
+                                            formatDuration(
+                                                _controller.value.duration),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    : Container(),
               ],
             ),
           ))
