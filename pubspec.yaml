@@ -81,6 +81,7 @@ flutter:
     - assets/image/intro/
     - assets/image/logo/
     - assets/image/homescreen/
+    - assets/image/profile/
     - assets/video/
     - assets/data/
   # To add custom fonts to your application, add a fonts section here,
