@@ -263,8 +263,9 @@ class _SignUpFormState extends State<SignUpForm> {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
-        password: emailController.text.trim(),
+        password: passwordController.text.trim(),
       );
+
       final Map<String, dynamic> userData = {
         'name': nameController.text.trim(),
         'email': emailController.text.trim(),
@@ -274,9 +275,10 @@ class _SignUpFormState extends State<SignUpForm> {
           const Icon(FontAwesomeIcons.check), Colors.green);
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       await firestore
-          .collection('users')
+          .collection("users")
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .set(userData);
+      print(FirebaseAuth.instance.currentUser!.uid);
     } on FirebaseAuthException catch (e) {
       if (emailController.text.trim() == '' &&
           passwordController.text.trim() == '') {
@@ -284,7 +286,7 @@ class _SignUpFormState extends State<SignUpForm> {
             const Icon(FontAwesomeIcons.exclamation), Colors.red);
       } else {
         showCustomToast(
-            e.message!, const Icon(FontAwesomeIcons.exclamation), Colors.red);
+            e.message!, const Icon(FontAwesomeIcons .exclamation), Colors.red);
       }
     }
   }
