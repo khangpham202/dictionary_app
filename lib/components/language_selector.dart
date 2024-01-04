@@ -20,7 +20,7 @@ class LanguageSelector extends StatelessWidget {
     return BlocBuilder<LanguageBloc, LanguageState>(
       builder: (context, state) {
         return PopupMenuButton<Country>(
-          constraints: BoxConstraints(maxHeight: 400),
+          constraints: const BoxConstraints(maxHeight: 400),
           onSelected: (Country value) {
             onLanguageChanged(value);
             if (isSourceLanguage) {
@@ -39,17 +39,17 @@ class LanguageSelector extends StatelessWidget {
               );
             }).toList();
           },
-          offset: Offset(0, 30),
+          offset: const Offset(0, 30),
           child: Row(
             children: [
               Text(
                 selectedLanguage.format,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20,
                 ),
               ),
-              Icon(Icons.arrow_drop_down, color: Colors.white),
+              const Icon(Icons.arrow_drop_down, color: Colors.white),
             ],
           ),
         );

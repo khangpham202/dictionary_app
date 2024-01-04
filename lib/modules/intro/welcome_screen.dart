@@ -23,7 +23,7 @@ class WelcomeScreen extends StatelessWidget {
             height: double.infinity,
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 123,
         ),
         Positioned(
@@ -33,7 +33,7 @@ class WelcomeScreen extends StatelessWidget {
           child: Center(
             child: Column(
               children: [
-                Text(
+                const Text(
                   "Welcome to Khationry!",
                   style: TextStyle(
                     fontSize: 25,
@@ -41,10 +41,10 @@ class WelcomeScreen extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                Text(
+                const Text(
                   "The wonderful dictionary application",
                   style: TextStyle(
                     fontSize: 16,
@@ -52,29 +52,29 @@ class WelcomeScreen extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => SignUpScreen(),
+                        builder: (context) => const SignUpScreen(),
                       ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
-                    backgroundColor: Color.fromARGB(255, 150, 146, 146),
+                    backgroundColor: const Color.fromARGB(255, 150, 146, 146),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
-                      side: BorderSide(
+                      side: const BorderSide(
                         color: Colors.white,
                       ),
                     ),
-                    minimumSize: Size(170, 50),
+                    minimumSize: const Size(170, 50),
                   ),
-                  child: Text(
+                  child: const Text(
                     "Get Started",
                     style: TextStyle(
                       fontSize: 16,

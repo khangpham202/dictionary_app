@@ -28,19 +28,19 @@ class BlurredImageContainer extends StatelessWidget {
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
                   child: Container(
-                    color: Color.fromARGB(255, 98, 88, 204).withOpacity(0.1),
+                    color: const Color.fromARGB(255, 98, 88, 204).withOpacity(0.1),
                     child: Center(
                       child: Text(
                         text,
                         style: TextStyle(
-                          color: Color.fromARGB(255, 248, 248, 248),
+                          color: const Color.fromARGB(255, 248, 248, 248),
                           fontSize: 28, 
                           fontWeight: FontWeight.bold,
                           shadows: [
                             Shadow(
                               blurRadius: 5,
                               color: Colors.black.withOpacity(0.7),
-                              offset: Offset(1, 1),
+                              offset: const Offset(1, 1),
                             ),
                           ],
                         ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:gap/gap.dart';
 import 'package:training/components/blur_image_container.dart';
-import 'package:training/core/common/model/word.dart';
 import 'package:training/modules/home/view/conversation_screen.dart';
 import 'package:training/modules/home/view/essential_word_screen.dart';
 import 'package:training/modules/home/view/tip_screen.dart';
@@ -26,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    selectedItemColor = Color.fromARGB(255, 19, 21, 123);
+    selectedItemColor = const Color.fromARGB(255, 19, 21, 123);
     searchController.addListener(() {
       if (searchController.text.isNotEmpty) {
         WordSuggestion().getEnglishWord().then((suggestionsList) {
@@ -70,8 +69,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.grey.shade200,
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
+                    child: const Padding(
+                      padding: EdgeInsets.all(8),
                       child: Center(
                         child: Text(
                           "Dictionaries",
@@ -96,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           setState(() {
                             dictionaryType = "EV";
                             selectedItemColor =
-                                Color.fromARGB(255, 19, 21, 123);
+                                const Color.fromARGB(255, 19, 21, 123);
                           });
                         }
                         Navigator.of(context).pop();
@@ -104,25 +103,25 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         children: [
                           Container(
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: Color.fromARGB(255, 19, 21, 123),
                               ),
-                              padding: EdgeInsets.all(5),
+                              padding: const EdgeInsets.all(5),
                               child: Text(
                                 dictionaryType,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
                               )),
-                          Gap(10),
-                          Text('English - Vietnamese')
+                          const Gap(10),
+                          const Text('English - Vietnamese')
                         ],
                       ),
                     ),
-                    Divider(),
+                    const Divider(),
                     GestureDetector(
                       onTap: () {
                         if (dictionaryType == "VE") {
@@ -132,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           setState(() {
                             dictionaryType = "VE";
                             selectedItemColor =
-                                Color.fromARGB(255, 182, 11, 11);
+                                const Color.fromARGB(255, 182, 11, 11);
                           });
                         }
                         Navigator.of(context).pop();
@@ -140,12 +139,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         children: [
                           Container(
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: Color.fromARGB(255, 182, 11, 11),
                               ),
-                              padding: EdgeInsets.all(5),
-                              child: Text(
+                              padding: const EdgeInsets.all(5),
+                              child: const Text(
                                 'VE',
                                 style: TextStyle(
                                   color: Colors.white,
@@ -153,8 +152,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               )),
-                          Gap(10),
-                          Text('Vietnamese - English')
+                          const Gap(10),
+                          const Text('Vietnamese - English')
                         ],
                       ),
                     ),
@@ -170,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Column(children: [
           Container(
-            color: Color.fromRGBO(18, 55, 149, 0.914),
+            color: const Color.fromRGBO(18, 55, 149, 0.914),
             height: MediaQuery.of(context).size.height / 11,
             child: Padding(
               padding: const EdgeInsets.all(8),
@@ -183,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: TypeAheadField(
                             textFieldConfiguration: TextFieldConfiguration(
                               controller: searchController,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 fillColor: Colors.white,
                                 filled: true,
                                 prefixIcon: Icon(Icons.search),
@@ -218,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         )),
                               );
                             },
-                            suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                            suggestionsBoxDecoration: const SuggestionsBoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(5)),
                             ),
@@ -230,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: TypeAheadField(
                             textFieldConfiguration: TextFieldConfiguration(
                               controller: searchController,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 fillColor: Colors.white,
                                 filled: true,
                                 prefixIcon: Icon(Icons.search),
@@ -258,13 +257,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                         )),
                               );
                             },
-                            suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                            suggestionsBoxDecoration: const SuggestionsBoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(5)),
                             ),
                           ),
                         ),
-                  Gap(5),
+                  const Gap(5),
                   SizedBox(
                     child: GestureDetector(
                       onTap: showDictionaryFlowOption,
@@ -273,10 +272,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             shape: BoxShape.circle,
                             color: selectedItemColor,
                           ),
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           child: Text(
                             dictionaryType,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -290,7 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Expanded(
               child: Padding(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: ListView(
               children: [
                 BlurredImageContainer(
@@ -298,41 +297,41 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => EssentialWordScreen()),
+                          builder: (context) => const EssentialWordScreen()),
                     );
                   },
                   imagePath: 'assets/image/homescreen/vocab.jpg',
                   text: 'Essential Word',
                 ),
-                Gap(20),
+                const Gap(20),
                 BlurredImageContainer(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ConversationScreen()),
+                          builder: (context) => const ConversationScreen()),
                     );
                   },
                   imagePath: 'assets/image/homescreen/conversation.jpg',
                   text: 'Conversation',
                 ),
-                Gap(20),
+                const Gap(20),
                 BlurredImageContainer(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => TipLeaningScreen()),
+                          builder: (context) => const TipLeaningScreen()),
                     );
                   },
                   imagePath: 'assets/image/homescreen/motivation.png',
                   text: 'Leaning Tips',
                 ),
-                Gap(10),
+                const Gap(10),
                 _controller.value.isInitialized
                     ? Column(
                         children: [
-                          Center(
+                          const Center(
                             child: Text(
                               "Mất Gốc Tiếng Anh, video này dành cho bạn",
                               style: TextStyle(
@@ -376,7 +375,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           Text(
                                             formatDuration(
                                                 _controller.value.position),
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               color: Colors.white,
                                             ),
                                           ),
@@ -384,14 +383,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                             child: VideoProgressIndicator(
                                               _controller,
                                               allowScrubbing: true,
-                                              padding: EdgeInsets.symmetric(
+                                              padding: const EdgeInsets.symmetric(
                                                   horizontal: 8.0),
                                             ),
                                           ),
                                           Text(
                                             formatDuration(
                                                 _controller.value.duration),
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               color: Colors.white,
                                             ),
                                           ),

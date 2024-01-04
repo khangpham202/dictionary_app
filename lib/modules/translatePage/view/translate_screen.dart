@@ -45,13 +45,13 @@ class _TranslateScreenState extends State<TranslateScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LanguageBloc(),
+      create: (context) => languageBloc,
       child: Scaffold(
           body: SafeArea(
               child: Column(
         children: [
           Container(
-            color: Color.fromRGBO(18, 55, 149, 0.914),
+            color: const Color.fromRGBO(18, 55, 149, 0.914),
             height: MediaQuery.of(context).size.height / 12,
             child: Stack(
               alignment: Alignment.center,
@@ -84,7 +84,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
                 ),
                 GestureDetector(
                   onTap: swapLanguage,
-                  child: Icon(
+                  child: const Icon(
                     Icons.swap_horiz,
                     color: Colors.white,
                     size: 30,
@@ -99,7 +99,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
               itemBuilder: (context, index) {
                 Translation translation = translationHistory[index];
                 return Column(children: [
-                  Gap(30),
+                  const Gap(30),
                   Text(
                     translation.translateFlow,
                     style: TextStyle(color: Colors.grey.shade700, fontSize: 15),
@@ -109,26 +109,26 @@ class _TranslateScreenState extends State<TranslateScreen> {
                     child: Row(
                       children: [
                         translation.sourceCountryLogoSrc,
-                        Gap(10),
+                        const Gap(10),
                         Container(
                           constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width - 100,
                           ),
-                          padding: EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: Colors.grey.shade200,
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: Text(
                             translation.originalSentence,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Color.fromRGBO(18, 55, 149, 0.914),
                               fontSize: 16,
                             ),
                             overflow: TextOverflow.visible,
                           ),
                         ),
-                        Gap(10),
+                        const Gap(10),
                         GestureDetector(
                           onTap: () {
                             TextToSpeechService().playTts(
@@ -149,26 +149,26 @@ class _TranslateScreenState extends State<TranslateScreen> {
                     child: Row(
                       children: [
                         translation.targetCountryLogoSrc,
-                        Gap(10),
+                        const Gap(10),
                         Container(
                           constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width - 100,
                           ),
-                          padding: EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: Color.fromRGBO(18, 55, 149, 0.914),
+                            color: const Color.fromRGBO(18, 55, 149, 0.914),
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: Text(
                             translation.translatedSentence,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
                             ),
                             overflow: TextOverflow.visible,
                           ),
                         ),
-                        Gap(10),
+                        const Gap(10),
                         GestureDetector(
                           onTap: () {
                             TextToSpeechService().playTts(
@@ -192,7 +192,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
             controller: originalSentenceController,
             decoration: InputDecoration(
               labelText: 'Type text or phase',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
               suffixIcon: GestureDetector(
                 onTap: () async {
                   setState(() {
@@ -243,8 +243,8 @@ class _TranslateScreenState extends State<TranslateScreen> {
                   originalSentenceController.clear();
                 },
                 child: isLoading
-                    ? CircularProgressIndicator()
-                    : Icon(
+                    ? const CircularProgressIndicator()
+                    : const Icon(
                         Icons.send,
                         color: Color.fromARGB(219, 39, 39, 221),
                       ),

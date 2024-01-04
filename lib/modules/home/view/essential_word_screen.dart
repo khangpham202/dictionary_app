@@ -10,7 +10,7 @@ class EssentialWordScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Essential Word'),
+          title: const Text('Essential Word'),
           centerTitle: true,
         ),
         body: FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
@@ -39,26 +39,26 @@ class EssentialWordScreen extends StatelessWidget {
                                     TextToSpeechService()
                                         .playTts('en', item['english']);
                                   },
-                                  child: Icon(Icons.volume_up),
+                                  child: const Icon(Icons.volume_up),
                                 )
                               ],
                             ),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Gap(2),
+                                const Gap(2),
                                 Text(item['phonetic']),
-                                Gap(2),
+                                const Gap(2),
                                 Row(
                                   children: [
-                                    Icon(Icons.arrow_right),
+                                    const Icon(Icons.arrow_right),
                                     Text(item['vietnamese']),
                                   ],
                                 ),
                               ],
                             ),
                           ),
-                          Divider(),
+                          const Divider(),
                         ],
                       );
                     }).toList(),
@@ -66,9 +66,9 @@ class EssentialWordScreen extends StatelessWidget {
                 },
               );
             } else if (snapshot.hasError) {
-              return Text('Error loading vocabulary');
+              return const Text('Error loading vocabulary');
             } else {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
           },
         ));

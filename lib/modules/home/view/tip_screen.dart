@@ -15,7 +15,7 @@ class _TipLeaningScreenState extends State<TipLeaningScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Leanrning Tips and Motivation'),
+          title: const Text('Leanrning Tips and Motivation'),
           centerTitle: true,
         ),
         body: FutureBuilder<List<Map<String, dynamic>>>(
@@ -41,17 +41,17 @@ class _TipLeaningScreenState extends State<TipLeaningScreen> {
                             TextToSpeechService()
                                 .playTts('en', item['english']);
                           },
-                          child: Icon(Icons.volume_up),
+                          child: const Icon(Icons.volume_up),
                         )
                       ],
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Gap(4),
+                        const Gap(4),
                         Row(
                           children: [
-                            Icon(Icons.arrow_right),
+                            const Icon(Icons.arrow_right),
                             Expanded(child: Text(item['vietnamese'])),
                           ],
                         ),
@@ -61,9 +61,9 @@ class _TipLeaningScreenState extends State<TipLeaningScreen> {
                 },
               );
             } else if (snapshot.hasError) {
-              return Text('Error loading vocabulary');
+              return const Text('Error loading vocabulary');
             } else {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
           },
         ));

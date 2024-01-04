@@ -6,7 +6,7 @@ part 'language_event.dart';
 part 'language_state.dart';
 
 class LanguageBloc extends Bloc<LanguageEvent, LanguageState> {
-  LanguageBloc() : super(LanguageSelected(Country.United_Kingdom)) {
+  LanguageBloc() : super(const LanguageSelected(Country.United_Kingdom)) {
     on<ChangeSourceLanguageEvent>((event, emit) {
       emit(LanguageSelected(event.selectedCountry));
     });

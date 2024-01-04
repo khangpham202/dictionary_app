@@ -38,7 +38,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
           child: Column(
         children: [
           Container(
-            color: Color.fromRGBO(18, 55, 149, 0.914),
+            color: const Color.fromRGBO(18, 55, 149, 0.914),
             height: MediaQuery.of(context).size.height / 11,
             child: Padding(
               padding: const EdgeInsets.all(8),
@@ -48,7 +48,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    icon: Icon(Icons.arrow_back_sharp),
+                    icon: const Icon(Icons.arrow_back_sharp),
                     color: Colors.white,
                     iconSize: 30,
                   ),
@@ -61,13 +61,13 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                         decoration: InputDecoration(
                           fillColor: Colors.white,
                           filled: true,
-                          prefixIcon: Icon(Icons.search),
+                          prefixIcon: const Icon(Icons.search),
                           hintText: widget.word,
-                          hintStyle: TextStyle(
+                          hintStyle: const TextStyle(
                             color: Colors.black,
                           ),
-                          contentPadding: EdgeInsets.symmetric(vertical: 10),
-                          border: OutlineInputBorder(),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       suggestionsCallback: (pattern) async {
@@ -95,12 +95,12 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                                   )),
                         );
                       },
-                      suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                      suggestionsBoxDecoration: const SuggestionsBoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(5)),
                       ),
                     ),
                   ),
-                  Gap(5),
+                  const Gap(5),
                 ],
               ),
             ),
@@ -109,8 +109,8 @@ class _WordDetailScreenState extends State<WordDetailScreen>
             alignment: Alignment.centerLeft,
             child: TabBar(
               controller: _tabController,
-              indicatorColor: Color.fromRGBO(18, 55, 149, 0.914),
-              labelColor: Color.fromRGBO(18, 55, 149, 0.914),
+              indicatorColor: const Color.fromRGBO(18, 55, 149, 0.914),
+              labelColor: const Color.fromRGBO(18, 55, 149, 0.914),
               unselectedLabelColor: Colors.grey.shade400,
               isScrollable: true,
               tabs: [
@@ -121,7 +121,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                       widget.dictionaryType == "EV"
                           ? 'English - Vietnamese'
                           : 'Vietnamese - English',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -130,12 +130,12 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                 Tab(
                   child: Text(
                     widget.dictionaryType == "EV" ? 'WordNet' : '',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
-                Tab(
+                const Tab(
                   child: Text(
                     'Note',
                     style: TextStyle(
@@ -155,7 +155,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                   dictionaryType: widget.dictionaryType,
                 ),
                 WordNetWidget(word: widget.word),
-                NoteWidget()
+                const NoteWidget()
               ],
             ),
           )

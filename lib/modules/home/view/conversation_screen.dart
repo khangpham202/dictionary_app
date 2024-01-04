@@ -10,7 +10,7 @@ class ConversationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Conversation'),
+          title: const Text('Conversation'),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -23,7 +23,7 @@ class ConversationScreen extends StatelessWidget {
                     List<Map<String, dynamic>> conversationPhrases =
                         snapshot.data!;
                     return ExpansionTile(
-                      title: Text("Conversation Phrase"),
+                      title: const Text("Conversation Phrase"),
                       children: conversationPhrases.map((item) {
                         return Column(
                           children: [
@@ -36,34 +36,34 @@ class ConversationScreen extends StatelessWidget {
                                       TextToSpeechService()
                                           .playTts('en', item['english']);
                                     },
-                                    child: Icon(Icons.volume_up),
+                                    child: const Icon(Icons.volume_up),
                                   )
                                 ],
                               ),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Gap(2),
+                                  const Gap(2),
                                   Text(item['phonetic']),
-                                  Gap(2),
+                                  const Gap(2),
                                   Row(
                                     children: [
-                                      Icon(Icons.arrow_right),
+                                      const Icon(Icons.arrow_right),
                                       Expanded(child: Text(item['vietnamese'])),
                                     ],
                                   ),
                                 ],
                               ),
                             ),
-                            Divider(),
+                            const Divider(),
                           ],
                         );
                       }).toList(),
                     );
                   } else if (snapshot.hasError) {
-                    return Text('Error loading vocabulary');
+                    return const Text('Error loading vocabulary');
                   } else {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   }
                 },
               ),
@@ -74,7 +74,7 @@ class ConversationScreen extends StatelessWidget {
                     List<Map<String, dynamic>> conversationPhrases =
                         snapshot.data!;
                     return ExpansionTile(
-                      title: Text("Conversation Question"),
+                      title: const Text("Conversation Question"),
                       children: conversationPhrases.map((item) {
                         return Column(
                           children: [
@@ -87,32 +87,32 @@ class ConversationScreen extends StatelessWidget {
                                       TextToSpeechService()
                                           .playTts('en', item['english']);
                                     },
-                                    child: Icon(Icons.volume_up),
+                                    child: const Icon(Icons.volume_up),
                                   )
                                 ],
                               ),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Gap(4),
+                                  const Gap(4),
                                   Row(
                                     children: [
-                                      Icon(Icons.arrow_right),
+                                      const Icon(Icons.arrow_right),
                                       Expanded(child: Text(item['vietnamese'])),
                                     ],
                                   ),
                                 ],
                               ),
                             ),
-                            Divider(),
+                            const Divider(),
                           ],
                         );
                       }).toList(),
                     );
                   } else if (snapshot.hasError) {
-                    return Text('Error loading vocabulary');
+                    return const Text('Error loading vocabulary');
                   } else {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   }
                 },
               ),

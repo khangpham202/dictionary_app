@@ -1,22 +1,12 @@
-import 'dart:convert';
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:gap/gap.dart';
-import 'package:training/core/common/model/essentialword.dart';
-import 'package:training/core/common/model/word.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:gap/gap.dart';
 // import 'package:training/util/api_service.dart';
-import 'package:training/util/data_service.dart';
 // import 'package:training/components/language_selector.dart';
 // import 'package:training/core/enum/country.dart';
 // import 'package:training/modules/translatePage/bloc/language/language_bloc.dart';
 // import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
-import 'package:training/util/speech.dart';
-import 'dart:math';
 
 class DropdownMenuApp extends StatefulWidget {
   const DropdownMenuApp({super.key});
@@ -39,15 +29,15 @@ class _DropdownMenuAppState extends State<DropdownMenuApp> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Flutter Toast"),
+          title: const Text("Flutter Toast"),
         ),
         body: Container(
-          margin: EdgeInsets.all(20),
+          margin: const EdgeInsets.all(20),
           alignment: Alignment.topCenter,
           child: Column(
             children: [
               ElevatedButton(
-                child: Text("Display Custom Toast"),
+                child: const Text("Display Custom Toast"),
                 onPressed: () {
                   showCustomToast();
                 },
@@ -64,9 +54,9 @@ class _DropdownMenuAppState extends State<DropdownMenuApp> {
         borderRadius: BorderRadius.circular(25.0),
         color: Colors.greenAccent,
       ),
-      child: Row(
+      child: const Row(
         mainAxisSize: MainAxisSize.min,
-        children: const [
+        children: [
           Icon(Icons.check),
           SizedBox(
             width: 12.0,
@@ -77,7 +67,7 @@ class _DropdownMenuAppState extends State<DropdownMenuApp> {
     );
     fToast.showToast(
       child: toast,
-      toastDuration: Duration(seconds: 3),
+      toastDuration: const Duration(seconds: 3),
     );
   }
 }
@@ -97,7 +87,7 @@ class CustomContainer extends StatelessWidget {
     return InkWell(
       onTap: () {},
       child: Container(
-        padding: EdgeInsets.only(left: 12),
+        padding: const EdgeInsets.only(left: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           color: Colors.green,
@@ -105,7 +95,7 @@ class CustomContainer extends StatelessWidget {
         height: 70,
         width: 350,
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(15),
                 bottomRight: Radius.circular(15)),
@@ -118,7 +108,7 @@ class CustomContainer extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(color: Colors.black, fontSize: 25),
+                  style: const TextStyle(color: Colors.black, fontSize: 25),
                 ),
               ],
             ),

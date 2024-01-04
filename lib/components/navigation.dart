@@ -35,19 +35,19 @@ class NavigationBottomBarState extends State<NavigationBottomBar> {
             _currentIndex = index;
           });
         },
-        children:  const [
+        children:   const [
           HomeScreen(),
           TranslateScreen(),
           ProfileScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Color.fromRGBO(18, 55, 149, 0.914),
+        selectedItemColor: const Color.fromRGBO(18, 55, 149, 0.914),
         currentIndex: _currentIndex,
         onTap: (index) {
           _pageController.animateToPage(
             index,
-            duration: Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
           );
         },
