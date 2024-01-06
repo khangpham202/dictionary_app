@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:training/modules/auth/view/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -30,24 +31,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
   //   ),
   // ),
   FirebaseAuth auth = FirebaseAuth.instance;
-  late String? name, email, password;
-  late bool isLogin;
+  late String name, email, password;
+  bool isLogin = false;
+  final user = FirebaseAuth.instance.currentUser;
   @override
   void initState() {
     super.initState();
-    isLogin = false; // Initialize isLogin to false
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user != null) {
-        setState(() {
-          isLogin = true;
-        });
-        getData(user.uid);
-      } else {
-        setState(() {
-          isLogin = false;
-        });
-      }
-    });
+    if (user != null) {
+      setState(() {
+        isLogin = true;
+      });
+      getData(user!.uid);
+    } else {
+      setState(() {
+        isLogin = false;
+      });
+    }
   }
 
   void getData(String userId) {
@@ -68,14 +67,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         return;
       }
     });
-  }
-
-  Future signOut() async {
-    await auth.signOut();
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-    );
   }
 
   @override
@@ -122,8 +113,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const ProfileComponent(
                       icon: FontAwesomeIcons.bookOpen,
                       text: 'Policy and Securirt'),
-                  const ProfileComponent(
-                      icon: FontAwesomeIcons.rightFromBracket, text: 'Logout'),
+                  GestureDetector(
+                    onTap: () async {
+                      await auth.signOut();
+                      if (!context.mounted) return;
+                      context.go('/signIn');
+                    },
+                    child: const ProfileComponent(
+                        icon: FontAwesomeIcons.rightFromBracket,
+                        text: 'Logout'),
+                  ),
                 ],
               ),
             )
@@ -147,13 +146,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     Gap(10),
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => LoginScreen(),
-                          ),
-                        );
-                      },
+                      onPressed: () => context.go('/signIn'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(219, 39, 39, 221),
                         shape: RoundedRectangleBorder(
@@ -189,7 +182,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 class ProfileComponent extends StatelessWidget {
   final IconData icon;
   final String text;
-
+  // final Ontap tap;
   const ProfileComponent({
     super.key,
     required this.icon,

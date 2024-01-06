@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:training/modules/auth/view/login_screen.dart';
 import 'package:training/components/navigation.dart';
 import 'package:email_validator/email_validator.dart';
@@ -148,7 +149,7 @@ class _SignUpFormState extends State<SignUpForm> {
           child: TextFormField(
             controller: nameController,
             style: const TextStyle(
-              color: Colors.black, // set the color of the text
+              color: Colors.black,
             ),
             decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.person),
@@ -163,7 +164,7 @@ class _SignUpFormState extends State<SignUpForm> {
           child: TextFormField(
             controller: emailController,
             style: const TextStyle(
-              color: Colors.black, // set the color of the text
+              color: Colors.black,
             ),
             decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.email),
@@ -286,7 +287,7 @@ class _SignUpFormState extends State<SignUpForm> {
             const Icon(FontAwesomeIcons.exclamation), Colors.red);
       } else {
         showCustomToast(
-            e.message!, const Icon(FontAwesomeIcons .exclamation), Colors.red);
+            e.message!, const Icon(FontAwesomeIcons.exclamation), Colors.red);
       }
     }
   }
@@ -366,27 +367,13 @@ class SignUpScreenFooter extends StatelessWidget {
                   TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
           const Icon(Icons.arrow_right_alt),
           TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const LoginScreen(),
-                  ),
-                );
-              },
+              onPressed: () => context.go('/signIn'),
               child: const Text("Login"))
         ],
       ),
       Center(
         child: TextButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const NavigationBottomBar(
-                    indexScreen: 0,
-                  ),
-                ),
-              );
-            },
+            onPressed: () => context.go('/home'),
             child: const Text(
               'SKIP',
               style: TextStyle(

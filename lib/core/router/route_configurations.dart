@@ -1,183 +1,108 @@
-// import 'package:flutter/material.dart';
-// import 'package:go_router/go_router.dart';
-// import 'package:training/modules/screens.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:training/components/navigation.dart';
+import 'package:training/core/router/route_constants.dart';
+import 'package:training/modules/screens.dart';
 
-// GoRouter routerConfig = GoRouter(
-//   routes: [
-//     /// Login
-//     GoRoute(
-//         name: "login",
-//         path: '/',
-//         pageBuilder: (context, state) {
-//           return MaterialPage(child: const Login());
-//         }),
+GoRouter routerConfig = GoRouter(
+  routes: [
+    /// Welcome
+    GoRoute(
+        name: RouterConstants.welcome,
+        path: '/',
+        pageBuilder: (context, state) {
+          return const MaterialPage(child: WelcomeScreen());
+        }),
 
-//     /// Home
-//     GoRoute(
-//         name: RouterConstants.home,
-//         path: '/home',
-//         pageBuilder: (context, state) {
-//           return MaterialPage(child: I18n(child: const HomeView()));
-//         },
-//         routes: [
-//           // Settings
-//           GoRoute(
-//               name: RouterConstants.commonSettings,
-//               path: 'settings',
-//               pageBuilder: (context, state) {
-//                 return MaterialPage(child: I18n(child: const SettingsView()));
-//               },
-//               routes: [
-//                 GoRoute(
-//                   name: RouterConstants.dictionaryPreferences,
-//                   path: 'dictionary-preferences',
-//                   pageBuilder: (context, state) {
-//                     return MaterialPage(
-//                         child: I18n(child: const DictionaryPreferences()));
-//                   },
-//                 ),
-//                 GoRoute(
-//                   name: RouterConstants.releaseNotes,
-//                   path: 'release-notes',
-//                   pageBuilder: (context, state) {
-//                     return MaterialPage(
-//                         child: I18n(child: const ReleaseNotes()));
-//                   },
-//                 ),
-//               ]),
-//           // Settings
-//           GoRoute(
-//             name: RouterConstants.userSettings,
-//             path: 'user-settings',
-//             pageBuilder: (context, state) {
-//               return MaterialPage(child: I18n(child: const UserSettingsView()));
-//             },
-//           ),
-//           // Settings
-//           GoRoute(
-//             name: RouterConstants.infos,
-//             path: 'infos',
-//             pageBuilder: (context, state) {
-//               return MaterialPage(child: I18n(child: const InfoView()));
-//             },
-//           ),
-//         ]),
+    /// Login
+    GoRoute(
+        name: RouterConstants.login,
+        path: '/signIn',
+        pageBuilder: (context, state) {
+          return const MaterialPage(child: LoginScreen());
+        }),
 
-//     /// Dictionary
-//     GoRoute(
-//         name: RouterConstants.dictionary,
-//         path: '/dictionary',
-//         pageBuilder: (context, state) {
-//           return MaterialPage(child: I18n(child: const DictionaryView()));
-//         },
-//         routes: [
-//           GoRoute(
-//             name: RouterConstants.wordHistory,
-//             path: 'history',
-//             pageBuilder: (context, state) {
-//               return MaterialPage(child: I18n(child: const WordHistoryView()));
-//             },
-//           ),
-//         ]),
+    /// Sign-up
+    GoRoute(
+        name: RouterConstants.signup,
+        path: '/signUp',
+        pageBuilder: (context, state) {
+          return const MaterialPage(child: const SignUpScreen());
+        }),
 
-//     /// Conversation
-//     GoRoute(
-//       name: RouterConstants.conversation,
-//       path: '/conversation',
-//       pageBuilder: (context, state) {
-//         return MaterialPage(child: I18n(child: const ConversationView()));
-//       },
-//     ),
+    /// Home
+    GoRoute(
+      name: RouterConstants.home,
+      path: '/home',
+      pageBuilder: (context, state) {
+        return const MaterialPage(
+            child: NavigationBottomBar(
+          indexScreen: 0,
+        ));
+      },
+      routes: [
+        // wordDetails
+        GoRoute(
+          name: RouterConstants.wordDetail,
+          path: 'wordDetail',
+          pageBuilder: (context, state) {
+            var params = state.extra as WordDetailScreen;
+            return MaterialPage(
+                child: WordDetailScreen(
+              word: params.word,
+              dictionaryType: params.dictionaryType,
+            ));
+          },
+        ),
+        // conversation
+        GoRoute(
+          name: RouterConstants.conversation,
+          path: 'conversation',
+          pageBuilder: (context, state) {
+            return const MaterialPage(child: ConversationScreen());
+          },
+        ),
+        // essentialWord
+        GoRoute(
+          name: RouterConstants.essentialWord,
+          path: 'essentialWord',
+          pageBuilder: (context, state) {
+            return const MaterialPage(child: EssentialWordScreen());
+          },
+        ),
+        // tipLearning
+        GoRoute(
+          name: RouterConstants.tipLearning,
+          path: 'tipLearning',
+          pageBuilder: (context, state) {
+            return const MaterialPage(child: TipLeaningScreen());
+          },
+        ),
+      ],
+    ),
 
-//     /// Reading-chamber
-//     GoRoute(
-//       name: RouterConstants.readingChamber,
-//       path: '/reading-chamber',
-//       pageBuilder: (context, state) {
-//         return MaterialPage(child: I18n(child: const StoryListView()));
-//       },
-//       routes: [
-//         // Reading chamber's reading space
-//         GoRoute(
-//             name: RouterConstants.readingSpace,
-//             path: 'reading-space',
-//             pageBuilder: (context, state) {
-//               return MaterialPage(
-//                   child: I18n(
-//                 child: StoryReadingView(
-//                   story: state.extra as Story,
-//                 ),
-//               ));
-//             }),
-//         // All stories
-//         GoRoute(
-//             name: RouterConstants.readingChamberAllList,
-//             path: 'reading-space-all-list',
-//             pageBuilder: (context, state) {
-//               return MaterialPage(
-//                   child: I18n(
-//                 child: const StoryListAllView(),
-//               ));
-//             }),
-//         // Reading history
-//         GoRoute(
-//           name: RouterConstants.readingChamberHistory,
-//           path: 'history',
-//           pageBuilder: (context, state) {
-//             return MaterialPage(
-//                 child: I18n(
-//               child: const StoryListHistoryView(),
-//             ));
-//           },
-//         ),
-//         // Reading bookmarks
-//         GoRoute(
-//           name: RouterConstants.readingChamberBookmark,
-//           path: 'bookmarks',
-//           pageBuilder: (context, state) {
-//             return MaterialPage(
-//               child: I18n(
-//                 child: const StoryListBookmarkView(),
-//               ),
-//             );
-//           },
-//         ),
-//       ],
-//     ),
+    /// Translate
+    GoRoute(
+      name: RouterConstants.translate,
+      path: '/translate',
+      pageBuilder: (context, state) {
+        return const MaterialPage(
+            child: NavigationBottomBar(
+          indexScreen: 1,
+        ));
+      },
+    ),
 
-//     /// Essential 1848
-//     GoRoute(
-//         name: RouterConstants.essential1848,
-//         path: '/essential-1848',
-//         pageBuilder: (context, state) {
-//           return MaterialPage(child: I18n(child: const EssentialView()));
-//         },
-//         routes: [
-//           GoRoute(
-//             name: RouterConstants.learningFlashCard,
-//             path: 'flash-card',
-//             pageBuilder: (context, state) {
-//               var params = state.extra as LearningView;
-//               return MaterialPage(
-//                   child: I18n(
-//                       child: LearningView(
-//                 topic: params.topic,
-//                 listEssentialWord: params.listEssentialWord,
-//               )));
-//             },
-//           ),
-//           GoRoute(
-//             name: RouterConstants.learningFavourite,
-//             path: 'favourite',
-//             pageBuilder: (context, state) {
-//               var params = state.extra as FavouriteReviewView;
-//               return MaterialPage(
-//                   child: I18n(
-//                       child: FavouriteReviewView(
-//                 listEssentialWord: params.listEssentialWord,
-//               )));
-//             },
-//           ),
-//         ]),
-//   ],
-// );
+    /// Profile
+    GoRoute(
+      name: RouterConstants.profile,
+      path: '/profile',
+      pageBuilder: (context, state) {
+        return const MaterialPage(
+            child: NavigationBottomBar(
+          indexScreen: 2,
+        ));
+      },
+    ),
+  ],
+);

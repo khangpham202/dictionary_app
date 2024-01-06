@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:training/modules/auth/view/sign_up_screen.dart';
 import 'package:training/components/navigation.dart';
 
@@ -216,6 +217,9 @@ class _LoginFormState extends State<LoginForm> {
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
+
+      if (!context.mounted) return;
+      context.go('/home');
     } on FirebaseAuthException catch (e) {
       if (emailController.text.trim() == '' &&
           passwordController.text.trim() == '') {
@@ -324,27 +328,13 @@ class LoginScreenFooter extends StatelessWidget {
                   TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
           const Icon(Icons.arrow_right_alt),
           TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const SignUpScreen(),
-                  ),
-                );
-              },
+              onPressed: () => context.go('/signUp'),
               child: const Text("Sign-up"))
         ],
       ),
       Center(
         child: TextButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const NavigationBottomBar(
-                    indexScreen: 0,
-                  ),
-                ),
-              );
-            },
+            onPressed: () => context.go('/home'),
             child: const Text(
               'SKIP',
               style: TextStyle(

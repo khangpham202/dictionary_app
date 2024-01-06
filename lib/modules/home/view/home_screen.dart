@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:training/components/blur_image_container.dart';
+import 'package:training/core/router/route_constants.dart';
 import 'package:training/modules/home/view/conversation_screen.dart';
 import 'package:training/modules/home/view/essential_word_screen.dart';
 import 'package:training/modules/home/view/tip_screen.dart';
@@ -208,16 +210,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               );
                             },
                             onSuggestionSelected: (suggestion) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => WordDetailScreen(
-                                          word: suggestion,
-                                          dictionaryType: dictionaryType,
-                                        )),
-                              );
+                              context.pushNamed(RouterConstants.wordDetail,
+                                  extra: WordDetailScreen(
+                                    word: suggestion,
+                                    dictionaryType: dictionaryType,
+                                  ));
                             },
-                            suggestionsBoxDecoration: const SuggestionsBoxDecoration(
+                            suggestionsBoxDecoration:
+                                const SuggestionsBoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(5)),
                             ),
@@ -248,16 +248,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               );
                             },
                             onSuggestionSelected: (suggestion) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => WordDetailScreen(
-                                          word: suggestion,
-                                          dictionaryType: dictionaryType,
-                                        )),
-                              );
+                              context.pushNamed(RouterConstants.wordDetail,
+                                  extra: WordDetailScreen(
+                                    word: suggestion,
+                                    dictionaryType: dictionaryType,
+                                  ));
                             },
-                            suggestionsBoxDecoration: const SuggestionsBoxDecoration(
+                            suggestionsBoxDecoration:
+                                const SuggestionsBoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(5)),
                             ),
@@ -293,37 +291,19 @@ class _HomeScreenState extends State<HomeScreen> {
             child: ListView(
               children: [
                 BlurredImageContainer(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const EssentialWordScreen()),
-                    );
-                  },
+                  onTap: () => context.go('/home/essentialWord'),
                   imagePath: 'assets/image/homescreen/vocab.jpg',
                   text: 'Essential Word',
                 ),
                 const Gap(20),
                 BlurredImageContainer(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ConversationScreen()),
-                    );
-                  },
+                  onTap: () => context.go('/home/conversation'),
                   imagePath: 'assets/image/homescreen/conversation.jpg',
                   text: 'Conversation',
                 ),
                 const Gap(20),
                 BlurredImageContainer(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const TipLeaningScreen()),
-                    );
-                  },
+                  onTap: () => context.go('/home/tipLearning'),
                   imagePath: 'assets/image/homescreen/motivation.png',
                   text: 'Leaning Tips',
                 ),
@@ -383,8 +363,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                             child: VideoProgressIndicator(
                                               _controller,
                                               allowScrubbing: true,
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 8.0),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
                                             ),
                                           ),
                                           Text(

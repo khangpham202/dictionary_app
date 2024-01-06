@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:training/components/tarbar_view.dart';
+import 'package:training/core/router/route_constants.dart';
 import 'package:training/util/data_service.dart';
 
 class WordDetailScreen extends StatefulWidget {
@@ -66,7 +68,8 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                           hintStyle: const TextStyle(
                             color: Colors.black,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 10),
                           border: const OutlineInputBorder(),
                         ),
                       ),
@@ -86,14 +89,11 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                         );
                       },
                       onSuggestionSelected: (suggestion) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => WordDetailScreen(
-                                    word: suggestion,
-                                    dictionaryType: widget.dictionaryType,
-                                  )),
-                        );
+                        context.pushNamed(RouterConstants.wordDetail,
+                            extra: WordDetailScreen(
+                              word: suggestion,
+                              dictionaryType: widget.dictionaryType,
+                            ));
                       },
                       suggestionsBoxDecoration: const SuggestionsBoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(5)),
