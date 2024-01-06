@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:training/modules/auth/view/login_screen.dart';
-import 'package:training/components/navigation.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 

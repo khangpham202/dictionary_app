@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:training/modules/auth/view/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -144,20 +143,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         fontSize: 30,
                       ),
                     ),
-                    Gap(10),
+                    const Gap(10),
                     ElevatedButton(
                       onPressed: () => context.go('/signIn'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(219, 39, 39, 221),
+                        backgroundColor: const Color.fromARGB(219, 39, 39, 221),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
-                          children: const [
+                          children: [
                             Icon(
                               Icons.login,
                               size: 24,

@@ -5,8 +5,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:training/modules/auth/view/sign_up_screen.dart';
-import 'package:training/components/navigation.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

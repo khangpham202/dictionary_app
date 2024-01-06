@@ -27,7 +27,7 @@ GoRouter routerConfig = GoRouter(
         name: RouterConstants.signup,
         path: '/signUp',
         pageBuilder: (context, state) {
-          return const MaterialPage(child: const SignUpScreen());
+          return const MaterialPage(child: SignUpScreen());
         }),
 
     /// Home

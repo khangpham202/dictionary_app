@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:training/modules/auth/view/sign_up_screen.dart';
 import 'dart:ui';
 
 class WelcomeScreen extends StatelessWidget {
