@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:training/modules/auth/view/login_screen.dart';
 import 'package:training/components/navigation.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -14,6 +20,7 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   late Color myColor;
   late Size mediaSize;
+
   @override
   Widget build(BuildContext context) {
     myColor = Theme.of(context).primaryColor;
@@ -89,15 +96,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
           style: TextStyle(
               color: myColor, fontSize: 32, fontWeight: FontWeight.w500),
         ),
-        Text(
+        const Text(
           "If you don't have account, sign-up below",
           style: TextStyle(color: Colors.grey),
         ),
-        SignUpForm(),
+        const SignUpForm(),
         const Gap(
           10,
         ),
-        SignUpScreenFooter()
+        const SignUpScreenFooter()
       ],
     );
   }
@@ -113,18 +120,22 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  final nameController = TextEditingController(text: '');
+  final nameController = TextEditingController();
 
-  final emailController = TextEditingController(text: '');
+  final emailController = TextEditingController();
 
-  final passwordController = TextEditingController(text: '');
-  final confirmPasswordController = TextEditingController(text: '');
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
   late bool _passwordInVisible;
+  late FToast fToast;
+
   @override
   void initState() {
     super.initState();
     _passwordInVisible = true;
+    fToast = FToast();
+    fToast.init(context);
   }
 
   @override
@@ -136,9 +147,9 @@ class _SignUpFormState extends State<SignUpForm> {
         Padding(
           padding: const EdgeInsets.only(top: 15),
           child: TextFormField(
-            controller: null,
+            controller: nameController,
             style: const TextStyle(
-              color: Colors.black, // set the color of the text
+              color: Colors.black,
             ),
             decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.person),
@@ -151,9 +162,9 @@ class _SignUpFormState extends State<SignUpForm> {
         Padding(
           padding: const EdgeInsets.only(top: 10),
           child: TextFormField(
-            controller: null,
+            controller: emailController,
             style: const TextStyle(
-              color: Colors.black, // set the color of the text
+              color: Colors.black,
             ),
             decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.email),
@@ -172,7 +183,7 @@ class _SignUpFormState extends State<SignUpForm> {
           child: TextFormField(
             controller: passwordController,
             style: const TextStyle(
-              color: Colors.black, // set the color of the text
+              color: Colors.black,
             ),
             obscureText: _passwordInVisible,
             decoration: InputDecoration(
@@ -203,7 +214,7 @@ class _SignUpFormState extends State<SignUpForm> {
           child: TextFormField(
             controller: confirmPasswordController,
             style: const TextStyle(
-              color: Colors.black, // set the color of the text
+              color: Colors.black,
             ),
             obscureText: _passwordInVisible,
             decoration: InputDecoration(
@@ -235,7 +246,7 @@ class _SignUpFormState extends State<SignUpForm> {
         SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: signUp,
               style: ElevatedButton.styleFrom(
                   elevation: 0,
                   backgroundColor: const Color(0xFF272727),
@@ -247,6 +258,69 @@ class _SignUpFormState extends State<SignUpForm> {
             )),
       ],
     ));
+  }
+
+  Future signUp() async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      final Map<String, dynamic> userData = {
+        'name': nameController.text.trim(),
+        'email': emailController.text.trim(),
+        'password': passwordController.text.trim(),
+      };
+      showCustomToast('Sign up successfully',
+          const Icon(FontAwesomeIcons.check), Colors.green);
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      await firestore
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .set(userData);
+      print(FirebaseAuth.instance.currentUser!.uid);
+    } on FirebaseAuthException catch (e) {
+      if (emailController.text.trim() == '' &&
+          passwordController.text.trim() == '') {
+        showCustomToast('Field cannot be empty!!',
+            const Icon(FontAwesomeIcons.exclamation), Colors.red);
+      } else {
+        showCustomToast(
+            e.message!, const Icon(FontAwesomeIcons.exclamation), Colors.red);
+      }
+    }
+  }
+
+  showCustomToast(String msg, Icon icon, Color bgColor) {
+    Widget toast = Container(
+      constraints: const BoxConstraints(maxWidth: 250),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25.0),
+        color: bgColor,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          icon,
+          const SizedBox(
+            width: 12.0,
+          ),
+          Flexible(
+            child: Text(
+              msg,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+        ],
+      ),
+    );
+    fToast.showToast(
+      child: toast,
+      toastDuration: const Duration(seconds: 3),
+    );
   }
 }
 
@@ -293,28 +367,14 @@ class SignUpScreenFooter extends StatelessWidget {
                   TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
           const Icon(Icons.arrow_right_alt),
           TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => LoginScreen(),
-                  ),
-                );
-              },
+              onPressed: () => context.go('/signIn'),
               child: const Text("Login"))
         ],
       ),
       Center(
         child: TextButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => NavigationBottomBar(
-                    indexScreen: 0,
-                  ),
-                ),
-              );
-            },
-            child: Text(
+            onPressed: () => context.go('/home'),
+            child: const Text(
               'SKIP',
               style: TextStyle(
                 decoration: TextDecoration.underline,

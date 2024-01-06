@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:training/components/tarbar_view.dart';
+import 'package:training/core/router/route_constants.dart';
 import 'package:training/util/data_service.dart';
 
 class WordDetailScreen extends StatefulWidget {
   final String word;
-  const WordDetailScreen({super.key, required this.word});
+  final String dictionaryType;
+  const WordDetailScreen(
+      {super.key, required this.word, required this.dictionaryType});
   @override
   State<WordDetailScreen> createState() => _WordDetailScreenState();
 }
@@ -36,7 +40,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
           child: Column(
         children: [
           Container(
-            color: Color.fromRGBO(18, 55, 149, 0.914),
+            color: const Color.fromRGBO(18, 55, 149, 0.914),
             height: MediaQuery.of(context).size.height / 11,
             child: Padding(
               padding: const EdgeInsets.all(8),
@@ -46,7 +50,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    icon: Icon(Icons.arrow_back_sharp),
+                    icon: const Icon(Icons.arrow_back_sharp),
                     color: Colors.white,
                     iconSize: 30,
                   ),
@@ -59,13 +63,14 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                         decoration: InputDecoration(
                           fillColor: Colors.white,
                           filled: true,
-                          prefixIcon: Icon(Icons.search),
+                          prefixIcon: const Icon(Icons.search),
                           hintText: widget.word,
-                          hintStyle: TextStyle(
+                          hintStyle: const TextStyle(
                             color: Colors.black,
                           ),
-                          contentPadding: EdgeInsets.symmetric(vertical: 10),
-                          border: OutlineInputBorder(),
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 10),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       suggestionsCallback: (pattern) async {
@@ -84,74 +89,62 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                         );
                       },
                       onSuggestionSelected: (suggestion) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  WordDetailScreen(word: suggestion)),
-                        );
+                        context.pushNamed(RouterConstants.wordDetail,
+                            extra: WordDetailScreen(
+                              word: suggestion,
+                              dictionaryType: widget.dictionaryType,
+                            ));
                       },
-                      suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                      suggestionsBoxDecoration: const SuggestionsBoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(5)),
                       ),
                     ),
                   ),
-                  Gap(5),
+                  const Gap(5),
                 ],
               ),
             ),
           ),
-          TabBar(
-            controller: _tabController,
-            indicatorColor: Color.fromRGBO(18, 55, 149, 0.914),
-            labelColor: Color.fromRGBO(18, 55, 149, 0.914),
-            unselectedLabelColor: Colors.grey.shade400,
-            isScrollable: true,
-            tabs: const [
-              SizedBox(
-                width: 140,
-                child: Tab(
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TabBar(
+              controller: _tabController,
+              indicatorColor: const Color.fromRGBO(18, 55, 149, 0.914),
+              labelColor: const Color.fromRGBO(18, 55, 149, 0.914),
+              unselectedLabelColor: Colors.grey.shade400,
+              isScrollable: true,
+              tabs: [
+                SizedBox(
+                  width: 140,
+                  child: Tab(
+                    child: Text(
+                      widget.dictionaryType == "EV"
+                          ? 'English - Vietnamese'
+                          : 'Vietnamese - English',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+                Tab(
                   child: Text(
-                    'English - Vietnamese',
+                    widget.dictionaryType == "EV" ? 'WordNet' : '',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                const Tab(
+                  child: Text(
+                    'Note',
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
-              ),
-              Tab(
-                child: Text(
-                  'WordNet',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              Tab(
-                child: Text(
-                  'Note',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              Tab(
-                child: Text(
-                  '',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              Tab(
-                child: Text(
-                  '',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
           Expanded(
             child: TabBarView(
@@ -159,9 +152,10 @@ class _WordDetailScreenState extends State<WordDetailScreen>
               children: [
                 WordMeaningWidget(
                   word: widget.word,
+                  dictionaryType: widget.dictionaryType,
                 ),
                 WordNetWidget(word: widget.word),
-                NoteWidget()
+                const NoteWidget()
               ],
             ),
           )

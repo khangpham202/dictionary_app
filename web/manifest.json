@@ -1,6 +1,6 @@
 {
-    "name": "training",
-    "short_name": "training",
+    "name": "dictionary_app",
+    "short_name": "dictionary_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

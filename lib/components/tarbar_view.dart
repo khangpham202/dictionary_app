@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:training/core/common/model/word.dart';
 import 'package:training/util/api_service.dart';
@@ -7,33 +8,31 @@ import 'package:training/util/speech.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 class WordMeaningWidget extends StatefulWidget {
-  final String word;
-  const WordMeaningWidget({super.key, required this.word});
+  final String word, dictionaryType;
+  const WordMeaningWidget(
+      {super.key, required this.word, required this.dictionaryType});
 
   @override
   State<WordMeaningWidget> createState() => _WordMeaningWidgetState();
 }
 
 class _WordMeaningWidgetState extends State<WordMeaningWidget> {
-  Future<Word> getWordData() async {
-    DatabaseHelper databaseHelper = DatabaseHelper();
-    Word? result = await databaseHelper.getWordData(widget.word);
-    return result!;
-  }
-
+  Color iconFavoriteColor = Colors.black;
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Word>(
-      future: getWordData(),
+    return FutureBuilder<Word?>(
+      future: widget.dictionaryType == "EV"
+          ? DatabaseHelper().getEVWordData(widget.word)
+          : DatabaseHelper().getVEWordData(widget.word),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return SizedBox(
-            height: 20,
-            width: 20,
-            child: CircularProgressIndicator(),
+          return const SizedBox(
+            height: 200,
+            width: 200,
+            child: Center(child: CircularProgressIndicator()),
           );
         } else if (snapshot.hasError) {
-          return Center(child: Text(''));
+          return const Center(child: Text(''));
         } else {
           Word data = snapshot.data!;
 
@@ -48,7 +47,7 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                   children: [
                     Text(
                       widget.word,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Colors.black,
                           fontSize: 22,
                           fontWeight: FontWeight.w600),
@@ -58,26 +57,24 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                         children: [
                           GestureDetector(
                             onTap: null,
-                            child: Icon(Icons.note_alt_sharp),
+                            child: const Icon(FontAwesomeIcons.filePen),
                           ),
+                          const Gap(5),
                           GestureDetector(
                             onTap: null,
-                            child: Icon(
-                              Icons.favorite,
-                              color: Colors.black,
-                            ),
+                            child: const Icon(FontAwesomeIcons.bookmark),
                           ),
                         ],
                       ),
                     )
                   ],
                 ),
-                Gap(10),
+                const Gap(10),
                 Row(
                   children: [
                     Text(
                       data.pronounce,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Color.fromARGB(255, 111, 104, 104),
                           fontWeight: FontWeight.w700,
                           fontSize: 20),
@@ -86,7 +83,7 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                       onTap: () {
                         TextToSpeechService().playTts('en', widget.word);
                       },
-                      child: Icon(
+                      child: const Icon(
                         Icons.volume_up_outlined,
                         color: Color.fromRGBO(99, 115, 156, 0.914),
                         size: 25,
@@ -94,10 +91,10 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                     ),
                   ],
                 ),
-                Gap(10),
+                const Gap(10),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.arrow_right_outlined,
                       size: 30,
                     ),
@@ -105,7 +102,7 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                       width: 300,
                       child: Text(
                         data.description,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Color.fromARGB(255, 71, 67, 67),
                             fontWeight: FontWeight.w700,
                             fontSize: 20),
@@ -138,12 +135,6 @@ class _WordNetWidgetState extends State<WordNetWidget> {
     return connectivityResult != ConnectivityResult.none;
   }
 
-  Future<Word> getWordData() async {
-    DatabaseHelper databaseHelper = DatabaseHelper();
-    Word? result = await databaseHelper.getWordData(widget.word);
-    return result!;
-  }
-
   Future<void> getWordNet() async {
     final result = await WordDetail().getWordNet(widget.word);
     setState(() {
@@ -163,17 +154,21 @@ class _WordNetWidgetState extends State<WordNetWidget> {
         future: checkInternet(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Text('loading...');
+            return const SizedBox(
+              height: 200,
+              width: 200,
+              child: Center(child: CircularProgressIndicator()),
+            );
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           } else {
             bool isConnected = snapshot.data ?? false;
             if (isConnected) {
               return meanings == null
-                  ? SizedBox(
-                      height: 10,
-                      width: 20,
-                      child: Text(''),
+                  ? const SizedBox(
+                      height: 200.0,
+                      width: 200.0,
+                      child: Center(child: CircularProgressIndicator()),
                     )
                   : Padding(
                       padding: const EdgeInsets.all(15),
@@ -184,7 +179,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                             children: [
                               Text(
                                 widget.word,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 22,
                                     fontWeight: FontWeight.w600),
@@ -194,20 +189,21 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                   children: [
                                     GestureDetector(
                                       onTap: null,
-                                      child: Icon(Icons.note_alt_sharp),
+                                      child: const Icon(Icons.note_alt_sharp),
                                     ),
                                     GestureDetector(
                                       onTap: null,
-                                      child: Icon(Icons.save),
+                                      child: const Icon(Icons.save),
                                     ),
                                   ],
                                 ),
                               )
                             ],
                           ),
-                          Gap(10),
+                          const Gap(10),
                           FutureBuilder(
-                              future: getWordData(),
+                              future:
+                                  DatabaseHelper().getEVWordData(widget.word),
                               builder: (context, snapshot) {
                                 Word? data = snapshot.data;
                                 return data != null
@@ -215,7 +211,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                         children: [
                                           Text(
                                             data.pronounce,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 color: Color.fromARGB(
                                                     255, 111, 104, 104),
                                                 fontWeight: FontWeight.w700,
@@ -226,7 +222,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                               TextToSpeechService()
                                                   .playTts('en', widget.word);
                                             },
-                                            child: Icon(
+                                            child: const Icon(
                                               Icons.volume_up_outlined,
                                               color: Color.fromRGBO(
                                                   99, 115, 156, 0.914),
@@ -235,9 +231,9 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                           ),
                                         ],
                                       )
-                                    : Gap(0);
+                                    : const Gap(0);
                               }),
-                          Gap(10),
+                          const Gap(10),
                           Expanded(
                             child: meanings != null
                                 ? ListView.builder(
@@ -253,12 +249,12 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                               meaning['partOfSpeech']
                                                   .toString()
                                                   .toUpperCase(),
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   color: Color.fromRGBO(
                                                       18, 55, 149, 0.914),
                                                   fontWeight: FontWeight.w600),
                                             ),
-                                            Gap(3),
+                                            const Gap(3),
                                           ],
                                         ),
                                         subtitle: Column(
@@ -273,11 +269,11 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                                 children: [
                                                   Row(
                                                     children: [
-                                                      Icon(
+                                                      const Icon(
                                                         Icons.circle,
                                                         size: 10,
                                                       ),
-                                                      Gap(5),
+                                                      const Gap(5),
                                                       Container(
                                                         constraints:
                                                             BoxConstraints(
@@ -291,7 +287,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                                           children: [
                                                             Text(
                                                               "${def['definition']}",
-                                                              style: TextStyle(
+                                                              style: const TextStyle(
                                                                   color: Color
                                                                       .fromARGB(
                                                                           255,
@@ -303,7 +299,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                                                   TextOverflow
                                                                       .visible,
                                                             ),
-                                                            Gap(3),
+                                                            const Gap(3),
                                                           ],
                                                         ),
                                                       ),
@@ -317,7 +313,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                                               left: 20),
                                                       child: Text(
                                                         "synonyms: ${(def['synonyms'] as List).join(', ')}",
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           color: Color.fromRGBO(
                                                               25,
                                                               66,
@@ -335,7 +331,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                                               left: 20),
                                                       child: Text(
                                                         "antonyms: ${(def['antonyms'] as List).join(', ')}",
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           color: Color.fromRGBO(
                                                               25,
                                                               66,
@@ -355,7 +351,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                                     left: 20),
                                                 child: Text(
                                                   "synonyms: ${(meaning['synonyms'] as List).join(', ')}",
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     color: Color.fromRGBO(
                                                         25, 66, 172, 0.914),
                                                     fontSize: 17,
@@ -369,7 +365,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                                     left: 20),
                                                 child: Text(
                                                   "antonyms: ${(meaning['antonyms'] as List).join(', ')}",
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     color: Color.fromRGBO(
                                                         25, 66, 172, 0.914),
                                                     fontSize: 17,
@@ -381,13 +377,13 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                       );
                                     },
                                   )
-                                : Text(""),
+                                : const Text("aa"),
                           ),
                         ],
                       ),
                     );
             } else {
-              return Center(child: Text('No internet connection'));
+              return const Center(child: Text('No internet connection'));
             }
           }
         });
@@ -399,7 +395,7 @@ class NoteWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text("It's sunny here"),
     );
   }

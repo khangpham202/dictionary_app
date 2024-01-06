@@ -46,6 +46,13 @@ dependencies:
   path: ^1.8.3
   connectivity_plus: ^5.0.2
   json_annotation: ^4.8.1
+  video_player: ^2.8.1
+  font_awesome_flutter: ^10.6.0
+  fluttertoast: ^8.2.4
+  firebase_auth: ^4.15.3
+  cloud_firestore: ^4.13.6
+  firebase_core: ^2.24.2
+  go_router: ^13.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -53,12 +60,14 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_native_splash: ^2.3.5
 
-flutter_native_splash:
-  image: assets/image/intro/splash.png
-  color: "#ffffff"
-  fullscreen: true
-  android: true
-  android_screen_orientation: locked
+dependency_overrides:
+  firebase_core_platform_interface: 5.0.0
+# flutter_native_splash:
+#   image: assets/image/intro/splash.png
+#   color: "#ffffff"
+#   fullscreen: true
+#   android: true
+#   android_screen_orientation: locked
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -73,20 +82,14 @@ flutter:
     - assets/image/intro/
     - assets/image/logo/
     - assets/image/homescreen/
+    - assets/image/profile/
+    - assets/video/
     - assets/data/
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  fonts:
-    - family: Caveat
-      fonts:
-        - asset: fonts/Caveat-Regular.ttf
-    - family: Montserrat
-      fonts:
-        - asset: fonts/Montserrat-Regular.ttf
-
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf

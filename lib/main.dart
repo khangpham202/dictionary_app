@@ -1,14 +1,20 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:training/components/tarbar_view.dart';
-import 'package:training/modules/intro/note.dart';
-import 'package:training/modules/translatePage/bloc/language/language_bloc.dart';
-import 'package:training/components/navigation.dart';
+import 'package:training/bloc_provider_scope.dart';
+import 'package:training/core/router/route_configurations.dart';
+import 'package:training/firebase_options.dart';
 
-void mainExampleApp() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // debugAutoStartRouteName = testOpenRoute;
-  runApp(const MyApp());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(
+    const BlocProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -16,23 +22,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      // home: BlocProvider(
-      //   create: (context) => LanguageBloc(),
-      //   child: NavigationBottomBar(
-      //     indexScreen: 0,
-      //   ),
-      // ),
-      // home: WordDetailScreen(
-      //   word: '',
-      // ),
-      // home: BlocProvider(
-      //   create: (context) => LanguageBloc(),
-      //   child: DropdownMenuApp(),
-      // ),
-      home: DropdownMenuApp(),
-      // home: Scaffold(body: WordNetWidget(word: 'orange')),
+      routerConfig: routerConfig,
     );
   }
 }

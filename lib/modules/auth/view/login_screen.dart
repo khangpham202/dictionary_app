@@ -1,6 +1,10 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:training/modules/auth/view/sign_up_screen.dart';
 import 'package:training/components/navigation.dart';
 
@@ -93,15 +97,15 @@ class _LoginScreenState extends State<LoginScreen> {
           style: TextStyle(
               color: myColor, fontSize: 32, fontWeight: FontWeight.w500),
         ),
-        Text(
+        const Text(
           "Please login with your account",
           style: TextStyle(color: Colors.grey),
         ),
-        LoginForm(),
+        const LoginForm(),
         const Gap(
           10,
         ),
-        LoginScreenFooter()
+        const LoginScreenFooter()
       ],
     );
   }
@@ -117,14 +121,16 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  final emailController = TextEditingController(text: '');
-  final passwordController = TextEditingController(text: '');
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   late bool _passwordInVisible;
-
+  late FToast fToast;
   @override
   void initState() {
     super.initState();
     _passwordInVisible = true;
+    fToast = FToast();
+    fToast.init(context);
   }
 
   @override
@@ -136,7 +142,7 @@ class _LoginFormState extends State<LoginForm> {
           Padding(
             padding: const EdgeInsets.only(top: 15),
             child: TextFormField(
-              controller: null,
+              controller: emailController,
               style: const TextStyle(
                 color: Colors.black,
               ),
@@ -180,7 +186,7 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(top: 20, bottom: 20),
+            padding: const EdgeInsets.only(top: 20, bottom: 20),
             child: Align(
               alignment: Alignment.centerRight,
               child: TextButton(
@@ -190,7 +196,7 @@ class _LoginFormState extends State<LoginForm> {
           SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: signIn,
                 style: ElevatedButton.styleFrom(
                     elevation: 0,
                     backgroundColor: const Color(0xFF272727),
@@ -203,6 +209,79 @@ class _LoginFormState extends State<LoginForm> {
         ],
       ),
     );
+  }
+
+  Future signIn() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      if (!context.mounted) return;
+      context.go('/home');
+    } on FirebaseAuthException catch (e) {
+      if (emailController.text.trim() == '' &&
+          passwordController.text.trim() == '') {
+        fToast.showToast(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 250),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(25.0),
+              color: Colors.red,
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(FontAwesomeIcons.exclamation),
+                SizedBox(
+                  width: 12.0,
+                ),
+                Flexible(
+                  child: Text(
+                    'Field cannot be empty!!',
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          toastDuration: const Duration(seconds: 3),
+        );
+      } else {
+        fToast.showToast(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 250),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(25.0),
+              color: Colors.red,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(FontAwesomeIcons.exclamation),
+                const SizedBox(
+                  width: 12.0,
+                ),
+                Flexible(
+                  child: Text(
+                    e.message!,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          toastDuration: const Duration(seconds: 3),
+        );
+      }
+    }
   }
 }
 
@@ -249,28 +328,14 @@ class LoginScreenFooter extends StatelessWidget {
                   TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
           const Icon(Icons.arrow_right_alt),
           TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => SignUpScreen(),
-                  ),
-                );
-              },
+              onPressed: () => context.go('/signUp'),
               child: const Text("Sign-up"))
         ],
       ),
       Center(
         child: TextButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => NavigationBottomBar(
-                    indexScreen: 0,
-                  ),
-                ),
-              );
-            },
-            child: Text(
+            onPressed: () => context.go('/home'),
+            child: const Text(
               'SKIP',
               style: TextStyle(
                 decoration: TextDecoration.underline,
