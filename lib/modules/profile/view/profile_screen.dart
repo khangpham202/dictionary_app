@@ -15,20 +15,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  // bool isBookmarked = false;
-  // GestureDetector(
-  //   onTap: () {
-  //     setState(() {
-  //       isBookmarked = !isBookmarked;
-  //     });
-  //   },
-  //   child: Icon(
-  //     isBookmarked
-  //         ? FontAwesomeIcons.solidBookmark
-  //         : FontAwesomeIcons.bookmark,
-  //     color: isBookmarked ? Color.fromRGBO(18, 55, 149, 0.914) : null,
-  //   ),
-  // ),
+  
   FirebaseAuth auth = FirebaseAuth.instance;
   late String name, email, password;
   bool isLogin = false;
