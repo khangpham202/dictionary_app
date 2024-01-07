@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:training/components/toast.dart';
 import 'package:training/core/common/model/word.dart';
 import 'package:training/util/api_service.dart';
 import 'package:training/util/data_service.dart';
@@ -17,7 +21,90 @@ class WordMeaningWidget extends StatefulWidget {
 }
 
 class _WordMeaningWidgetState extends State<WordMeaningWidget> {
-  Color iconFavoriteColor = Colors.black;
+  bool isFavorite = false;
+  String uid = FirebaseAuth.instance.currentUser!.uid;
+  late FToast fToast;
+  @override
+  void initState() {
+    super.initState();
+    checkIsFavorite();
+  }
+
+  Future<void> checkIsFavorite() async {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(
+            '${FirebaseAuth.instance.currentUser!.uid}/favorite/${widget.word}')
+        .get();
+
+    setState(() {
+      isFavorite = snapshot.exists;
+    });
+  }
+
+  Future<void> toggleFavorite() async {
+    if (FirebaseAuth.instance.currentUser == null) {
+      Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'This feature requires login',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16.0,
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+      DocumentReference favoriteRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc('$uid/favorite/${widget.word}');
+
+      if (isFavorite) {
+        await favoriteRef.delete();
+        fToast.showToast(
+          child: const CustomToast(
+            msg: 'Removed from favorites',
+            icon: Icon(FontAwesomeIcons.check), 
+            bgColor: Color.fromARGB(255, 97, 93, 93),
+          ),
+          toastDuration: const Duration(seconds: 3),
+        );
+      } else {
+        await favoriteRef.set({'word': widget.word});
+        fToast.showToast(
+          child: const CustomToast(
+            msg: 'Added word to favorites',
+            icon: Icon(FontAwesomeIcons.check),
+            bgColor: Colors.green,
+          ),
+          toastDuration: const Duration(seconds: 3),
+        );
+      }
+
+      setState(() {
+        isFavorite = !isFavorite;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Word?>(
@@ -61,8 +148,15 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                           ),
                           const Gap(5),
                           GestureDetector(
-                            onTap: null,
-                            child: const Icon(FontAwesomeIcons.bookmark),
+                            onTap: toggleFavorite,
+                            child: Icon(
+                              isFavorite
+                                  ? FontAwesomeIcons.solidBookmark
+                                  : FontAwesomeIcons.bookmark,
+                              color: isFavorite
+                                  ? const Color.fromARGB(233, 236, 32, 32)
+                                  : null,
+                            ),
                           ),
                         ],
                       ),
