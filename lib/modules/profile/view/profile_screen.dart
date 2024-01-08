@@ -1,5 +1,3 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +13,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  
   FirebaseAuth auth = FirebaseAuth.instance;
-  late String name, email, password;
+  String name = '', email = '', password = '';
   bool isLogin = false;
   final user = FirebaseAuth.instance.currentUser;
   @override
@@ -89,16 +86,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const ProfileComponent(
                       icon: FontAwesomeIcons.userLarge,
                       text: 'Account Information'),
-                  const ProfileComponent(
-                      icon: FontAwesomeIcons.solidBookmark,
-                      text: 'Saved words'),
+                  GestureDetector(
+                    onTap: () => context.go('/profile/savedWord'),
+                    child: const ProfileComponent(
+                        icon: FontAwesomeIcons.solidBookmark,
+                        text: 'Saved words'),
+                  ),
                   const ProfileComponent(
                       icon: FontAwesomeIcons.gear, text: 'Setting'),
                   const ProfileComponent(
                       icon: FontAwesomeIcons.shield, text: 'About us'),
                   const ProfileComponent(
                       icon: FontAwesomeIcons.bookOpen,
-                      text: 'Policy and Securirt'),
+                      text: 'Policy and Security '),
                   GestureDetector(
                     onTap: () async {
                       await auth.signOut();
@@ -168,7 +168,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 class ProfileComponent extends StatelessWidget {
   final IconData icon;
   final String text;
-  // final Ontap tap;
   const ProfileComponent({
     super.key,
     required this.icon,

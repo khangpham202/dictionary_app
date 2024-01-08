@@ -217,6 +217,7 @@ class _LoginFormState extends State<LoginForm> {
       );
 
       if (!context.mounted) return;
+
       context.go('/home');
     } on FirebaseAuthException catch (e) {
       if (emailController.text.trim() == '' &&

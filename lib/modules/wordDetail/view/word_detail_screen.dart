@@ -24,7 +24,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -135,14 +135,6 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                     ),
                   ),
                 ),
-                const Tab(
-                  child: Text(
-                    'Note',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
@@ -155,7 +147,6 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                   dictionaryType: widget.dictionaryType,
                 ),
                 WordNetWidget(word: widget.word),
-                const NoteWidget()
               ],
             ),
           )
