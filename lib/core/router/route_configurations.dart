@@ -27,7 +27,7 @@ GoRouter routerConfig = GoRouter(
         name: RouterConstants.signup,
         path: '/signUp',
         pageBuilder: (context, state) {
-          return const MaterialPage(child: const SignUpScreen());
+          return const MaterialPage(child: SignUpScreen());
         }),
 
     /// Home
@@ -95,14 +95,23 @@ GoRouter routerConfig = GoRouter(
 
     /// Profile
     GoRoute(
-      name: RouterConstants.profile,
-      path: '/profile',
-      pageBuilder: (context, state) {
-        return const MaterialPage(
-            child: NavigationBottomBar(
-          indexScreen: 2,
-        ));
-      },
-    ),
+        name: RouterConstants.profile,
+        path: '/profile',
+        pageBuilder: (context, state) {
+          return const MaterialPage(
+              child: NavigationBottomBar(
+            indexScreen: 2,
+          ));
+        },
+        routes: [
+          // savedWord
+          GoRoute(
+            name: RouterConstants.savedWord,
+            path: 'savedWord',
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: SavedWordScreen());
+            },
+          ),
+        ]),
   ],
 );

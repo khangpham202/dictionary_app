@@ -1,5 +1,4 @@
 class RouterConstants {
-
   static const String welcome = "welcome";
 
   static const String login = "login";
@@ -15,6 +14,7 @@ class RouterConstants {
   static const String tipLearning = "tipLearning";
 
   static const String commonSettings = "common-settings";
+  static const String savedWord = "savedWord";
   static const String userSettings = "user-settings";
   static const String licenses = "licenses";
   static const String aboutUs = "aboutUs";

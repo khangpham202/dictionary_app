@@ -8,3 +8,4 @@ export 'intro/welcome_screen.dart';
 export 'profile/view/profile_screen.dart';
 export 'translatePage/view/translate_screen.dart';
 export 'wordDetail/view/word_detail_screen.dart';
+export 'profile/view/saved_word_screen.dart';

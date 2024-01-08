@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:training/components/toast.dart';
 import 'package:training/core/common/model/word.dart';
 import 'package:training/util/api_service.dart';
 import 'package:training/util/data_service.dart';
@@ -17,7 +21,95 @@ class WordMeaningWidget extends StatefulWidget {
 }
 
 class _WordMeaningWidgetState extends State<WordMeaningWidget> {
-  Color iconFavoriteColor = Colors.black;
+  late bool isFavorite;
+  late FToast fToast;
+  @override
+  void initState() {
+    super.initState();
+    checkIsFavorite();
+    fToast = FToast();
+    fToast.init(context);
+  }
+
+  Future<void> checkIsFavorite() async {
+    if (FirebaseAuth.instance.currentUser == null) {
+      return;
+    } else {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(
+              '${FirebaseAuth.instance.currentUser!.uid}/favorite/${widget.word}')
+          .get();
+      setState(() {
+        isFavorite = snapshot.exists;
+      });
+    }
+  }
+
+  Future<void> toggleFavorite(BuildContext context) async {
+    if (FirebaseAuth.instance.currentUser == null) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'You need to login to use this feature',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                      const Gap(5),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  ),
+                ),
+              ));
+    } else {
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+      DocumentReference favoriteRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc('$uid/favorite-word/${widget.word}');
+
+      if (isFavorite) {
+        await favoriteRef.delete();
+        fToast.showToast(
+          child: const CustomToast(
+            msg: 'Removed from favorites',
+            icon: Icon(FontAwesomeIcons.check),
+            bgColor: Color.fromARGB(255, 97, 93, 93),
+          ),
+          toastDuration: const Duration(seconds: 3),
+        );
+      } else {
+        await favoriteRef.set({'word': widget.word});
+        fToast.showToast(
+          child: const CustomToast(
+            msg: 'Added word to favorites',
+            icon: Icon(FontAwesomeIcons.check),
+            bgColor: Colors.green,
+          ),
+          toastDuration: const Duration(seconds: 3),
+        );
+      }
+      setState(() {
+        isFavorite = !isFavorite;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Word?>(
@@ -60,10 +152,21 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                             child: const Icon(FontAwesomeIcons.filePen),
                           ),
                           const Gap(5),
-                          GestureDetector(
-                            onTap: null,
-                            child: const Icon(FontAwesomeIcons.bookmark),
-                          ),
+                          Builder(builder: (context) {
+                            return GestureDetector(
+                              onTap: () {
+                                toggleFavorite(context);
+                              },
+                              child: Icon(
+                                isFavorite
+                                    ? FontAwesomeIcons.solidBookmark
+                                    : FontAwesomeIcons.bookmark,
+                                color: isFavorite
+                                    ? const Color.fromARGB(233, 236, 32, 32)
+                                    : null,
+                              ),
+                            );
+                          }),
                         ],
                       ),
                     )
@@ -173,32 +276,14 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                   : Padding(
                       padding: const EdgeInsets.all(15),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                widget.word,
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              SizedBox(
-                                child: Row(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: null,
-                                      child: const Icon(Icons.note_alt_sharp),
-                                    ),
-                                    GestureDetector(
-                                      onTap: null,
-                                      child: const Icon(Icons.save),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
+                          Text(
+                            widget.word,
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w600),
                           ),
                           const Gap(10),
                           FutureBuilder(
@@ -387,16 +472,5 @@ class _WordNetWidgetState extends State<WordNetWidget> {
             }
           }
         });
-  }
-}
-
-class NoteWidget extends StatelessWidget {
-  const NoteWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text("It's sunny here"),
-    );
   }
 }

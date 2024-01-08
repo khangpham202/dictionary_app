@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:training/modules/auth/view/login_screen.dart';
-import 'package:training/components/navigation.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:training/components/toast.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -272,55 +271,42 @@ class _SignUpFormState extends State<SignUpForm> {
         'email': emailController.text.trim(),
         'password': passwordController.text.trim(),
       };
-      showCustomToast('Sign up successfully',
-          const Icon(FontAwesomeIcons.check), Colors.green);
+      fToast.showToast(
+        child: const CustomToast(
+          msg: 'Sign up successfully',
+          icon: Icon(FontAwesomeIcons.check),
+          bgColor: Colors.green,
+        ),
+        toastDuration: const Duration(seconds: 3),
+      );
+
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       await firestore
           .collection("users")
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .set(userData);
-      print(FirebaseAuth.instance.currentUser!.uid);
     } on FirebaseAuthException catch (e) {
       if (emailController.text.trim() == '' &&
           passwordController.text.trim() == '') {
-        showCustomToast('Field cannot be empty!!',
-            const Icon(FontAwesomeIcons.exclamation), Colors.red);
+        fToast.showToast(
+          child: const CustomToast(
+            msg: 'Field cannot be empty!!',
+            icon: Icon(FontAwesomeIcons.exclamation),
+            bgColor: Colors.red,
+          ),
+          toastDuration: const Duration(seconds: 3),
+        );
       } else {
-        showCustomToast(
-            e.message!, const Icon(FontAwesomeIcons.exclamation), Colors.red);
+        fToast.showToast(
+          child: CustomToast(
+            msg: '$e.message!',
+            icon: const Icon(FontAwesomeIcons.exclamation),
+            bgColor: Colors.red,
+          ),
+          toastDuration: const Duration(seconds: 3),
+        );
       }
     }
-  }
-
-  showCustomToast(String msg, Icon icon, Color bgColor) {
-    Widget toast = Container(
-      constraints: const BoxConstraints(maxWidth: 250),
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25.0),
-        color: bgColor,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          icon,
-          const SizedBox(
-            width: 12.0,
-          ),
-          Flexible(
-            child: Text(
-              msg,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
-          ),
-        ],
-      ),
-    );
-    fToast.showToast(
-      child: toast,
-      toastDuration: const Duration(seconds: 3),
-    );
   }
 }
 
