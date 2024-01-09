@@ -5,7 +5,10 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:training/components/toast.dart';
+import 'package:training/core/router/route_constants.dart';
+import 'package:training/modules/wordDetail/view/word_detail_screen.dart';
 import 'package:training/util/speech.dart';
 
 class SavedWordScreen extends StatefulWidget {
@@ -93,6 +96,20 @@ class _SavedWordScreenState extends State<SavedWordScreen> {
                     children: [
                       SlidableAction(
                         onPressed: (BuildContext context) {
+                          context.pushNamed(RouterConstants.wordDetail,
+                              extra: WordDetailScreen(
+                                word: favoriteList[index]['word'],
+                                dictionaryType: 'EV',
+                              ));
+                        },
+                        backgroundColor:
+                            const Color.fromARGB(255, 184, 167, 167),
+                        foregroundColor: Colors.green,
+                        icon: Icons.details,
+                        label: 'Detail',
+                      ),
+                      SlidableAction(
+                        onPressed: (BuildContext context) {
                           showDialog(
                             context: context,
                             builder: (context) {
@@ -144,7 +161,7 @@ class _SavedWordScreenState extends State<SavedWordScreen> {
                           '${index + 1}. ${favoriteList[index]['word']}',
                           style: const TextStyle(fontSize: 20),
                         ),
-                        Gap(5),
+                        const Gap(5),
                         favoriteList[index]['pronunciation'] != ''
                             ? Text(
                                 '/${favoriteList[index]['pronunciation']}/',
