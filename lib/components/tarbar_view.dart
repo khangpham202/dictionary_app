@@ -21,32 +21,33 @@ class WordMeaningWidget extends StatefulWidget {
 }
 
 class _WordMeaningWidgetState extends State<WordMeaningWidget> {
-  late bool isFavorite;
+  late bool isSaved = false;
   late FToast fToast;
   @override
   void initState() {
     super.initState();
-    checkIsFavorite();
+    checkIsSaved();
     fToast = FToast();
     fToast.init(context);
   }
 
-  Future<void> checkIsFavorite() async {
+  Future<void> checkIsSaved() async {
     if (FirebaseAuth.instance.currentUser == null) {
       return;
     } else {
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
           .collection('users')
           .doc(
-              '${FirebaseAuth.instance.currentUser!.uid}/favorite/${widget.word}')
+              '${FirebaseAuth.instance.currentUser!.uid}/saved-word/${widget.word}')
           .get();
       setState(() {
-        isFavorite = snapshot.exists;
+        isSaved = snapshot.exists;
       });
     }
   }
 
-  Future<void> toggleFavorite(BuildContext context) async {
+  Future<void> toggleSaveWord(
+      BuildContext context, String pronunciation, String meaning) async {
     if (FirebaseAuth.instance.currentUser == null) {
       showDialog(
           context: context,
@@ -81,23 +82,27 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
       String uid = FirebaseAuth.instance.currentUser!.uid;
       DocumentReference favoriteRef = FirebaseFirestore.instance
           .collection('users')
-          .doc('$uid/favorite-word/${widget.word}');
+          .doc('$uid/saved-word/${widget.word}');
 
-      if (isFavorite) {
+      if (isSaved) {
         await favoriteRef.delete();
         fToast.showToast(
           child: const CustomToast(
-            msg: 'Removed from favorites',
+            msg: 'Removed from saved words list',
             icon: Icon(FontAwesomeIcons.check),
             bgColor: Color.fromARGB(255, 97, 93, 93),
           ),
           toastDuration: const Duration(seconds: 3),
         );
       } else {
-        await favoriteRef.set({'word': widget.word});
+        await favoriteRef.set({
+          'word': widget.word,
+          'pronunciation': pronunciation,
+          'meaning': meaning
+        });
         fToast.showToast(
           child: const CustomToast(
-            msg: 'Added word to favorites',
+            msg: 'Added to saved words list',
             icon: Icon(FontAwesomeIcons.check),
             bgColor: Colors.green,
           ),
@@ -105,13 +110,14 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
         );
       }
       setState(() {
-        isFavorite = !isFavorite;
+        isSaved = !isSaved;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    print(isSaved);
     return FutureBuilder<Word?>(
       future: widget.dictionaryType == "EV"
           ? DatabaseHelper().getEVWordData(widget.word)
@@ -155,13 +161,14 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                           Builder(builder: (context) {
                             return GestureDetector(
                               onTap: () {
-                                toggleFavorite(context);
+                                toggleSaveWord(
+                                    context, data.pronounce, data.description);
                               },
                               child: Icon(
-                                isFavorite
+                                isSaved
                                     ? FontAwesomeIcons.solidBookmark
                                     : FontAwesomeIcons.bookmark,
-                                color: isFavorite
+                                color: isSaved
                                     ? const Color.fromARGB(233, 236, 32, 32)
                                     : null,
                               ),
@@ -173,27 +180,29 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                   ],
                 ),
                 const Gap(10),
-                Row(
-                  children: [
-                    Text(
-                      data.pronounce,
-                      style: const TextStyle(
-                          color: Color.fromARGB(255, 111, 104, 104),
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        TextToSpeechService().playTts('en', widget.word);
-                      },
-                      child: const Icon(
-                        Icons.volume_up_outlined,
-                        color: Color.fromRGBO(99, 115, 156, 0.914),
-                        size: 25,
-                      ),
-                    ),
-                  ],
-                ),
+                data.pronounce != ''
+                    ? Row(
+                        children: [
+                          Text(
+                            '/${data.pronounce}/',
+                            style: const TextStyle(
+                                color: Color.fromARGB(255, 111, 104, 104),
+                                fontWeight: FontWeight.w700,
+                                fontSize: 20),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              TextToSpeechService().playTts('en', widget.word);
+                            },
+                            child: const Icon(
+                              Icons.volume_up_outlined,
+                              color: Color.fromRGBO(99, 115, 156, 0.914),
+                              size: 25,
+                            ),
+                          ),
+                        ],
+                      )
+                    : const Gap(1),
                 const Gap(10),
                 Row(
                   children: [
