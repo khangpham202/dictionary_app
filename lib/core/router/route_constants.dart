@@ -15,6 +15,7 @@ class RouterConstants {
 
   static const String commonSettings = "common-settings";
   static const String savedWord = "savedWord";
+  static const String accountInformation = "accountInformation";
   static const String userSettings = "user-settings";
   static const String licenses = "licenses";
   static const String aboutUs = "aboutUs";

@@ -104,6 +104,14 @@ GoRouter routerConfig = GoRouter(
           ));
         },
         routes: [
+          // accountInformation
+          GoRoute(
+            name: RouterConstants.accountInformation,
+            path: 'accountInformation',
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: AccountInfo());
+            },
+          ),
           // savedWord
           GoRoute(
             name: RouterConstants.savedWord,
