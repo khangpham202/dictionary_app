@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -32,6 +33,11 @@ class _TranslateScreenState extends State<TranslateScreen> {
     selectedSourceLanguage = Country.United_Kingdom;
     super.initState();
   }
+
+  // Future<bool> checkInternet() async {
+  //   var connectivityResult = await Connectivity().checkConnectivity();
+  //   return connectivityResult != ConnectivityResult.none;
+  // }
 
   void swapLanguage() {
     setState(() {
@@ -195,52 +201,90 @@ class _TranslateScreenState extends State<TranslateScreen> {
               border: const OutlineInputBorder(),
               suffixIcon: GestureDetector(
                 onTap: () async {
-                  setState(() {
-                    isLoading = true;
-                  });
-                  late String isoSourceCountryCode,
-                      isoTargetCountryCode,
-                      translatedSentence;
-                  late Translation translation;
-                  String originalSentence = originalSentenceController.text;
-                  String selectedSourceLanguageCode =
-                      selectedSourceLanguage.countryCode;
-                  String selectedTargetLanguageCode =
-                      selectedTargetLanguage.countryCode;
-                  String formatedSourceLanguage = selectedSourceLanguage.format;
-                  String formatedTargetLanguage = selectedTargetLanguage.format;
-
-                  try {
-                    isoSourceCountryCode = await TranslationService()
-                        .getISOCountryCode(formatedSourceLanguage);
-                    isoTargetCountryCode = await TranslationService()
-                        .getISOCountryCode(formatedTargetLanguage);
-                    translatedSentence = await TranslationService().translate(
-                        originalSentence,
-                        selectedSourceLanguageCode,
-                        selectedTargetLanguageCode);
-                  } catch (error) {
-                    print(error);
-                  } finally {
+                  var connectivityResult =
+                      await Connectivity().checkConnectivity();
+                  if (connectivityResult == ConnectivityResult.mobile ||
+                      connectivityResult == ConnectivityResult.wifi) {
                     setState(() {
-                      isLoading = false;
+                      isLoading = true;
                     });
+                    late String isoSourceCountryCode,
+                        isoTargetCountryCode,
+                        translatedSentence;
+                    late Translation translation;
+                    String originalSentence = originalSentenceController.text;
+                    String selectedSourceLanguageCode =
+                        selectedSourceLanguage.countryCode;
+                    String selectedTargetLanguageCode =
+                        selectedTargetLanguage.countryCode;
+                    String formatedSourceLanguage =
+                        selectedSourceLanguage.format;
+                    String formatedTargetLanguage =
+                        selectedTargetLanguage.format;
+
+                    try {
+                      isoSourceCountryCode = await TranslationService()
+                          .getISOCountryCode(formatedSourceLanguage);
+                      isoTargetCountryCode = await TranslationService()
+                          .getISOCountryCode(formatedTargetLanguage);
+                      translatedSentence = await TranslationService().translate(
+                          originalSentence,
+                          selectedSourceLanguageCode,
+                          selectedTargetLanguageCode);
+                    } catch (error) {
+                      print(error);
+                    } finally {
+                      setState(() {
+                        isLoading = false;
+                      });
+                    }
+
+                    setState(() {
+                      translation = Translation(
+                        originalSentence,
+                        translatedSentence,
+                        Image.network(
+                            'https://flagcdn.com/24x18/${isoSourceCountryCode.toLowerCase()}.png'),
+                        Image.network(
+                            'https://flagcdn.com/24x18/${isoTargetCountryCode.toLowerCase()}.png'),
+                        '$formatedSourceLanguage to $formatedTargetLanguage',
+                      );
+                    });
+
+                    translationHistory.add(translation);
+                    originalSentenceController.clear();
+                  } else {
+                    if (!context.mounted) return;
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => Dialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: Container(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                      'No internet connection!!',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                    const Gap(5),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ));
                   }
-
-                  setState(() {
-                    translation = Translation(
-                      originalSentence,
-                      translatedSentence,
-                      Image.network(
-                          'https://flagcdn.com/24x18/${isoSourceCountryCode.toLowerCase()}.png'),
-                      Image.network(
-                          'https://flagcdn.com/24x18/${isoTargetCountryCode.toLowerCase()}.png'),
-                      '$formatedSourceLanguage to $formatedTargetLanguage',
-                    );
-                  });
-
-                  translationHistory.add(translation);
-                  originalSentenceController.clear();
                 },
                 child: isLoading
                     ? const CircularProgressIndicator()
