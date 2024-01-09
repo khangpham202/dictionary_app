@@ -80,12 +80,12 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
               ));
     } else {
       String uid = FirebaseAuth.instance.currentUser!.uid;
-      DocumentReference favoriteRef = FirebaseFirestore.instance
+      DocumentReference savedWordRef = FirebaseFirestore.instance
           .collection('users')
           .doc('$uid/saved-word/${widget.word}');
 
       if (isSaved) {
-        await favoriteRef.delete();
+        await savedWordRef.delete();
         fToast.showToast(
           child: const CustomToast(
             msg: 'Removed from saved words list',
@@ -95,7 +95,7 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
           toastDuration: const Duration(seconds: 3),
         );
       } else {
-        await favoriteRef.set({
+        await savedWordRef.set({
           'word': widget.word,
           'pronunciation': pronunciation,
           'meaning': meaning
@@ -115,9 +115,110 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
     }
   }
 
+  Future<void> handleNote(BuildContext context) async {
+    if (FirebaseAuth.instance.currentUser == null) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'You need to login to use this feature',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                      const Gap(5),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  ),
+                ),
+              ));
+    } else {
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+      DocumentReference notedWordRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc('$uid/noted-word/${widget.word}');
+      final noteController = TextEditingController();
+      DocumentSnapshot snapshot = await notedWordRef.get();
+      // String note = '';
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        String note = data['note'];
+
+        noteController.text = note;
+      } else {
+        noteController.text = '';
+      }
+      if (!context.mounted) return;
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'Note',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                      const Divider(
+                        color: Colors.red,
+                        height: 20,
+                        thickness: 3,
+                      ),
+                      Card(
+                          color: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: noteController,
+                              maxLines: 8,
+                              decoration: const InputDecoration.collapsed(
+                                  hintText: "Enter your text here"),
+                            ),
+                          )),
+                      const Gap(5),
+                      ElevatedButton(
+                        onPressed: () async {
+                          await notedWordRef.set({
+                            'word': widget.word,
+                            'note': noteController.text.trim(),
+                          });
+                          if (!context.mounted) return;
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  ),
+                ),
+              ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(isSaved);
     return FutureBuilder<Word?>(
       future: widget.dictionaryType == "EV"
           ? DatabaseHelper().getEVWordData(widget.word)
@@ -153,10 +254,14 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                     SizedBox(
                       child: Row(
                         children: [
-                          GestureDetector(
-                            onTap: null,
-                            child: const Icon(FontAwesomeIcons.filePen),
-                          ),
+                          Builder(builder: (context) {
+                            return GestureDetector(
+                              onTap: () {
+                                handleNote(context);
+                              },
+                              child: const Icon(FontAwesomeIcons.filePen),
+                            );
+                          }),
                           const Gap(5),
                           Builder(builder: (context) {
                             return GestureDetector(
