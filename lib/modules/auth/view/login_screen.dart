@@ -161,7 +161,7 @@ class _LoginFormState extends State<LoginForm> {
             child: TextFormField(
               controller: passwordController,
               style: const TextStyle(
-                color: Colors.black, // set the color of the text
+                color: Colors.black,
               ),
               obscureText: _passwordInVisible,
               decoration: InputDecoration(
@@ -220,9 +220,10 @@ class _LoginFormState extends State<LoginForm> {
 
       context.go('/home');
     } on FirebaseAuthException catch (e) {
-      if (emailController.text.trim() == '' &&
+      if (emailController.text.trim() == '' ||
           passwordController.text.trim() == '') {
         fToast.showToast(
+          gravity: ToastGravity.CENTER,
           child: Container(
             constraints: const BoxConstraints(maxWidth: 250),
             padding:
@@ -252,6 +253,7 @@ class _LoginFormState extends State<LoginForm> {
         );
       } else {
         fToast.showToast(
+          gravity: ToastGravity.CENTER,
           child: Container(
             constraints: const BoxConstraints(maxWidth: 250),
             padding:
@@ -260,21 +262,23 @@ class _LoginFormState extends State<LoginForm> {
               borderRadius: BorderRadius.circular(25.0),
               color: Colors.red,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(FontAwesomeIcons.exclamation),
-                const SizedBox(
-                  width: 12.0,
-                ),
-                Flexible(
-                  child: Text(
-                    e.message!,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
+            child: SizedBox(
+              width: double.infinity,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(FontAwesomeIcons.exclamation),
+                  const SizedBox(
+                    width: 12.0,
                   ),
-                ),
-              ],
+                  Flexible(
+                    child: Text(
+                      e.message!,
+                      overflow: TextOverflow.visible,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           toastDuration: const Duration(seconds: 3),

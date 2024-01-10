@@ -272,6 +272,7 @@ class _SignUpFormState extends State<SignUpForm> {
         'password': passwordController.text.trim(),
       };
       fToast.showToast(
+        gravity: ToastGravity.CENTER,
         child: const CustomToast(
           msg: 'Sign up successfully',
           icon: Icon(FontAwesomeIcons.check),
@@ -289,6 +290,7 @@ class _SignUpFormState extends State<SignUpForm> {
       if (emailController.text.trim() == '' &&
           passwordController.text.trim() == '') {
         fToast.showToast(
+          gravity: ToastGravity.CENTER,
           child: const CustomToast(
             msg: 'Field cannot be empty!!',
             icon: Icon(FontAwesomeIcons.exclamation),
@@ -298,6 +300,7 @@ class _SignUpFormState extends State<SignUpForm> {
         );
       } else {
         fToast.showToast(
+          gravity: ToastGravity.CENTER,
           child: CustomToast(
             msg: '$e.message!',
             icon: const Icon(FontAwesomeIcons.exclamation),
