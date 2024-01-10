@@ -13,8 +13,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  FirebaseAuth auth = FirebaseAuth.instance;
-  String name = '', email = '', password = '';
+  String name = '';
   bool isLogin = false;
   final user = FirebaseAuth.instance.currentUser;
   @override
@@ -41,9 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             docSnapshot.data() as Map<String, dynamic>?;
         if (mounted) {
           setState(() {
-            email = data?['email'];
             name = data?['name'];
-            password = data?['password'];
           });
         }
       } else {
@@ -83,9 +80,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   const Gap(10),
-                  const ProfileComponent(
-                      icon: FontAwesomeIcons.userLarge,
-                      text: 'Account Information'),
+                  GestureDetector(
+                    onTap: () => context.go('/profile/accountInformation'),
+                    child: const ProfileComponent(
+                        icon: FontAwesomeIcons.userLarge,
+                        text: 'Account Information'),
+                  ),
                   GestureDetector(
                     onTap: () => context.go('/profile/savedWord'),
                     child: const ProfileComponent(
@@ -101,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       text: 'Policy and Security '),
                   GestureDetector(
                     onTap: () async {
-                      await auth.signOut();
+                      await FirebaseAuth.instance.signOut();
                       if (!context.mounted) return;
                       context.go('/signIn');
                     },
