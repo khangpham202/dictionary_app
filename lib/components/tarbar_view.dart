@@ -153,7 +153,6 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
           .doc('$uid/noted-word/${widget.word}');
       final noteController = TextEditingController();
       DocumentSnapshot snapshot = await notedWordRef.get();
-      // String note = '';
       if (snapshot.exists) {
         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
         String note = data['note'];
