@@ -243,12 +243,27 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      widget.word,
-                      style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w600),
+                    Row(
+                      children: [
+                        Text(
+                          widget.word,
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        const Gap(5),
+                        GestureDetector(
+                          onTap: () {
+                            TextToSpeechService().playTts('en', widget.word);
+                          },
+                          child: const Icon(
+                            Icons.volume_up_outlined,
+                            color: Color.fromRGBO(99, 115, 156, 0.914),
+                            size: 25,
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(
                       child: Row(
@@ -285,26 +300,12 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                 ),
                 const Gap(10),
                 data.pronounce != ''
-                    ? Row(
-                        children: [
-                          Text(
-                            '/${data.pronounce}/',
-                            style: const TextStyle(
-                                color: Color.fromARGB(255, 111, 104, 104),
-                                fontWeight: FontWeight.w700,
-                                fontSize: 20),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              TextToSpeechService().playTts('en', widget.word);
-                            },
-                            child: const Icon(
-                              Icons.volume_up_outlined,
-                              color: Color.fromRGBO(99, 115, 156, 0.914),
-                              size: 25,
-                            ),
-                          ),
-                        ],
+                    ? Text(
+                        '/${data.pronounce}/',
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 111, 104, 104),
+                            fontWeight: FontWeight.w700,
+                            fontSize: 20),
                       )
                     : const Gap(1),
                 const Gap(10),
@@ -391,12 +392,28 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            widget.word,
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w600),
+                          Row(
+                            children: [
+                              Text(
+                                widget.word,
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              const Gap(5),
+                              GestureDetector(
+                                onTap: () {
+                                  TextToSpeechService()
+                                      .playTts('en', widget.word);
+                                },
+                                child: const Icon(
+                                  Icons.volume_up_outlined,
+                                  color: Color.fromRGBO(99, 115, 156, 0.914),
+                                  size: 25,
+                                ),
+                              ),
+                            ],
                           ),
                           const Gap(10),
                           FutureBuilder(
@@ -404,30 +421,14 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                   DatabaseHelper().getEVWordData(widget.word),
                               builder: (context, snapshot) {
                                 Word? data = snapshot.data;
-                                return data != null
-                                    ? Row(
-                                        children: [
-                                          Text(
-                                            data.pronounce,
-                                            style: const TextStyle(
-                                                color: Color.fromARGB(
-                                                    255, 111, 104, 104),
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 20),
-                                          ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              TextToSpeechService()
-                                                  .playTts('en', widget.word);
-                                            },
-                                            child: const Icon(
-                                              Icons.volume_up_outlined,
-                                              color: Color.fromRGBO(
-                                                  99, 115, 156, 0.914),
-                                              size: 25,
-                                            ),
-                                          ),
-                                        ],
+                                return (data != null && data.pronounce != '')
+                                    ? Text(
+                                        '/${data.pronounce}/',
+                                        style: const TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 111, 104, 104),
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 20),
                                       )
                                     : const Gap(0);
                               }),
@@ -462,47 +463,81 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                             ...meaning['definitions']
                                                 .map<Widget>((def) {
                                               return Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
-                                                      const Icon(
-                                                        Icons.circle,
-                                                        size: 10,
-                                                      ),
-                                                      const Gap(5),
-                                                      Container(
-                                                        constraints:
-                                                            BoxConstraints(
-                                                          maxWidth: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width -
-                                                              100,
+                                                      const Text(
+                                                        '\u2022',
+                                                        style: TextStyle(
+                                                          fontSize: 30,
+                                                          // height: 1.55,
                                                         ),
-                                                        child: Column(
-                                                          children: [
-                                                            Text(
-                                                              "${def['definition']}",
-                                                              style: const TextStyle(
-                                                                  color: Color
-                                                                      .fromARGB(
-                                                                          255,
-                                                                          61,
-                                                                          61,
-                                                                          61),
-                                                                  fontSize: 18),
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .visible,
-                                                            ),
-                                                            const Gap(3),
-                                                          ],
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          "${def['definition']}",
+                                                          textAlign:
+                                                              TextAlign.left,
+                                                          softWrap: true,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 18,
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    61,
+                                                                    61,
+                                                                    61),
+                                                            height: 1.55,
+                                                          ),
                                                         ),
                                                       ),
                                                     ],
                                                   ),
+                                                  // Row(
+                                                  //   children: [
+                                                  //     const Icon(
+                                                  //       Icons.circle,
+                                                  //       size: 10,
+                                                  //     ),
+                                                  //     const Gap(5),
+                                                  //     Container(
+                                                  //       constraints:
+                                                  //           BoxConstraints(
+                                                  //         maxWidth: MediaQuery.of(
+                                                  //                     context)
+                                                  //                 .size
+                                                  //                 .width -
+                                                  //             100,
+                                                  //       ),
+                                                  //       child: Column(
+                                                  //         children: [
+                                                  //           Text(
+                                                  //             "${def['definition']}",
+                                                  //             style: const TextStyle(
+                                                  //                 color: Color
+                                                  //                     .fromARGB(
+                                                  //                         255,
+                                                  //                         61,
+                                                  //                         61,
+                                                  //                         61),
+                                                  //                 fontSize: 18),
+                                                  //             overflow:
+                                                  //                 TextOverflow
+                                                  //                     .visible,
+                                                  //           ),
+                                                  //           const Gap(3),
+                                                  //         ],
+                                                  //       ),
+                                                  //     ),
+                                                  //   ],
+                                                  // ),
                                                   if ((def['synonyms'] as List)
                                                       .isNotEmpty)
                                                     Padding(
@@ -575,7 +610,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                       );
                                     },
                                   )
-                                : const Text("aa"),
+                                : const Text(""),
                           ),
                         ],
                       ),
