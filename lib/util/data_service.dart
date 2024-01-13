@@ -76,9 +76,22 @@ class DatabaseHelper {
 }
 
 class WordSuggestion {
-  Future<List<String>> getEnglishWord() async {
+  Future<List<String>> getEnglishWordSuggestion() async {
     String data = await rootBundle.loadString('assets/data/en_sug_109k.txt');
     List<String> suggestions = LineSplitter.split(data).toList();
+    return suggestions;
+  }
+
+  Future<List<String>> getVietnameseWordSuggestion() async {
+    String data = await rootBundle.loadString('assets/data/vietanh.txt');
+
+    List<String> lines = LineSplitter.split(data).toList();
+
+    List<String> suggestions = lines
+        .where((line) => line.startsWith('@'))
+        .map((line) => line.substring(1).trim())
+        .toList();
+
     return suggestions;
   }
 }
