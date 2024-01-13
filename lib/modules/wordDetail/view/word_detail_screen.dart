@@ -25,6 +25,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    searchController.text = widget.word;
   }
 
   @override
@@ -60,22 +61,20 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                     child: TypeAheadField(
                       textFieldConfiguration: TextFieldConfiguration(
                         controller: searchController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           fillColor: Colors.white,
                           filled: true,
-                          prefixIcon: const Icon(Icons.search),
-                          hintText: widget.word,
-                          hintStyle: const TextStyle(
+                          prefixIcon: Icon(Icons.search),
+                          hintStyle: TextStyle(
                             color: Colors.black,
                           ),
-                          contentPadding:
-                              const EdgeInsets.symmetric(vertical: 10),
-                          border: const OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(vertical: 10),
+                          border: OutlineInputBorder(),
                         ),
                       ),
                       suggestionsCallback: (pattern) async {
                         return await WordSuggestion()
-                            .getEnglishWord()
+                            .getEnglishWordSuggestion()
                             .then((List<String> suggestions) {
                           return suggestions
                               .where((suggestion) =>
