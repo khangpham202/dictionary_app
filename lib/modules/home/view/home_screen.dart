@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     selectedItemColor = const Color.fromARGB(255, 19, 21, 123);
     searchController.addListener(() {
       if (searchController.text.isNotEmpty) {
-        WordSuggestion().getEnglishWord().then((suggestionsList) {
+        WordSuggestion().getEnglishWordSuggestion().then((suggestionsList) {
           setState(() {
             suggestions = suggestionsList;
           });
@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.all(8),
                       child: Center(
                         child: Text(
-                          "Dictionaries",
+                          "Dictionary Flow",
                           style: TextStyle(
                             color: Color.fromARGB(255, 44, 46, 153),
                             fontWeight: FontWeight.w600,
@@ -107,9 +107,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: Color.fromARGB(255, 19, 21, 123),
                               ),
                               padding: const EdgeInsets.all(5),
-                              child: Text(
-                                dictionaryType,
-                                style: const TextStyle(
+                              child: const Text(
+                                'EV',
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
@@ -193,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             suggestionsCallback: (pattern) async {
                               return await WordSuggestion()
-                                  .getEnglishWord()
+                                  .getEnglishWordSuggestion()
                                   .then((List<String> suggestions) {
                                 return suggestions
                                     .where((suggestion) =>
@@ -237,7 +237,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             suggestionsCallback: (pattern) async {
-                              return [pattern];
+                              return await WordSuggestion()
+                                  .getVietnameseWordSuggestion()
+                                  .then((List<String> suggestions) {
+                                return suggestions
+                                    .where((suggestion) =>
+                                        suggestion.startsWith(pattern))
+                                    .toList();
+                              });
                             },
                             itemBuilder: (context, suggestion) {
                               return ListTile(
