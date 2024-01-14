@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:training/modules/auth/bloc/authentication_bloc.dart';
 import 'package:training/modules/translatePage/bloc/language/language_bloc.dart';
 
 class BlocProviderScope extends StatelessWidget {
@@ -10,6 +11,8 @@ class BlocProviderScope extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(providers: [
       BlocProvider<LanguageBloc>(create: (context) => LanguageBloc()),
+      BlocProvider<AuthenticationBloc>(
+          create: (context) => AuthenticationBloc()),
     ], child: child);
   }
 }
