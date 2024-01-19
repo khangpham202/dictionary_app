@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:training/core/common/model/user.dart';
 
 import '../service/authentication.dart';
 
@@ -15,15 +15,14 @@ class AuthenticationBloc
       on<SignUp>((event, emit) async {
         emit(const AuthenticationLoadingState(isLoading: true));
         try {
-          final UserModel? user = await authService.signUp(
-              event.email, event.password, event.fullName);
-          if (user != null) {
-            emit(AuthenticationSuccessState(user, 'Sign up successfully!!'));
+          await authService.signUp(event.email, event.password, event.fullName);
+          emit(const AuthenticationSuccessState('Sign up successfully'));
+        } on FirebaseAuthException catch (e) {
+          if (event.email.trim() == '' && event.password.trim() == '') {
+            emit(const AuthenticationFailureState('Field cannot be empty!!'));
           } else {
-            emit(const AuthenticationFailureState('create user failed'));
+            emit(AuthenticationFailureState(e.message!));
           }
-        } catch (e) {
-          emit(AuthenticationFailureState(e.toString()));
         }
         emit(const AuthenticationLoadingState(isLoading: false));
       });
@@ -31,7 +30,7 @@ class AuthenticationBloc
         emit(const AuthenticationLoadingState(isLoading: true));
         try {
           await authService.signIn(event.email, event.password);
-        } catch (e) {
+        } on FirebaseAuthException catch (e) {
           if (event.email.trim() == '' || event.password.trim() == '') {
             emit(const AuthenticationFailureState('Field cannot be empty!!'));
           } else {
