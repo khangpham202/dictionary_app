@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:training/components/toast.dart';
+import 'package:training/modules/auth/bloc/authentication_bloc.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -242,75 +244,110 @@ class _SignUpFormState extends State<SignUpForm> {
         const SizedBox(
           height: 30,
         ),
-        SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: signUp,
-              style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  backgroundColor: const Color(0xFF272727),
-                  side: const BorderSide(color: Colors.white),
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5))),
-              child: const Text("SIGN-UP"),
-            )),
+        BlocConsumer<AuthenticationBloc, AuthenticationState>(
+          listener: ((context, state) {
+            if (state is AuthenticationSuccessState) {
+              fToast.showToast(
+                gravity: ToastGravity.CENTER,
+                child: CustomToast(
+                  msg: state.message,
+                  icon: const Icon(FontAwesomeIcons.check),
+                  bgColor: Colors.green,
+                ),
+                toastDuration: const Duration(seconds: 3),
+              );
+            } else if (state is AuthenticationFailureState) {
+              fToast.showToast(
+                gravity: ToastGravity.CENTER,
+                child: CustomToast(
+                  msg: state.errorMessage,
+                  icon: const Icon(FontAwesomeIcons.exclamation),
+                  bgColor: Colors.red,
+                ),
+                toastDuration: const Duration(seconds: 3),
+              );
+            }
+          }),
+          builder: ((context, state) {
+            return SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    BlocProvider.of<AuthenticationBloc>(context).add(
+                      SignUp(
+                        nameController.text.trim(),
+                        emailController.text.trim(),
+                        passwordController.text.trim(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor: const Color(0xFF272727),
+                      side: const BorderSide(color: Colors.white),
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5))),
+                  child: const Text("SIGN-UP"),
+                ));
+          }),
+        )
       ],
     ));
   }
 
-  Future signUp() async {
-    try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
+  // Future signUp() async {
+  //   try {
+  //     await FirebaseAuth.instance.createUserWithEmailAndPassword(
+  //       email: emailController.text.trim(),
+  //       password: passwordController.text.trim(),
+  //     );
 
-      final Map<String, dynamic> userData = {
-        'name': nameController.text.trim(),
-        'email': emailController.text.trim(),
-        'password': passwordController.text.trim(),
-      };
-      fToast.showToast(
-        gravity: ToastGravity.CENTER,
-        child: const CustomToast(
-          msg: 'Sign up successfully',
-          icon: Icon(FontAwesomeIcons.check),
-          bgColor: Colors.green,
-        ),
-        toastDuration: const Duration(seconds: 3),
-      );
+  //     final Map<String, dynamic> userData = {
+  //       'name': nameController.text.trim(),
+  //       'email': emailController.text.trim(),
+  //       'password': passwordController.text.trim(),
+  //     };
+  //     fToast.showToast(
+  //       gravity: ToastGravity.CENTER,
+  //       child: const CustomToast(
+  //         msg: 'Sign up successfully',
+  //         icon: Icon(FontAwesomeIcons.check),
+  //         bgColor: Colors.green,
+  //       ),
+  //       toastDuration: const Duration(seconds: 3),
+  //     );
 
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
-      await firestore
-          .collection("users")
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .set(userData);
-    } on FirebaseAuthException catch (e) {
-      if (emailController.text.trim() == '' &&
-          passwordController.text.trim() == '') {
-        fToast.showToast(
-          gravity: ToastGravity.CENTER,
-          child: const CustomToast(
-            msg: 'Field cannot be empty!!',
-            icon: Icon(FontAwesomeIcons.exclamation),
-            bgColor: Colors.red,
-          ),
-          toastDuration: const Duration(seconds: 3),
-        );
-      } else {
-        fToast.showToast(
-          gravity: ToastGravity.CENTER,
-          child: CustomToast(
-            msg: '$e.message!',
-            icon: const Icon(FontAwesomeIcons.exclamation),
-            bgColor: Colors.red,
-          ),
-          toastDuration: const Duration(seconds: 3),
-        );
-      }
-    }
-  }
+  //     FirebaseFirestore firestore = FirebaseFirestore.instance;
+  //     await firestore
+  //         .collection("users")
+  //         .doc(FirebaseAuth.instance.currentUser!.uid)
+  //         .set(userData);
+  //   } on FirebaseAuthException catch (e) {
+  //     if (emailController.text.trim() == '' &&
+  //         passwordController.text.trim() == '') {
+  //       fToast.showToast(
+  //         gravity: ToastGravity.CENTER,
+  //         child: const CustomToast(
+  //           msg: 'Field cannot be empty!!',
+  //           icon: Icon(FontAwesomeIcons.exclamation),
+  //           bgColor: Colors.red,
+  //         ),
+  //         toastDuration: const Duration(seconds: 3),
+  //       );
+  //     } else {
+  //       fToast.showToast(
+  //         gravity: ToastGravity.CENTER,
+  //         child: CustomToast(
+  //           msg: e.message!,
+  //           icon: const Icon(FontAwesomeIcons.exclamation),
+  //           bgColor: Colors.red,
+  //         ),
+  //         toastDuration: const Duration(seconds: 3),
+  //       );
+  //     }
+  //   }
+  // }
 }
 
 class SignUpScreenFooter extends StatelessWidget {

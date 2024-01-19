@@ -1,10 +1,13 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:training/components/toast.dart';
+import 'package:training/modules/auth/bloc/authentication_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -191,101 +194,136 @@ class _LoginFormState extends State<LoginForm> {
                   onPressed: () {}, child: const Text("Forgot Password?")),
             ),
           ),
-          SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: signIn,
-                style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor: const Color(0xFF272727),
-                    side: const BorderSide(color: Colors.white),
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5))),
-                child: const Text("LOGIN"),
-              ))
+          BlocConsumer<AuthenticationBloc, AuthenticationState>(
+            listener: ((context, state) {
+              if (state is AuthenticationSuccessState) {
+                fToast.showToast(
+                  gravity: ToastGravity.CENTER,
+                  child: CustomToast(
+                    msg: state.message,
+                    icon: const Icon(FontAwesomeIcons.check),
+                    bgColor: Colors.green,
+                  ),
+                  toastDuration: const Duration(seconds: 3),
+                );
+                context.go('/home');
+              } else if (state is AuthenticationFailureState) {
+                fToast.showToast(
+                  gravity: ToastGravity.CENTER,
+                  child: CustomToast(
+                    msg: state.errorMessage,
+                    icon: const Icon(FontAwesomeIcons.exclamation),
+                    bgColor: Colors.red,
+                  ),
+                  toastDuration: const Duration(seconds: 3),
+                );
+              }
+            }),
+            builder: ((context, state) {
+              return SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      BlocProvider.of<AuthenticationBloc>(context).add(
+                        Login(
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        backgroundColor: const Color(0xFF272727),
+                        side: const BorderSide(color: Colors.white),
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5))),
+                    child: const Text("LOGIN"),
+                  ));
+            }),
+          )
         ],
       ),
     );
   }
 
-  Future signIn() async {
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
+  // Future signIn() async {
+  //   try {
+  //     await FirebaseAuth.instance.signInWithEmailAndPassword(
+  //       email: emailController.text.trim(),
+  //       password: passwordController.text.trim(),
+  //     );
 
-      if (!context.mounted) return;
+  //     if (!context.mounted) return;
 
-      context.go('/home');
-    } on FirebaseAuthException catch (e) {
-      if (emailController.text.trim() == '' ||
-          passwordController.text.trim() == '') {
-        fToast.showToast(
-          gravity: ToastGravity.CENTER,
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 250),
-            padding:
-                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(25.0),
-              color: Colors.red,
-            ),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(FontAwesomeIcons.exclamation),
-                SizedBox(
-                  width: 12.0,
-                ),
-                Flexible(
-                  child: Text(
-                    'Field cannot be empty!!',
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          toastDuration: const Duration(seconds: 3),
-        );
-      } else {
-        fToast.showToast(
-          gravity: ToastGravity.CENTER,
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 250),
-            padding:
-                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(25.0),
-              color: Colors.red,
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(FontAwesomeIcons.exclamation),
-                  const SizedBox(
-                    width: 12.0,
-                  ),
-                  Flexible(
-                    child: Text(
-                      e.message!,
-                      overflow: TextOverflow.visible,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          toastDuration: const Duration(seconds: 3),
-        );
-      }
-    }
-  }
+  //     context.go('/home');
+  //   } on FirebaseAuthException catch (e) {
+  //     if (emailController.text.trim() == '' ||
+  //         passwordController.text.trim() == '') {
+  //       fToast.showToast(
+  //         gravity: ToastGravity.CENTER,
+  //         child: Container(
+  //           constraints: const BoxConstraints(maxWidth: 250),
+  //           padding:
+  //               const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+  //           decoration: BoxDecoration(
+  //             borderRadius: BorderRadius.circular(25.0),
+  //             color: Colors.red,
+  //           ),
+  //           child: const Row(
+  //             mainAxisSize: MainAxisSize.min,
+  //             children: [
+  //               Icon(FontAwesomeIcons.exclamation),
+  //               SizedBox(
+  //                 width: 12.0,
+  //               ),
+  //               Flexible(
+  //                 child: Text(
+  //                   'Field cannot be empty!!',
+  //                   overflow: TextOverflow.ellipsis,
+  //                   maxLines: 1,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //         toastDuration: const Duration(seconds: 3),
+  //       );
+  //     } else {
+  //       fToast.showToast(
+  //         gravity: ToastGravity.CENTER,
+  //         child: Container(
+  //           constraints: const BoxConstraints(maxWidth: 250),
+  //           padding:
+  //               const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+  //           decoration: BoxDecoration(
+  //             borderRadius: BorderRadius.circular(25.0),
+  //             color: Colors.red,
+  //           ),
+  //           child: SizedBox(
+  //             width: double.infinity,
+  //             child: Row(
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: [
+  //                 const Icon(FontAwesomeIcons.exclamation),
+  //                 const SizedBox(
+  //                   width: 12.0,
+  //                 ),
+  //                 Flexible(
+  //                   child: Text(
+  //                     e.message!,
+  //                     overflow: TextOverflow.visible,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //         toastDuration: const Duration(seconds: 3),
+  //       );
+  //     }
+  //   }
+  // }
 }
 
 class LoginScreenFooter extends StatelessWidget {
