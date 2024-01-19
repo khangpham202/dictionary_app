@@ -24,8 +24,8 @@ class AuthService {
           .collection("users")
           .doc(_firebaseAuth.currentUser!.uid)
           .set(userData);
-    } on FirebaseAuthException catch (e) {
-      print(e.toString());
+    } catch (e) {
+      rethrow;
     }
     return null;
   }
@@ -37,8 +37,8 @@ class AuthService {
         email: email.trim(),
         password: password.trim(),
       );
-    } on FirebaseAuthException catch (e) {
-      print(e.toString());
+    } catch (e) {
+      rethrow;
     }
     return null;
   }
