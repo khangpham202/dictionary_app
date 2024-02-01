@@ -6,6 +6,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:training/components/toast.dart';
 
+import '../../../core/common/theme/theme.export.dart';
+
 class AccountInfo extends StatefulWidget {
   const AccountInfo({super.key});
 
@@ -216,7 +218,7 @@ class _AccountInfoState extends State<AccountInfo> {
                           child: const CustomToast(
                             msg: 'Save changes successfully!!',
                             icon: Icon(FontAwesomeIcons.check),
-                            bgColor: Colors.green,
+                            bgColor: AppColors.kGreen,
                           ),
                           toastDuration: const Duration(seconds: 3),
                         );

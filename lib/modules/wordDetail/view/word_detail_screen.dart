@@ -6,6 +6,8 @@ import 'package:training/components/tarbar_view.dart';
 import 'package:training/core/router/route_constants.dart';
 import 'package:training/util/data_service.dart';
 
+import '../../../core/common/theme/theme.export.dart';
+
 class WordDetailScreen extends StatefulWidget {
   final String word;
   final String dictionaryType;
@@ -41,7 +43,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
           child: Column(
         children: [
           Container(
-            color: const Color.fromRGBO(18, 55, 149, 0.914),
+            color: AppColors.kPrimary,
             height: MediaQuery.of(context).size.height / 11,
             child: Padding(
               padding: const EdgeInsets.all(8),
@@ -108,8 +110,8 @@ class _WordDetailScreenState extends State<WordDetailScreen>
             alignment: Alignment.centerLeft,
             child: TabBar(
               controller: _tabController,
-              indicatorColor: const Color.fromRGBO(18, 55, 149, 0.914),
-              labelColor: const Color.fromRGBO(18, 55, 149, 0.914),
+              indicatorColor: AppColors.kPrimary,
+              labelColor: AppColors.kPrimary,
               unselectedLabelColor: Colors.grey.shade400,
               isScrollable: true,
               tabs: [

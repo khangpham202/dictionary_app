@@ -8,6 +8,8 @@ import 'package:training/modules/wordDetail/view/word_detail_screen.dart';
 import 'package:training/util/data_service.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../../core/common/theme/theme.export.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -168,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Column(children: [
           Container(
-            color: const Color.fromRGBO(18, 55, 149, 0.914),
+            color: AppColors.kPrimary,
             height: MediaQuery.of(context).size.height / 11,
             child: Padding(
               padding: const EdgeInsets.all(8),

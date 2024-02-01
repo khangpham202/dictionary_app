@@ -9,6 +9,8 @@ import 'package:training/modules/translatePage/bloc/language/language_bloc.dart'
 import 'package:training/util/api_service.dart';
 import 'package:training/util/speech.dart';
 
+import '../../../core/common/theme/theme.export.dart';
+
 class TranslateScreen extends StatefulWidget {
   const TranslateScreen({super.key});
 
@@ -57,7 +59,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
               child: Column(
         children: [
           Container(
-            color: const Color.fromRGBO(18, 55, 149, 0.914),
+            color: AppColors.kPrimary,
             height: MediaQuery.of(context).size.height / 12,
             child: Stack(
               alignment: Alignment.center,
@@ -162,7 +164,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
                           ),
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: const Color.fromRGBO(18, 55, 149, 0.914),
+                            color: AppColors.kPrimary,
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: Text(

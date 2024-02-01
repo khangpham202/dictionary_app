@@ -11,6 +11,8 @@ import 'package:training/core/router/route_constants.dart';
 import 'package:training/modules/wordDetail/view/word_detail_screen.dart';
 import 'package:training/util/speech.dart';
 
+import '../../../core/common/theme/theme.export.dart';
+
 class SavedWordScreen extends StatefulWidget {
   const SavedWordScreen({Key? key}) : super(key: key);
 
@@ -104,7 +106,7 @@ class _SavedWordScreenState extends State<SavedWordScreen> {
                         },
                         backgroundColor:
                             const Color.fromARGB(255, 184, 167, 167),
-                        foregroundColor: Colors.green,
+                        foregroundColor: AppColors.kGreen,
                         icon: Icons.details,
                         label: 'Detail',
                       ),
@@ -148,7 +150,7 @@ class _SavedWordScreenState extends State<SavedWordScreen> {
                         },
                         backgroundColor:
                             const Color.fromARGB(255, 219, 219, 219),
-                        foregroundColor: Colors.red,
+                        foregroundColor: AppColors.kRed,
                         icon: Icons.delete,
                         label: 'Delete',
                       ),

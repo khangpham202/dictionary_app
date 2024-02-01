@@ -3,6 +3,8 @@ import 'package:training/modules/home/view/home_screen.dart';
 import 'package:training/modules/translatePage/view/translate_screen.dart';
 import 'package:flutter/material.dart';
 
+import '../core/common/theme/theme.export.dart';
+
 class NavigationBottomBar extends StatefulWidget {
   final int indexScreen;
   const NavigationBottomBar({
@@ -42,7 +44,7 @@ class NavigationBottomBarState extends State<NavigationBottomBar> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: const Color.fromRGBO(18, 55, 149, 0.914),
+        selectedItemColor: AppColors.kPrimary,
         currentIndex: _currentIndex,
         onTap: (index) {
           _pageController.animateToPage(

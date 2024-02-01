@@ -11,6 +11,8 @@ import 'package:training/util/data_service.dart';
 import 'package:training/util/speech.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
+import '../core/common/theme/theme.export.dart';
+
 class WordMeaningWidget extends StatefulWidget {
   final String word, dictionaryType;
   const WordMeaningWidget(
@@ -104,7 +106,7 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
           child: const CustomToast(
             msg: 'Added to saved words list',
             icon: Icon(FontAwesomeIcons.check),
-            bgColor: Colors.green,
+            bgColor: AppColors.kGreen,
           ),
           toastDuration: const Duration(seconds: 3),
         );
@@ -182,7 +184,7 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                         ),
                       ),
                       const Divider(
-                        color: Colors.red,
+                        color: AppColors.kRed,
                         height: 20,
                         thickness: 3,
                       ),
