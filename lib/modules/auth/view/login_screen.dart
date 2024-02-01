@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:training/components/toast.dart';
+import 'package:training/core/common/theme/app_color.dart';
 import 'package:training/modules/auth/bloc/authentication_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -198,11 +199,11 @@ class _LoginFormState extends State<LoginForm> {
             listener: ((context, state) {
               if (state is AuthenticationSuccessState) {
                 fToast.showToast(
-                  gravity: ToastGravity.CENTER,
+                  gravity: ToastGravity.BOTTOM,
                   child: CustomToast(
                     msg: state.message,
                     icon: const Icon(FontAwesomeIcons.check),
-                    bgColor: Colors.green,
+                    bgColor: AppColors.kGreen,
                   ),
                   toastDuration: const Duration(seconds: 3),
                 );
@@ -213,7 +214,7 @@ class _LoginFormState extends State<LoginForm> {
                   child: CustomToast(
                     msg: state.errorMessage,
                     icon: const Icon(FontAwesomeIcons.exclamation),
-                    bgColor: Colors.red,
+                    bgColor: AppColors.kRed,
                   ),
                   toastDuration: const Duration(seconds: 3),
                 );
@@ -268,7 +269,7 @@ class _LoginFormState extends State<LoginForm> {
   //               const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
   //           decoration: BoxDecoration(
   //             borderRadius: BorderRadius.circular(25.0),
-  //             color: Colors.red,
+  //             color: AppColors.kRed,
   //           ),
   //           child: const Row(
   //             mainAxisSize: MainAxisSize.min,
@@ -298,7 +299,7 @@ class _LoginFormState extends State<LoginForm> {
   //               const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
   //           decoration: BoxDecoration(
   //             borderRadius: BorderRadius.circular(25.0),
-  //             color: Colors.red,
+  //             color: AppColors.kRed,
   //           ),
   //           child: SizedBox(
   //             width: double.infinity,

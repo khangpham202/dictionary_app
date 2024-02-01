@@ -5,6 +5,7 @@ import 'package:training/core/common/model/user.dart';
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  
 
   /// signUp
   Future<UserModel?> signUp(

@@ -30,6 +30,7 @@ class AuthenticationBloc
         emit(const AuthenticationLoadingState(isLoading: true));
         try {
           await authService.signIn(event.email, event.password);
+          emit(const AuthenticationSuccessState('Sign in successfully'));
         } on FirebaseAuthException catch (e) {
           if (event.email.trim() == '' || event.password.trim() == '') {
             emit(const AuthenticationFailureState('Field cannot be empty!!'));
@@ -43,6 +44,7 @@ class AuthenticationBloc
         emit(const AuthenticationLoadingState(isLoading: true));
         try {
           authService.signOut();
+          ;
         } catch (e) {
           emit(AuthenticationFailureState(e.toString()));
         }

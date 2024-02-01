@@ -11,6 +11,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:training/components/toast.dart';
 import 'package:training/modules/auth/bloc/authentication_bloc.dart';
 
+import '../../../core/common/theme/theme.export.dart';
+
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -248,21 +250,22 @@ class _SignUpFormState extends State<SignUpForm> {
           listener: ((context, state) {
             if (state is AuthenticationSuccessState) {
               fToast.showToast(
-                gravity: ToastGravity.CENTER,
+                gravity: ToastGravity.BOTTOM,
                 child: CustomToast(
                   msg: state.message,
                   icon: const Icon(FontAwesomeIcons.check),
-                  bgColor: Colors.green,
+                  bgColor: AppColors.kGreen,
                 ),
                 toastDuration: const Duration(seconds: 3),
               );
+              FocusManager.instance.primaryFocus?.unfocus();
             } else if (state is AuthenticationFailureState) {
               fToast.showToast(
                 gravity: ToastGravity.CENTER,
                 child: CustomToast(
                   msg: state.errorMessage,
                   icon: const Icon(FontAwesomeIcons.exclamation),
-                  bgColor: Colors.red,
+                  bgColor: AppColors.kRed,
                 ),
                 toastDuration: const Duration(seconds: 3),
               );
@@ -313,7 +316,7 @@ class _SignUpFormState extends State<SignUpForm> {
   //       child: const CustomToast(
   //         msg: 'Sign up successfully',
   //         icon: Icon(FontAwesomeIcons.check),
-  //         bgColor: Colors.green,
+  //         bgColor: AppColors.kGreen,
   //       ),
   //       toastDuration: const Duration(seconds: 3),
   //     );
@@ -331,7 +334,7 @@ class _SignUpFormState extends State<SignUpForm> {
   //         child: const CustomToast(
   //           msg: 'Field cannot be empty!!',
   //           icon: Icon(FontAwesomeIcons.exclamation),
-  //           bgColor: Colors.red,
+  //           bgColor: AppColors.kRed,
   //         ),
   //         toastDuration: const Duration(seconds: 3),
   //       );
@@ -341,7 +344,7 @@ class _SignUpFormState extends State<SignUpForm> {
   //         child: CustomToast(
   //           msg: e.message!,
   //           icon: const Icon(FontAwesomeIcons.exclamation),
-  //           bgColor: Colors.red,
+  //           bgColor: AppColors.kRed,
   //         ),
   //         toastDuration: const Duration(seconds: 3),
   //       );
