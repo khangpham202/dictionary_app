@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:training/components/navigation.dart';
@@ -8,11 +9,16 @@ GoRouter routerConfig = GoRouter(
   routes: [
     /// Welcome
     GoRoute(
-        name: RouterConstants.welcome,
-        path: '/',
-        pageBuilder: (context, state) {
-          return const MaterialPage(child: WelcomeScreen());
-        }),
+      name: RouterConstants.welcome,
+      path: '/',
+      redirect: (context, state) {
+        final user = FirebaseAuth.instance.currentUser;
+        return (user == null) ? null : '/home';
+      },
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: WelcomeScreen());
+      },
+    ),
 
     /// Login
     GoRoute(
@@ -36,9 +42,10 @@ GoRouter routerConfig = GoRouter(
       path: '/home',
       pageBuilder: (context, state) {
         return const MaterialPage(
-            child: NavigationBottomBar(
-          indexScreen: 0,
-        ));
+          child: NavigationBottomBar(
+            indexScreen: 0,
+          ),
+        );
       },
       routes: [
         // wordDetails
@@ -48,10 +55,11 @@ GoRouter routerConfig = GoRouter(
           pageBuilder: (context, state) {
             var params = state.extra as WordDetailScreen;
             return MaterialPage(
-                child: WordDetailScreen(
-              word: params.word,
-              dictionaryType: params.dictionaryType,
-            ));
+              child: WordDetailScreen(
+                word: params.word,
+                dictionaryType: params.dictionaryType,
+              ),
+            );
           },
         ),
         // conversation
