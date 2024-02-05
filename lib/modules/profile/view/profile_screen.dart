@@ -20,14 +20,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     if (user != null) {
-      setState(() {
-        isLogin = true;
-      });
+      isLogin = true;
       getData(user!.uid);
     } else {
-      setState(() {
-        isLogin = false;
-      });
+      isLogin = false;
     }
   }
 
@@ -92,8 +88,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         icon: FontAwesomeIcons.solidBookmark,
                         text: 'Saved words'),
                   ),
-                  const ProfileComponent(
-                      icon: FontAwesomeIcons.gear, text: 'Setting'),
+                  GestureDetector(
+                    onTap: () => context.go('/profile/settings'),
+                    child: const ProfileComponent(
+                        icon: FontAwesomeIcons.gear, text: 'Setting'),
+                  ),
                   const ProfileComponent(
                       icon: FontAwesomeIcons.shield, text: 'About us'),
                   const ProfileComponent(

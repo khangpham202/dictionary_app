@@ -38,6 +38,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
 
   @override
   Widget build(BuildContext context) {
+    print(widget.word);
     return Scaffold(
       body: SafeArea(
           child: Column(

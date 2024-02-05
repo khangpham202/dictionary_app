@@ -9,3 +9,5 @@ export 'profile/view/profile_screen.dart';
 export 'translatePage/view/translate_screen.dart';
 export 'wordDetail/view/word_detail_screen.dart';
 export 'profile/view/saved_word_screen.dart';
+export 'profile/view/account_info_screen.dart';
+export 'setting/view/setting_screen.dart';

@@ -18,13 +18,12 @@ class DatabaseHelper {
 
   Future<Database> initDatabase() async {
     var databasesPath = await getDatabasesPath();
-    var path = join(databasesPath, "dict_bilingual.db");
+    var path = join(databasesPath, "dict_hh.db");
 
     if (await databaseExists(path)) {
       return await openDatabase(path);
     } else {
-      ByteData data =
-          await rootBundle.load(join("assets/data", "dict_bilingual.db"));
+      ByteData data = await rootBundle.load(join("assets/data", "dict_hh.db"));
       List<int> bytes = data.buffer.asUint8List();
       await writeToFile(path, Uint8List.fromList(bytes));
 
@@ -75,7 +74,7 @@ class DatabaseHelper {
   }
 }
 
-class WordSuggestion {
+class WordSuggestion {                   
   Future<List<String>> getEnglishWordSuggestion() async {
     String data = await rootBundle.loadString('assets/data/en_sug_109k.txt');
     List<String> suggestions = LineSplitter.split(data).toList();
