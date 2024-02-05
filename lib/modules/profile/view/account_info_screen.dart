@@ -18,41 +18,42 @@ class AccountInfo extends StatefulWidget {
 class _AccountInfoState extends State<AccountInfo> {
   final List<String> _gender = ['Male', 'Female', 'Other'];
   String _selectedGender = '', emailValue = '';
-  late FToast fToast;
-  var nameController = TextEditingController();
-  var passwordController = TextEditingController();
-  var phoneNumberController = TextEditingController();
+  static final FToast fToast = FToast();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
   late bool _passwordInVisible = true;
   final user = FirebaseAuth.instance.currentUser;
+  bool isGoogleSignedIn = false;
 
-  void getData(String userId) {
+  Future _getData(String userId) async {
     DocumentReference docRef =
         FirebaseFirestore.instance.collection('users').doc(userId);
-    docRef.get().then((docSnapshot) {
-      if (docSnapshot.exists) {
-        Map<String, dynamic>? data =
-            docSnapshot.data() as Map<String, dynamic>?;
-        if (mounted) {
-          setState(() {
-            nameController.text = data?['name'];
-            emailValue = data?['email'];
-            passwordController.text = data?['password'];
-            if (data != null && data.containsKey('gender')) {
-              _selectedGender = data['gender'];
-            } else {
-              _selectedGender = '';
-            }
-            if (data != null && data.containsKey('phoneNumber')) {
-              phoneNumberController.text = data['phoneNumber'];
-            } else {
-              phoneNumberController.text = '';
-            }
-          });
+    DocumentSnapshot docSnapshot = await docRef.get();
+
+    if (docSnapshot.exists) {
+      Map<String, dynamic>? data = docSnapshot.data() as Map<String, dynamic>?;
+
+      if (data != null) {
+        nameController.text = data['name'];
+        setState(() {
+          emailValue = data['email'];
+        });
+        passwordController.text = data['password'];
+
+        if (data.containsKey('gender')) {
+          _selectedGender = data['gender'];
+        } else {
+          _selectedGender = '';
         }
-      } else {
-        return;
+
+        if (data.containsKey('phoneNumber')) {
+          phoneNumberController.text = data['phoneNumber'];
+        } else {
+          phoneNumberController.text = '';
+        }
       }
-    });
+    }
   }
 
   bool isPhoneNoValid(String? phoneNo) {
@@ -75,16 +76,26 @@ class _AccountInfoState extends State<AccountInfo> {
     await user!.updatePassword(newPassword);
   }
 
+  void checkGoogleSignInMethod() {
+    for (UserInfo userInfo in user!.providerData) {
+      if (userInfo.providerId == 'google.com') {
+        isGoogleSignedIn = true;
+      } else {
+        isGoogleSignedIn = false;
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    getData(user!.uid);
-    fToast = FToast();
-    fToast.init(context);
+    _getData(user!.uid);
+    checkGoogleSignInMethod();
   }
 
   @override
   Widget build(BuildContext context) {
+    fToast.init(context);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -146,61 +157,75 @@ class _AccountInfoState extends State<AccountInfo> {
                 ),
               ),
               const Gap(10),
-              Row(
-                children: [
-                  const Text(
-                    'Gender: ',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  const Gap(10),
-                  DropdownButton<String>(
-                      items: _gender.map((String val) {
-                        return DropdownMenuItem<String>(
-                          value: val,
-                          child: Text(val),
-                        );
-                      }).toList(),
-                      hint: Text(_selectedGender),
-                      onChanged: (newVal) {
-                        setState(() {
-                          _selectedGender = newVal!;
-                        });
-                      })
-                ],
-              ),
-              const Gap(10),
-              TextFormField(
-                decoration: InputDecoration(
-                    labelText: 'Password',
-                    labelStyle: const TextStyle(fontSize: 18),
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _passwordInVisible = !_passwordInVisible;
-                        });
-                      },
-                      icon: Icon(
-                        _passwordInVisible
-                            ? Icons.visibility_off
-                            : Icons.visibility,
+              isGoogleSignedIn
+                  ? const Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        "Managed by Google",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Color.fromARGB(255, 109, 108, 108)),
                       ),
-                    )),
-                obscureText: _passwordInVisible,
-                controller: passwordController,
-              ),
-              const Gap(10),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Phone number',
-                  labelStyle: TextStyle(fontSize: 18),
-                ),
-                controller: phoneNumberController,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (phoneNumber) =>
-                    phoneNumber != null && !isPhoneNoValid(phoneNumber)
-                        ? 'Enter a valid phone number'
-                        : null,
-              ),
+                    )
+                  : Column(
+                      children: [
+                        Row(
+                          children: [
+                            const Text(
+                              'Gender: ',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            const Gap(10),
+                            DropdownButton<String>(
+                                items: _gender.map((String val) {
+                                  return DropdownMenuItem<String>(
+                                    value: val,
+                                    child: Text(val),
+                                  );
+                                }).toList(),
+                                hint: Text(_selectedGender),
+                                onChanged: (newVal) {
+                                  setState(() {
+                                    _selectedGender = newVal!;
+                                  });
+                                })
+                          ],
+                        ),
+                        const Gap(10),
+                        TextFormField(
+                          decoration: InputDecoration(
+                              labelText: 'Password',
+                              labelStyle: const TextStyle(fontSize: 18),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _passwordInVisible = !_passwordInVisible;
+                                  });
+                                },
+                                icon: Icon(
+                                  _passwordInVisible
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                ),
+                              )),
+                          obscureText: _passwordInVisible,
+                          controller: passwordController,
+                        ),
+                        const Gap(10),
+                        TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Phone number',
+                            labelStyle: TextStyle(fontSize: 18),
+                          ),
+                          controller: phoneNumberController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (phoneNumber) => phoneNumber != null &&
+                                  !isPhoneNoValid(phoneNumber)
+                              ? 'Enter a valid phone number'
+                              : null,
+                        ),
+                      ],
+                    ),
               const Gap(30),
               Builder(builder: (context) {
                 return SizedBox(
