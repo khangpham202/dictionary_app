@@ -1,5 +1,4 @@
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -247,93 +246,17 @@ class _LoginFormState extends State<LoginForm> {
       ),
     );
   }
-
-  // Future signIn() async {
-  //   try {
-  //     await FirebaseAuth.instance.signInWithEmailAndPassword(
-  //       email: emailController.text.trim(),
-  //       password: passwordController.text.trim(),
-  //     );
-
-  //     if (!context.mounted) return;
-
-  //     context.go('/home');
-  //   } on FirebaseAuthException catch (e) {
-  //     if (emailController.text.trim() == '' ||
-  //         passwordController.text.trim() == '') {
-  //       fToast.showToast(
-  //         gravity: ToastGravity.CENTER,
-  //         child: Container(
-  //           constraints: const BoxConstraints(maxWidth: 250),
-  //           padding:
-  //               const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-  //           decoration: BoxDecoration(
-  //             borderRadius: BorderRadius.circular(25.0),
-  //             color: AppColors.kRed,
-  //           ),
-  //           child: const Row(
-  //             mainAxisSize: MainAxisSize.min,
-  //             children: [
-  //               Icon(FontAwesomeIcons.exclamation),
-  //               SizedBox(
-  //                 width: 12.0,
-  //               ),
-  //               Flexible(
-  //                 child: Text(
-  //                   'Field cannot be empty!!',
-  //                   overflow: TextOverflow.ellipsis,
-  //                   maxLines: 1,
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //         toastDuration: const Duration(seconds: 3),
-  //       );
-  //     } else {
-  //       fToast.showToast(
-  //         gravity: ToastGravity.CENTER,
-  //         child: Container(
-  //           constraints: const BoxConstraints(maxWidth: 250),
-  //           padding:
-  //               const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-  //           decoration: BoxDecoration(
-  //             borderRadius: BorderRadius.circular(25.0),
-  //             color: AppColors.kRed,
-  //           ),
-  //           child: SizedBox(
-  //             width: double.infinity,
-  //             child: Row(
-  //               mainAxisSize: MainAxisSize.min,
-  //               children: [
-  //                 const Icon(FontAwesomeIcons.exclamation),
-  //                 const SizedBox(
-  //                   width: 12.0,
-  //                 ),
-  //                 Flexible(
-  //                   child: Text(
-  //                     e.message!,
-  //                     overflow: TextOverflow.visible,
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //         toastDuration: const Duration(seconds: 3),
-  //       );
-  //     }
-  //   }
-  // }
 }
 
 class LoginScreenFooter extends StatelessWidget {
   const LoginScreenFooter({
     Key? key,
   }) : super(key: key);
+  static final FToast fToast = FToast();
 
   @override
   Widget build(BuildContext context) {
+    fToast.init(context);
     return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
       const Text(
         "OR",
@@ -342,22 +265,54 @@ class LoginScreenFooter extends StatelessWidget {
       const Gap(
         10,
       ),
-      SizedBox(
-        width: double.infinity,
-        child: OutlinedButton.icon(
-            icon: const Image(
-              image: AssetImage("assets/image/logo/google.png"),
-              width: 20,
-            ),
-            onPressed: () {},
-            label: const Text("Login with Google"),
-            style: ElevatedButton.styleFrom(
-                elevation: 0,
-                backgroundColor: Colors.white,
-                side: const BorderSide(color: Color(0xFF272727)),
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5)))),
+      BlocConsumer<AuthenticationBloc, AuthenticationState>(
+        listener: ((context, state) {
+          if (state is AuthenticationSuccessState) {
+            fToast.showToast(
+              gravity: ToastGravity.BOTTOM,
+              child: CustomToast(
+                msg: state.message,
+                icon: const Icon(FontAwesomeIcons.check),
+                bgColor: AppColors.kGreen,
+              ),
+              toastDuration: const Duration(seconds: 3),
+            );
+            context.go('/home');
+          } else if (state is AuthenticationFailureState) {
+            fToast.showToast(
+              gravity: ToastGravity.CENTER,
+              child: CustomToast(
+                msg: state.errorMessage,
+                icon: const Icon(FontAwesomeIcons.exclamation),
+                bgColor: AppColors.kRed,
+              ),
+              toastDuration: const Duration(seconds: 3),
+            );
+          }
+        }),
+        builder: ((context, state) {
+          return SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+                icon: const Image(
+                  image: AssetImage("assets/image/logo/google.png"),
+                  width: 20,
+                ),
+                onPressed: () {
+                  BlocProvider.of<AuthenticationBloc>(context).add(
+                    LoginWithGoogle(),
+                  );
+                },
+                label: const Text("Login with Google"),
+                style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: Colors.white,
+                    side: const BorderSide(color: Color(0xFF272727)),
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)))),
+          );
+        }),
       ),
       const Gap(
         10,
