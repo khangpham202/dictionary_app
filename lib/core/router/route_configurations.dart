@@ -89,18 +89,6 @@ GoRouter routerConfig = GoRouter(
       ],
     ),
 
-    /// Translate
-    GoRoute(
-      name: RouterConstants.translate,
-      path: '/translate',
-      pageBuilder: (context, state) {
-        return const MaterialPage(
-            child: NavigationBottomBar(
-          indexScreen: 1,
-        ));
-      },
-    ),
-
     /// Profile
     GoRoute(
         name: RouterConstants.profile,
@@ -128,6 +116,15 @@ GoRouter routerConfig = GoRouter(
               return const MaterialPage(child: SavedWordScreen());
             },
           ),
+          GoRoute(
+            name: RouterConstants.commonSettings,
+            path: 'settings',
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: SettingsScreen());
+            },
+          ),
         ]),
+
+    // Settings
   ],
 );
