@@ -1,15 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:training/bloc_provider_scope.dart';
 import 'package:training/core/router/route_configurations.dart';
 import 'package:training/firebase_options.dart';
+// import 'package:training/modules/intro/note.dart';
 
+// void main() => runApp(const DropdownMenuApp());
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+  FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    routerConfig.refresh();
+  });
   runApp(
     const BlocProviderScope(
       child: MyApp(),

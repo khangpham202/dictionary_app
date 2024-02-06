@@ -1,4 +1,4 @@
-part of 'language_bloc.dart';
+part of 'country_bloc.dart';
 
 abstract class LanguageEvent {}
 

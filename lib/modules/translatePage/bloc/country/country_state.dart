@@ -1,4 +1,4 @@
-part of 'language_bloc.dart';
+part of 'country_bloc.dart';
 
 sealed class LanguageState extends Equatable {
   final Country country;

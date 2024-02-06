@@ -5,7 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:training/components/language_selector.dart';
 import 'package:training/core/common/model/translation.dart';
 import 'package:training/core/enum/country.dart';
-import 'package:training/modules/translatePage/bloc/language/language_bloc.dart';
+import 'package:training/modules/translatePage/bloc/country/country_bloc.dart';
 import 'package:training/util/api_service.dart';
 import 'package:training/util/speech.dart';
 
@@ -23,7 +23,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
   TextEditingController originalSentenceController = TextEditingController();
   bool isLanguageSwapped = false;
 
-  LanguageBloc languageBloc = LanguageBloc();
+  CountryBloc countryBloc = CountryBloc();
   late Country selectedSourceLanguage;
   late Country selectedTargetLanguage;
 
@@ -53,7 +53,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => languageBloc,
+      create: (context) => countryBloc,
       child: Scaffold(
           body: SafeArea(
               child: Column(
