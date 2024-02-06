@@ -54,6 +54,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     void showDictionaryFlowOption() {
       showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.5),
+        barrierDismissible: true,
+        barrierLabel:
+            MaterialLocalizations.of(context).modalBarrierDismissLabel,
+        transitionDuration: const Duration(milliseconds: 300),
         context: context,
         pageBuilder: (ctx, a1, a2) {
           return Container();
@@ -122,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    const Divider(),
+                    const Divider(color: Color.fromARGB(255, 118, 114, 114)),
                     GestureDetector(
                       onTap: () {
                         if (dictionaryType == "VE") {
@@ -162,7 +167,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ));
         },
-        transitionDuration: const Duration(milliseconds: 300),
       );
     }
 
