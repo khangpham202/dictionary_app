@@ -40,6 +40,16 @@ class AuthenticationBloc
         }
         emit(const AuthenticationLoadingState(isLoading: false));
       });
+      on<LoginWithGoogle>((event, emit) async {
+        emit(const AuthenticationLoadingState(isLoading: true));
+        try {
+          await authService.signInWithGoogle();
+          emit(const AuthenticationSuccessState('Sign in successfully'));
+        } on FirebaseAuthException catch (e) {
+          emit(AuthenticationFailureState(e.toString()));
+        }
+        emit(const AuthenticationLoadingState(isLoading: false));
+      });
       on<SignOut>((event, emit) async {
         emit(const AuthenticationLoadingState(isLoading: true));
         try {

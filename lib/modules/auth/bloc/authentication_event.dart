@@ -28,4 +28,6 @@ class Login extends AuthenticationEvent {
   List<Object> get props => [email, password];
 }
 
+class LoginWithGoogle extends AuthenticationEvent {}
+
 class SignOut extends AuthenticationEvent {}
