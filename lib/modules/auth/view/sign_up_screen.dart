@@ -6,8 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:training/components/toast.dart';
 import 'package:training/modules/auth/bloc/authentication_bloc.dart';
 
@@ -298,59 +296,6 @@ class _SignUpFormState extends State<SignUpForm> {
       ],
     ));
   }
-
-  // Future signUp() async {
-  //   try {
-  //     await FirebaseAuth.instance.createUserWithEmailAndPassword(
-  //       email: emailController.text.trim(),
-  //       password: passwordController.text.trim(),
-  //     );
-
-  //     final Map<String, dynamic> userData = {
-  //       'name': nameController.text.trim(),
-  //       'email': emailController.text.trim(),
-  //       'password': passwordController.text.trim(),
-  //     };
-  //     fToast.showToast(
-  //       gravity: ToastGravity.CENTER,
-  //       child: const CustomToast(
-  //         msg: 'Sign up successfully',
-  //         icon: Icon(FontAwesomeIcons.check),
-  //         bgColor: AppColors.kGreen,
-  //       ),
-  //       toastDuration: const Duration(seconds: 3),
-  //     );
-
-  //     FirebaseFirestore firestore = FirebaseFirestore.instance;
-  //     await firestore
-  //         .collection("users")
-  //         .doc(FirebaseAuth.instance.currentUser!.uid)
-  //         .set(userData);
-  //   } on FirebaseAuthException catch (e) {
-  //     if (emailController.text.trim() == '' &&
-  //         passwordController.text.trim() == '') {
-  //       fToast.showToast(
-  //         gravity: ToastGravity.CENTER,
-  //         child: const CustomToast(
-  //           msg: 'Field cannot be empty!!',
-  //           icon: Icon(FontAwesomeIcons.exclamation),
-  //           bgColor: AppColors.kRed,
-  //         ),
-  //         toastDuration: const Duration(seconds: 3),
-  //       );
-  //     } else {
-  //       fToast.showToast(
-  //         gravity: ToastGravity.CENTER,
-  //         child: CustomToast(
-  //           msg: e.message!,
-  //           icon: const Icon(FontAwesomeIcons.exclamation),
-  //           bgColor: AppColors.kRed,
-  //         ),
-  //         toastDuration: const Duration(seconds: 3),
-  //       );
-  //     }
-  //   }
-  // }
 }
 
 class SignUpScreenFooter extends StatelessWidget {
