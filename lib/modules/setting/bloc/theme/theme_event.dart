@@ -7,6 +7,6 @@ sealed class ThemeEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class DarkTheme extends ThemeEvent {}
+class InitialThemeSetEvent extends ThemeEvent {}
 
-final class LightTheme extends ThemeEvent {}
+class ThemeSwitchEvent extends ThemeEvent {}
