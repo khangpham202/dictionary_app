@@ -47,6 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       body: isLogin
           ? Center(
@@ -67,8 +68,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const Gap(10),
                         Text(
                           'Xin chào! \n$name',
-                          style: const TextStyle(
-                              color: Colors.black,
+                          style: TextStyle(
+                              color: colorScheme.onSecondary,
                               fontSize: 17,
                               fontWeight: FontWeight.w600),
                         )
@@ -175,6 +176,8 @@ class ProfileComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       children: [
         Container(
@@ -189,7 +192,7 @@ class ProfileComponent extends StatelessWidget {
                 offset: const Offset(1, 5),
               ),
             ],
-            color: Colors.white,
+            color: colorScheme.onPrimary,
           ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
@@ -202,12 +205,13 @@ class ProfileComponent extends StatelessWidget {
                     Icon(
                       icon,
                       size: 22,
+                      color: colorScheme.onSecondary,
                     ),
                     const Gap(10),
                     Text(
                       text,
-                      style: const TextStyle(
-                          color: Colors.black,
+                      style: TextStyle(
+                          color: colorScheme.onSecondary,
                           fontSize: 16,
                           fontWeight: FontWeight.w600),
                     )

@@ -1,120 +1,95 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:gap/gap.dart';
-// import 'package:training/util/api_service.dart';
-// import 'package:training/components/language_selector.dart';
-// import 'package:training/core/enum/country.dart';
-// import 'package:training/modules/translatePage/bloc/language/language_bloc.dart';
-// import 'package:flutter/cupertino.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:gap/gap.dart';
 
-class DropdownMenuApp extends StatefulWidget {
-  const DropdownMenuApp({super.key});
+import '../../core/common/theme/theme.export.dart';
 
-  @override
-  State<DropdownMenuApp> createState() => _DropdownMenuAppState();
-}
-
-class _DropdownMenuAppState extends State<DropdownMenuApp> {
-  late FToast fToast;
-
-  @override
-  void initState() {
-    super.initState();
-    fToast = FToast();
-    fToast.init(context);
-  }
+class DropdownMenuApp extends StatelessWidget {
+  const DropdownMenuApp({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("Flutter Toast"),
-        ),
-        body: Container(
-          margin: const EdgeInsets.all(20),
-          alignment: Alignment.topCenter,
-          child: Column(
-            children: [
-              ElevatedButton(
-                child: const Text("Display Custom Toast"),
-                onPressed: () {
-                  showCustomToast();
-                },
+    return MaterialApp(
+      title: 'Slidable Example',
+      home: Scaffold(
+        body: ListView(
+          children: [
+            Slidable(
+              key: const ValueKey(0),
+              endActionPane: ActionPane(
+                motion: const ScrollMotion(),
+                children: [
+                  SlidableAction(
+                    onPressed: (BuildContext context) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text(
+                                'Are you sure to delete this saved word?'),
+                            actions: [
+                              TextButton(
+                                child: const Text('Cancel'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: const Text('Approve'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    backgroundColor: const Color.fromARGB(255, 219, 219, 219),
+                    foregroundColor: AppColors.kRed,
+                    icon: Icons.delete,
+                    label: 'Delete',
+                  ),
+                ],
               ),
-            ],
-          ),
-        ));
-  }
-
-  showCustomToast() {
-    Widget toast = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25.0),
-        color: Colors.greenAccent,
-      ),
-      child: const Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.check),
-          SizedBox(
-            width: 12.0,
-          ),
-          Text("This is a Custom Toast"),
-        ],
-      ),
-    );
-    fToast.showToast(
-      child: toast,
-      toastDuration: const Duration(seconds: 3),
-    );
-  }
-}
-
-class CustomContainer extends StatelessWidget {
-  final Color borderColor;
-  final String title;
-
-  const CustomContainer({
-    super.key,
-    required this.borderColor,
-    required this.title,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        padding: const EdgeInsets.only(left: 12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          color: Colors.green,
-        ),
-        height: 70,
-        width: 350,
-        child: Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(15),
-                bottomRight: Radius.circular(15)),
-            color: Colors.white,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(color: Colors.black, fontSize: 25),
+              child: ListTile(
+                title: Row(
+                  children: [
+                    const Text('1. Slide me'),
+                    const Gap(5),
+                    GestureDetector(
+                      onTap: () {
+                        // TextToSpeechService().playTts('en', widget.word);
+                      },
+                      child: const Icon(
+                        Icons.volume_up_outlined,
+                        color: Color.fromRGBO(99, 115, 156, 0.914),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+                subtitle: const Row(
+                  children: [
+                    Icon(
+                      Icons.arrow_right_outlined,
+                    ),
+                    SizedBox(
+                      width: 300,
+                      child: Text(
+                        'data.description',
+                        overflow: TextOverflow.visible,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 }
+

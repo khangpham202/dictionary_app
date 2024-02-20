@@ -8,8 +8,6 @@ import 'package:training/modules/wordDetail/view/word_detail_screen.dart';
 import 'package:training/util/data_service.dart';
 import 'package:video_player/video_player.dart';
 
-import '../../../core/common/theme/theme.export.dart';
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -52,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     void showDictionaryFlowOption() {
       showGeneralDialog(
         barrierColor: Colors.black.withOpacity(0.5),
@@ -174,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Column(children: [
           Container(
-            color: AppColors.kPrimary,
+            color: colorScheme.primary,
             height: MediaQuery.of(context).size.height / 11,
             child: Padding(
               padding: const EdgeInsets.all(8),
@@ -187,14 +186,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: TypeAheadField(
                             textFieldConfiguration: TextFieldConfiguration(
                               controller: searchController,
-                              decoration: const InputDecoration(
-                                fillColor: Colors.white,
+                              decoration: InputDecoration(
+                                fillColor: colorScheme.onPrimary,
                                 filled: true,
-                                prefixIcon: Icon(Icons.search),
+                                prefixIcon: const Icon(Icons.search),
                                 hintText: 'Search any words',
                                 contentPadding:
-                                    EdgeInsets.symmetric(vertical: 10),
-                                border: OutlineInputBorder(),
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                border: const OutlineInputBorder(),
                               ),
                             ),
                             suggestionsCallback: (pattern) async {
@@ -232,14 +231,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: TypeAheadField(
                             textFieldConfiguration: TextFieldConfiguration(
                               controller: searchController,
-                              decoration: const InputDecoration(
-                                fillColor: Colors.white,
+                              decoration: InputDecoration(
+                                fillColor: colorScheme.onPrimary,
                                 filled: true,
-                                prefixIcon: Icon(Icons.search),
+                                prefixIcon: const Icon(Icons.search),
                                 hintText: 'Search any words',
                                 contentPadding:
-                                    EdgeInsets.symmetric(vertical: 10),
-                                border: OutlineInputBorder(),
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                border: const OutlineInputBorder(),
                               ),
                             ),
                             suggestionsCallback: (pattern) async {

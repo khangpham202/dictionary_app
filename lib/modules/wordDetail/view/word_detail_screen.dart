@@ -38,13 +38,14 @@ class _WordDetailScreenState extends State<WordDetailScreen>
 
   @override
   Widget build(BuildContext context) {
-    print(widget.word);
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       body: SafeArea(
           child: Column(
         children: [
           Container(
-            color: AppColors.kPrimary,
+            color: colorScheme.primary,
             height: MediaQuery.of(context).size.height / 11,
             child: Padding(
               padding: const EdgeInsets.all(8),
@@ -64,15 +65,16 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                     child: TypeAheadField(
                       textFieldConfiguration: TextFieldConfiguration(
                         controller: searchController,
-                        decoration: const InputDecoration(
-                          fillColor: Colors.white,
+                        decoration: InputDecoration(
+                          fillColor: colorScheme.onPrimary,
                           filled: true,
-                          prefixIcon: Icon(Icons.search),
-                          hintStyle: TextStyle(
+                          prefixIcon: const Icon(Icons.search),
+                          hintStyle: const TextStyle(
                             color: Colors.black,
                           ),
-                          contentPadding: EdgeInsets.symmetric(vertical: 10),
-                          border: OutlineInputBorder(),
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 10),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       suggestionsCallback: (pattern) async {
@@ -111,8 +113,8 @@ class _WordDetailScreenState extends State<WordDetailScreen>
             alignment: Alignment.centerLeft,
             child: TabBar(
               controller: _tabController,
-              indicatorColor: AppColors.kPrimary,
-              labelColor: AppColors.kPrimary,
+              indicatorColor: colorScheme.primary,
+              labelColor: colorScheme.primary,
               unselectedLabelColor: Colors.grey.shade400,
               isScrollable: true,
               tabs: [

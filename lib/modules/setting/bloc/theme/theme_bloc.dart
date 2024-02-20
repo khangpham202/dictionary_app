@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:training/util/theme_helper.dart';
 
-import '../../../../core/common/theme/theme.export.dart';
 
 part 'theme_event.dart';
 part 'theme_state.dart';

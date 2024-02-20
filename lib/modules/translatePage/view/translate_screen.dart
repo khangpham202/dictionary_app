@@ -9,8 +9,6 @@ import 'package:training/modules/translatePage/bloc/country/country_bloc.dart';
 import 'package:training/util/api_service.dart';
 import 'package:training/util/speech.dart';
 
-import '../../../core/common/theme/theme.export.dart';
-
 class TranslateScreen extends StatefulWidget {
   const TranslateScreen({super.key});
 
@@ -52,6 +50,8 @@ class _TranslateScreenState extends State<TranslateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return BlocProvider(
       create: (context) => countryBloc,
       child: Scaffold(
@@ -59,7 +59,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
               child: Column(
         children: [
           Container(
-            color: AppColors.kPrimary,
+            color: colorScheme.primary,
             height: MediaQuery.of(context).size.height / 12,
             child: Stack(
               alignment: Alignment.center,
@@ -164,7 +164,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
                           ),
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: AppColors.kPrimary,
+                            color: colorScheme.primary,
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: Text(
@@ -200,6 +200,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
             controller: originalSentenceController,
             decoration: InputDecoration(
               labelText: 'Type text or phase',
+              labelStyle: TextStyle(color: colorScheme.onSecondary),
               border: const OutlineInputBorder(),
               suffixIcon: GestureDetector(
                 onTap: () async {

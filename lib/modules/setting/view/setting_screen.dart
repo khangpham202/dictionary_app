@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:training/core/common/theme/app_color.dart';
-import 'package:training/modules/setting/bloc/theme/theme_bloc.dart';
 import 'package:training/modules/setting/bloc/theme/theme_bloc.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -15,36 +12,14 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  // bool? isDarkTheme;
-  // bool isDarkMode = false;
-  // getThemeAtInit() async {
-  //   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  //   isDarkTheme = sharedPreferences.getBool("is_dark");
-  //   if (isDarkTheme != null && isDarkTheme!) {
-  //     isDarkMode = true;
-  //   } else {
-  //     isDarkMode = false;
-  //   }
-  // }
-
-  // void toggleTheme(bool isDarkModeTheme) async {
-  //   setState(() {
-  //     isDarkMode = isDarkModeTheme;
-  //     isDarkMode ? ThemeMode.dark : ThemeMode.light;
-  //   });
-
-  //   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  //   sharedPreferences.setBool("is_dark", !isDarkModeTheme);
-  // }
-
   @override
   void initState() {
     super.initState();
-    // getThemeAtInit();
   }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     void showLanguageChoice() {
       showGeneralDialog(
         barrierColor: Colors.black.withOpacity(0.5),
@@ -156,16 +131,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
-        backgroundColor: AppColors.kPrimary,
         centerTitle: true,
+        backgroundColor: colorScheme.primary,
       ),
       body: Container(
-        color: const Color.fromARGB(255, 241, 237, 237),
+        color: colorScheme.onPrimaryContainer,
         child: Column(
           children: [
             const Gap(20),
             Container(
-              color: Colors.white,
+              color: colorScheme.onPrimary,
               child: Column(
                 children: [
                   Row(
@@ -187,10 +162,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       TextButton(
                           onPressed: showLanguageChoice,
-                          child: const Text(
+                          child: Text(
                             'English',
                             style: TextStyle(
-                              color: Colors.grey,
+                              color: colorScheme.secondary,
                               fontSize: 18,
                             ),
                           ))
@@ -225,7 +200,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             inactiveThumbColor: Colors.blueGrey.shade600,
                             inactiveTrackColor: Colors.grey.shade400,
                             splashRadius: 50.0,
-                            value: state.themeData == ThemeData.dark(),
+                            value: state.themeMode == ThemeMode.dark,
                             onChanged: (value) {
                               BlocProvider.of<ThemeBloc>(context)
                                   .add(ThemeSwitchEvent());

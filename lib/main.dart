@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:training/bloc_provider_scope.dart';
+import 'package:training/core/common/theme/theme_config.dart';
 import 'package:training/core/router/route_configurations.dart';
 import 'package:training/firebase_options.dart';
-// import 'package:training/modules/intro/note.dart';
+import 'package:training/modules/setting/bloc/theme/theme_bloc.dart';
 
-// void main() => runApp(const DropdownMenuApp());
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -27,9 +28,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      routerConfig: routerConfig,
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, state) {
+        return MaterialApp.router(
+          theme: ThemeData(
+            colorScheme: ThemeDataStyle.lightColorScheme,
+          ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            colorScheme: ThemeDataStyle.darkColorScheme,
+          ),
+          themeMode: state.themeMode,
+          debugShowCheckedModeBanner: false,
+          routerConfig: routerConfig,
+        );
+      },
     );
   }
 }
