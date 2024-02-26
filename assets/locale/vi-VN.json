@@ -1,0 +1,144 @@
+{
+  "text": {
+    "notification": "Notification",
+    "success": "Success",
+    "error_occur": "An error has occurred",
+    "please_wait": "Please wait!",
+    "view_all": "View all",
+    "profile_settings": "Profile settings",
+    "full_name": "Full name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "settings": "Settings",
+    "change_password": "Change password",
+    "password": "Password",
+    "term_and_privacy_policy": "Term and Privacy Policy",
+    "children": "Children",
+    "log_out": "Log out",
+    "edit_profile": "Edit profile",
+    "first_name": "First name",
+    "last_name": "Last name",
+    "state": "State",
+    "city": "City",
+    "edit": "Edit",
+    "Add": "Add",
+    "birthday": "Birthday",
+    "sign_up": "Sign Up",
+    "login": "Login"
+  },
+  "validator": {
+    "required": "{field} required",
+    "invalid": "{field} invalid",
+    "too_short": "{field} too short",
+    "not_match": "{field} not match",
+    "password_include": "Password must be at least 8 characters including letters and numbers",
+    "apple_sign_in": "Apple Sign In is supported for only IOS 13 or later",
+    "agree_terms_required": "Please agree to the Terms of Service to proceed",
+    "equal_than": "{field} must be less than today"
+  },
+  "button": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "continue": "Continue",
+    "done": "Done",
+    "send_message": "Send message",
+    "save": "Save",
+    "reset":"Reset"
+  },
+  "root": {
+    "home": "Home",
+    "explore": "Explore",
+    "favourites": "Favourites",
+    "profile": "Profile"
+  },
+  "login": {
+    "email_or_password_incorrect": "Email or password incorrect",
+    "done_have_an_account": "Don’t have an account yet? ",
+    "login_with_google": "Login with Google",
+    "login_with_facebook": "Login with Facebook",
+    "login_with_apple": "Login with Apple",
+    "or_login_with": "or Login in with",
+    "remember_me": "Remember me",
+    "forgot_password": "Forgot password?"
+  },
+  "register": {
+    "create_an_account": "Create an account",
+    "have_an_account": "Already have an account? ",
+    "i_agree_with": "I agree with ",
+    "terms": "Terms",
+    "and": " and ",
+    "Conditions": "Conditions",
+    "user_exist": "User already exists",
+    "confirm_password": "Confirm Password"
+  },
+  "forgot_password": {
+    "title": "Forgot password",
+    "description": "Please enter your email address. We will send you a password reset link",
+    "email_title": "Email address"
+  },
+  "verification_code": {
+    "title": "Verification code",
+    "message": {
+      "1": "Please check your email!",
+      "2": "We have sent a code to "
+    },
+    "problem": "Didn't get a code? ",
+    "resend": "Resend",
+    "verify": "Verify"
+  },
+  "reset_password": {
+    "new_password": "New password",
+    "confirm_password": "Confirm password",
+    "reset": "Reset password",
+    "title": "Enter your new password and confirm."
+  },
+  "change_password": {
+    "title": "Change password",
+    "description": "Your new password must be different from previous used passwords",
+    "current_password": "Current password",
+    "password": "New password",
+    "confirm_password": "Confirm password",
+    "submit_change": "Submit new password"
+  },
+  "permission": {
+    "use_camera": "Use camera",
+    "choose_library": "Choose from library"
+  },
+  "home": {
+    "header": {
+      "welcome": "Welcome {user_name}"
+    },
+    "favourite": "Your Favourites",
+    "favourite_empty": "Your favourite is empty",
+    "special_offers": "Special Offers",
+    "special_offers_empty": "Special offer is empty",
+    "upcoming_classes_empty": "You don't have any Upcoming classes",
+    "upcoming_classes": "Upcoming Classes",
+    "classes_near_you": "Classes near you",
+    "classes_near_you_empty": "There's no class near you"
+  },
+  "appbar": {
+    "classes": "Classes",
+    "businesses": "Businesses"
+  },
+  "hint": {
+    "email": "name@email.com",
+    "enter_first_name": "Enter first name",
+    "typing_password": "Typing your password",
+    "enter_last_name": "Enter last name",
+    "select_gender": "Select gender",
+    "select_date": "Select date",
+    "search": "Search",
+    "search_kids_activities": "Search for Kids Activities",
+    "share_your_review_here": "Share your review here"
+  },
+  "unknown_exception": "unknown exception",
+  "parse_exception": "parse exception",
+  "cancellation_exception": "cancellation exception",
+  "no_internet_exception": "No Internet Exception",
+  "timeout_exception": "timeout Exception",
+  "bad_certificate_exception": "Bad Certificate Exception",
+  "can_not_connect_to_host": "Can not connect to this host",
+  "token_expired": "Token Expired"
+}
