@@ -2,6 +2,7 @@
   "text": {
     "notification": "Notification",
     "success": "Success",
+    "hello": "Hello",
     "error_occur": "An error has occurred",
     "please_wait": "Please wait!",
     "view_all": "View all",
@@ -44,12 +45,11 @@
     "done": "Done",
     "send_message": "Send message",
     "save": "Save",
-    "reset":"Reset"
+    "reset": "Reset"
   },
   "root": {
     "home": "Home",
-    "explore": "Explore",
-    "favourites": "Favourites",
+    "translate": "Translate",
     "profile": "Profile"
   },
   "login": {
@@ -106,10 +106,7 @@
     "choose_library": "Choose from library"
   },
   "home": {
-    "header": {
-      "welcome": "Welcome {user_name}"
-    },
-    "favourite": "Your Favourites",
+    "Essential_Word": "Essential Word1111",
     "favourite_empty": "Your favourite is empty",
     "special_offers": "Special Offers",
     "special_offers_empty": "Special offer is empty",

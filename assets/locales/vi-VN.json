@@ -1,0 +1,141 @@
+{
+  "text": {
+    "notification": "Thông báo",
+    "success": "Thành công",
+    "hello": "Xin chào",
+    "error_occur": "Xảy ra lỗi",
+    "please_wait": "Vui lòng chờ!",
+    "view_all": "Xem tất cả",
+    "profile_settings": "Cài đặt hồ sơ",
+    "full_name": "Họ và tên",
+    "email": "Email",
+    "phone": "Điện thoại",
+    "address": "Địa chỉ",
+    "settings": "Cài đặt",
+    "change_password": "Đổi mật khẩu",
+    "password": "Mật khẩu",
+    "term_and_privacy_policy": "Điều khoản và Chính sách bảo mật",
+    "children": "Trẻ em",
+    "log_out": "Đăng xuất",
+    "edit_profile": "Chỉnh sửa hồ sơ",
+    "first_name": "Tên",
+    "last_name": "Họ",
+    "state": "Tỉnh/Thành phố",
+    "city": "Quận/Huyện",
+    "edit": "Chỉnh sửa",
+    "Add": "Thêm",
+    "birthday": "Ngày sinh",
+    "sign_up": "Đăng ký",
+    "login": "Đăng nhập"
+  },
+  "validator": {
+    "required": "{field} bắt buộc",
+    "invalid": "{field} không hợp lệ",
+    "too_short": "{field} quá ngắn",
+    "not_match": "{field} không khớp",
+    "password_include": "Mật khẩu phải ít nhất 8 ký tự bao gồm chữ cái và số",
+    "apple_sign_in": "Đăng nhập bằng Apple chỉ hỗ trợ cho iOS 13 trở lên",
+    "agree_terms_required": "Vui lòng đồng ý với Điều khoản dịch vụ để tiếp tục",
+    "equal_than": "{field} phải nhỏ hơn ngày hôm nay"
+  },
+  "button": {
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "continue": "Tiếp tục",
+    "done": "Xong",
+    "send_message": "Gửi tin nhắn",
+    "save": "Lưu",
+    "reset": "Đặt lại"
+  },
+  "root": {
+    "home": "Trang chủ",
+    "explore": "Dịch thuật",
+    "profile": "Hồ sơ"
+  },
+  "login": {
+    "email_or_password_incorrect": "Email hoặc mật khẩu không đúng",
+    "done_have_an_account": "Chưa có tài khoản?",
+    "login_with_google": "Đăng nhập bằng Google",
+    "login_with_facebook": "Đăng nhập bằng Facebook",
+    "login_with_apple": "Đăng nhập bằng Apple",
+    "or_login_with": "hoặc Đăng nhập bằng",
+    "remember_me": "Nhớ mật khẩu",
+    "forgot_password": "Quên mật khẩu?"
+  },
+  "register": {
+    "create_an_account": "Tạo tài khoản",
+    "have_an_account": "Đã có tài khoản?",
+    "i_agree_with": "Tôi đồng ý với",
+    "terms": "Điều khoản",
+    "and": " và ",
+    "Conditions": "Điều kiện",
+    "user_exist": "Người dùng đã tồn tại",
+    "confirm_password": "Xác nhận mật khẩu"
+  },
+  "forgot_password": {
+    "title": "Quên mật khẩu",
+    "description": "Vui lòng nhập địa chỉ email của bạn. Chúng tôi sẽ gửi cho bạn một liên kết đặt lại mật khẩu",
+    "email_title": "Địa chỉ email"
+  },
+  "verification_code": {
+    "title": "Mã xác nhận",
+    "message": {
+      "1": "Vui lòng kiểm tra email của bạn!",
+      "2": "Chúng tôi đã gửi một mã đến "
+    },
+    "problem": "Không nhận được mã?",
+    "resend": "Gửi lại",
+    "verify": "Xác minh"
+  },
+  "reset_password": {
+    "new_password": "Mật khẩu mới",
+    "confirm_password": "Xác nhận mật khẩu",
+    "reset": "Đặt lại mật khẩu",
+    "title": "Nhập mật khẩu mới và xác nhận."
+  },
+  "change_password": {
+    "title": "Đổi mật khẩu",
+    "description": "Mật khẩu mới của bạn phải khác với các mật khẩu đã sử dụng trước đó",
+    "current_password": "Mật khẩu hiện tại",
+    "password": "Mật khẩu mới",
+    "confirm_password": "Xác nhận mật khẩu",
+    "submit_change": "Gửi mật khẩu mới"
+  },
+  "permission": {
+    "use_camera": "Sử dụng camera",
+    "choose_library": "Chọn từ thư viện"
+  },
+  "home": {
+    "Essential_Word": "Từ vựng cần thiết",
+    "favourite_empty": "Yêu thích của bạn trống",
+    "special_offers": "Ưu đãi đặc biệt",
+    "special_offers_empty": "Không có ưu đãi đặc biệt",
+    "upcoming_classes_empty": "Bạn không có lớp sắp diễn ra",
+    "upcoming_classes": "Lớp sắp diễn ra",
+    "classes_near_you": "Lớp học gần bạn",
+    "classes_near_you_empty": "Không có lớp học nào gần bạn"
+  },
+  "appbar": {
+    "classes": "Lớp học",
+    "businesses": "Doanh nghiệp"
+  },
+  "hint": {
+    "email": "name@email.com",
+    "enter_first_name": "Nhập tên",
+    "typing_password": "Nhập mật khẩu",
+    "enter_last_name": "Nhập họ",
+    "select_gender": "Chọn giới tính",
+    "select_date": "Chọn ngày",
+    "search": "Tìm kiếm",
+    "search_kids_activities": "Tìm kiếm hoạt động dành cho trẻ em",
+    "share_your_review_here": "Chia sẻ đánh giá của bạn ở đây"
+  },
+  "unknown_exception": "Lỗi không xác định",
+  "parse_exception": "Lỗi phân tích",
+  "cancellation_exception": "Lỗi hủy bỏ",
+  "no_internet_exception": "Lỗi không có kết nối internet",
+  "timeout_exception": "Lỗi hết thời gian",
+  "bad_certificate_exception": "Lỗi chứng chỉ không hợp lệ",
+  "can_not_connect_to_host": "Không thể kết nối đến máy chủ này",
+  "token_expired": "Token hết hạn"
+}
