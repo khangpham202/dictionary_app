@@ -11,6 +11,8 @@ import 'package:training/util/data_service.dart';
 import 'package:training/util/speech.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
+import '../core/common/theme/theme.export.dart';
+
 class WordMeaningWidget extends StatefulWidget {
   final String word, dictionaryType;
   const WordMeaningWidget(
@@ -21,32 +23,33 @@ class WordMeaningWidget extends StatefulWidget {
 }
 
 class _WordMeaningWidgetState extends State<WordMeaningWidget> {
-  late bool isFavorite;
+  late bool isSaved = false;
   late FToast fToast;
   @override
   void initState() {
     super.initState();
-    checkIsFavorite();
+    checkIsSaved();
     fToast = FToast();
     fToast.init(context);
   }
 
-  Future<void> checkIsFavorite() async {
+  Future<void> checkIsSaved() async {
     if (FirebaseAuth.instance.currentUser == null) {
       return;
     } else {
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
           .collection('users')
           .doc(
-              '${FirebaseAuth.instance.currentUser!.uid}/favorite/${widget.word}')
+              '${FirebaseAuth.instance.currentUser!.uid}/saved-word/${widget.word}')
           .get();
       setState(() {
-        isFavorite = snapshot.exists;
+        isSaved = snapshot.exists;
       });
     }
   }
 
-  Future<void> toggleFavorite(BuildContext context) async {
+  Future<void> toggleSaveWord(
+      BuildContext context, String pronunciation, String meaning) async {
     if (FirebaseAuth.instance.currentUser == null) {
       showDialog(
           context: context,
@@ -79,34 +82,139 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
               ));
     } else {
       String uid = FirebaseAuth.instance.currentUser!.uid;
-      DocumentReference favoriteRef = FirebaseFirestore.instance
+      DocumentReference savedWordRef = FirebaseFirestore.instance
           .collection('users')
-          .doc('$uid/favorite-word/${widget.word}');
+          .doc('$uid/saved-word/${widget.word}');
 
-      if (isFavorite) {
-        await favoriteRef.delete();
+      if (isSaved) {
+        await savedWordRef.delete();
         fToast.showToast(
           child: const CustomToast(
-            msg: 'Removed from favorites',
+            msg: 'Removed from saved words list',
             icon: Icon(FontAwesomeIcons.check),
             bgColor: Color.fromARGB(255, 97, 93, 93),
           ),
           toastDuration: const Duration(seconds: 3),
         );
       } else {
-        await favoriteRef.set({'word': widget.word});
+        await savedWordRef.set({
+          'word': widget.word,
+          'pronunciation': pronunciation,
+          'meaning': meaning
+        });
         fToast.showToast(
           child: const CustomToast(
-            msg: 'Added word to favorites',
+            msg: 'Added to saved words list',
             icon: Icon(FontAwesomeIcons.check),
-            bgColor: Colors.green,
+            bgColor: AppColors.kGreen,
           ),
           toastDuration: const Duration(seconds: 3),
         );
       }
       setState(() {
-        isFavorite = !isFavorite;
+        isSaved = !isSaved;
       });
+    }
+  }
+
+  Future<void> handleNote(BuildContext context) async {
+    if (FirebaseAuth.instance.currentUser == null) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'You need to login to use this feature',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                      const Gap(5),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  ),
+                ),
+              ));
+    } else {
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+      DocumentReference notedWordRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc('$uid/noted-word/${widget.word}');
+      final noteController = TextEditingController();
+      DocumentSnapshot snapshot = await notedWordRef.get();
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        String note = data['note'];
+
+        noteController.text = note;
+      } else {
+        noteController.text = '';
+      }
+      if (!context.mounted) return;
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'Note',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                      const Divider(
+                        color: AppColors.kRed,
+                        height: 20,
+                        thickness: 3,
+                      ),
+                      Card(
+                          color: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: noteController,
+                              maxLines: 8,
+                              decoration: const InputDecoration.collapsed(
+                                  hintText: "Enter your text here"),
+                            ),
+                          )),
+                      const Gap(5),
+                      ElevatedButton(
+                        onPressed: () async {
+                          await notedWordRef.set({
+                            'word': widget.word,
+                            'note': noteController.text.trim(),
+                          });
+                          if (!context.mounted) return;
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  ),
+                ),
+              ));
     }
   }
 
@@ -137,31 +245,51 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      widget.word,
-                      style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w600),
+                    Row(
+                      children: [
+                        Text(
+                          widget.word,
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        const Gap(5),
+                        GestureDetector(
+                          onTap: () {
+                            TextToSpeechService().playTts('en', widget.word);
+                          },
+                          child: const Icon(
+                            Icons.volume_up_outlined,
+                            color: Color.fromRGBO(99, 115, 156, 0.914),
+                            size: 25,
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(
                       child: Row(
                         children: [
-                          GestureDetector(
-                            onTap: null,
-                            child: const Icon(FontAwesomeIcons.filePen),
-                          ),
+                          Builder(builder: (context) {
+                            return GestureDetector(
+                              onTap: () {
+                                handleNote(context);
+                              },
+                              child: const Icon(FontAwesomeIcons.filePen),
+                            );
+                          }),
                           const Gap(5),
                           Builder(builder: (context) {
                             return GestureDetector(
                               onTap: () {
-                                toggleFavorite(context);
+                                toggleSaveWord(
+                                    context, data.pronounce, data.description);
                               },
                               child: Icon(
-                                isFavorite
+                                isSaved
                                     ? FontAwesomeIcons.solidBookmark
                                     : FontAwesomeIcons.bookmark,
-                                color: isFavorite
+                                color: isSaved
                                     ? const Color.fromARGB(233, 236, 32, 32)
                                     : null,
                               ),
@@ -173,27 +301,15 @@ class _WordMeaningWidgetState extends State<WordMeaningWidget> {
                   ],
                 ),
                 const Gap(10),
-                Row(
-                  children: [
-                    Text(
-                      data.pronounce,
-                      style: const TextStyle(
-                          color: Color.fromARGB(255, 111, 104, 104),
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        TextToSpeechService().playTts('en', widget.word);
-                      },
-                      child: const Icon(
-                        Icons.volume_up_outlined,
-                        color: Color.fromRGBO(99, 115, 156, 0.914),
-                        size: 25,
-                      ),
-                    ),
-                  ],
-                ),
+                data.pronounce != ''
+                    ? Text(
+                        '/${data.pronounce}/',
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 111, 104, 104),
+                            fontWeight: FontWeight.w700,
+                            fontSize: 20),
+                      )
+                    : const Gap(1),
                 const Gap(10),
                 Row(
                   children: [
@@ -278,12 +394,28 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            widget.word,
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w600),
+                          Row(
+                            children: [
+                              Text(
+                                widget.word,
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              const Gap(5),
+                              GestureDetector(
+                                onTap: () {
+                                  TextToSpeechService()
+                                      .playTts('en', widget.word);
+                                },
+                                child: const Icon(
+                                  Icons.volume_up_outlined,
+                                  color: Color.fromRGBO(99, 115, 156, 0.914),
+                                  size: 25,
+                                ),
+                              ),
+                            ],
                           ),
                           const Gap(10),
                           FutureBuilder(
@@ -291,30 +423,14 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                   DatabaseHelper().getEVWordData(widget.word),
                               builder: (context, snapshot) {
                                 Word? data = snapshot.data;
-                                return data != null
-                                    ? Row(
-                                        children: [
-                                          Text(
-                                            data.pronounce,
-                                            style: const TextStyle(
-                                                color: Color.fromARGB(
-                                                    255, 111, 104, 104),
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 20),
-                                          ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              TextToSpeechService()
-                                                  .playTts('en', widget.word);
-                                            },
-                                            child: const Icon(
-                                              Icons.volume_up_outlined,
-                                              color: Color.fromRGBO(
-                                                  99, 115, 156, 0.914),
-                                              size: 25,
-                                            ),
-                                          ),
-                                        ],
+                                return (data != null && data.pronounce != '')
+                                    ? Text(
+                                        '/${data.pronounce}/',
+                                        style: const TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 111, 104, 104),
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 20),
                                       )
                                     : const Gap(0);
                               }),
@@ -349,47 +465,81 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                             ...meaning['definitions']
                                                 .map<Widget>((def) {
                                               return Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
-                                                      const Icon(
-                                                        Icons.circle,
-                                                        size: 10,
-                                                      ),
-                                                      const Gap(5),
-                                                      Container(
-                                                        constraints:
-                                                            BoxConstraints(
-                                                          maxWidth: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width -
-                                                              100,
+                                                      const Text(
+                                                        '\u2022',
+                                                        style: TextStyle(
+                                                          fontSize: 30,
+                                                          // height: 1.55,
                                                         ),
-                                                        child: Column(
-                                                          children: [
-                                                            Text(
-                                                              "${def['definition']}",
-                                                              style: const TextStyle(
-                                                                  color: Color
-                                                                      .fromARGB(
-                                                                          255,
-                                                                          61,
-                                                                          61,
-                                                                          61),
-                                                                  fontSize: 18),
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .visible,
-                                                            ),
-                                                            const Gap(3),
-                                                          ],
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          "${def['definition']}",
+                                                          textAlign:
+                                                              TextAlign.left,
+                                                          softWrap: true,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 18,
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    61,
+                                                                    61,
+                                                                    61),
+                                                            height: 1.55,
+                                                          ),
                                                         ),
                                                       ),
                                                     ],
                                                   ),
+                                                  // Row(
+                                                  //   children: [
+                                                  //     const Icon(
+                                                  //       Icons.circle,
+                                                  //       size: 10,
+                                                  //     ),
+                                                  //     const Gap(5),
+                                                  //     Container(
+                                                  //       constraints:
+                                                  //           BoxConstraints(
+                                                  //         maxWidth: MediaQuery.of(
+                                                  //                     context)
+                                                  //                 .size
+                                                  //                 .width -
+                                                  //             100,
+                                                  //       ),
+                                                  //       child: Column(
+                                                  //         children: [
+                                                  //           Text(
+                                                  //             "${def['definition']}",
+                                                  //             style: const TextStyle(
+                                                  //                 color: Color
+                                                  //                     .fromARGB(
+                                                  //                         255,
+                                                  //                         61,
+                                                  //                         61,
+                                                  //                         61),
+                                                  //                 fontSize: 18),
+                                                  //             overflow:
+                                                  //                 TextOverflow
+                                                  //                     .visible,
+                                                  //           ),
+                                                  //           const Gap(3),
+                                                  //         ],
+                                                  //       ),
+                                                  //     ),
+                                                  //   ],
+                                                  // ),
                                                   if ((def['synonyms'] as List)
                                                       .isNotEmpty)
                                                     Padding(
@@ -462,7 +612,7 @@ class _WordNetWidgetState extends State<WordNetWidget> {
                                       );
                                     },
                                   )
-                                : const Text("aa"),
+                                : const Text(""),
                           ),
                         ],
                       ),

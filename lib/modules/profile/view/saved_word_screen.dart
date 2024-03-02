@@ -2,7 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:training/components/toast.dart';
+import 'package:training/core/router/route_constants.dart';
+import 'package:training/modules/wordDetail/view/word_detail_screen.dart';
+import 'package:training/util/speech.dart';
+
+import '../../../core/common/theme/theme.export.dart';
 
 class SavedWordScreen extends StatefulWidget {
   const SavedWordScreen({Key? key}) : super(key: key);
@@ -13,17 +22,23 @@ class SavedWordScreen extends StatefulWidget {
 
 class _SavedWordScreenState extends State<SavedWordScreen> {
   var favoriteList = [];
-
+  late FToast fToast;
   void getFavoriteList(String uid) {
     FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
-        .collection('favorite-word')
+        .collection('saved-word')
         .get()
         .then((QuerySnapshot querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
         setState(() {
-          favoriteList = querySnapshot.docs.map((doc) => doc['word']).toList();
+          favoriteList = querySnapshot.docs
+              .map((doc) => {
+                    'word': doc['word'],
+                    'pronunciation': doc['pronunciation'],
+                    'meaning': doc['meaning'],
+                  })
+              .toList();
         });
       } else {
         setState(() {
@@ -31,7 +46,22 @@ class _SavedWordScreenState extends State<SavedWordScreen> {
         });
       }
     }).catchError((error) {
-      print('Error getting favorites: $error');
+      print('Error getting saved word list: $error');
+    });
+  }
+
+  void removeSavedWord(String word) {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+
+    DocumentReference favoriteRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc('$uid/saved-word/$word');
+    favoriteRef.delete().then((_) {
+      setState(() {
+        getFavoriteList(uid);
+      });
+    }).catchError((error) {
+      print('Error removing saved word: $error');
     });
   }
 
@@ -43,6 +73,8 @@ class _SavedWordScreenState extends State<SavedWordScreen> {
         getFavoriteList(user.uid);
       }
     });
+    fToast = FToast();
+    fToast.init(context);
   }
 
   @override
@@ -66,6 +98,20 @@ class _SavedWordScreenState extends State<SavedWordScreen> {
                     children: [
                       SlidableAction(
                         onPressed: (BuildContext context) {
+                          context.pushNamed(RouterConstants.wordDetail,
+                              extra: WordDetailScreen(
+                                word: favoriteList[index]['word'],
+                                dictionaryType: 'EV',
+                              ));
+                        },
+                        backgroundColor:
+                            const Color.fromARGB(255, 184, 167, 167),
+                        foregroundColor: AppColors.kGreen,
+                        icon: Icons.details,
+                        label: 'Detail',
+                      ),
+                      SlidableAction(
+                        onPressed: (BuildContext context) {
                           showDialog(
                             context: context,
                             builder: (context) {
@@ -82,7 +128,19 @@ class _SavedWordScreenState extends State<SavedWordScreen> {
                                   TextButton(
                                     child: const Text('Approve'),
                                     onPressed: () {
+                                      removeSavedWord(
+                                          favoriteList[index]['word']);
                                       Navigator.of(context).pop();
+                                      fToast.showToast(
+                                        child: const CustomToast(
+                                          msg: 'Removed from favorites',
+                                          icon: Icon(FontAwesomeIcons.check),
+                                          bgColor:
+                                              Color.fromARGB(255, 97, 93, 93),
+                                        ),
+                                        toastDuration:
+                                            const Duration(seconds: 3),
+                                      );
                                     },
                                   ),
                                 ],
@@ -92,7 +150,7 @@ class _SavedWordScreenState extends State<SavedWordScreen> {
                         },
                         backgroundColor:
                             const Color.fromARGB(255, 219, 219, 219),
-                        foregroundColor: Colors.red,
+                        foregroundColor: AppColors.kRed,
                         icon: Icons.delete,
                         label: 'Delete',
                       ),
@@ -101,11 +159,25 @@ class _SavedWordScreenState extends State<SavedWordScreen> {
                   child: ListTile(
                     title: Row(
                       children: [
-                        Text('${index + 1}. ${favoriteList[index]}'),
+                        Text(
+                          '${index + 1}. ${favoriteList[index]['word']}',
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                        const Gap(5),
+                        favoriteList[index]['pronunciation'] != ''
+                            ? Text(
+                                '/${favoriteList[index]['pronunciation']}/',
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 111, 104, 104),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 18),
+                              )
+                            : const Gap(1),
                         const Gap(5),
                         GestureDetector(
                           onTap: () {
-                            // TextToSpeechService().playTts('en', widget.word);
+                            TextToSpeechService().playTts(
+                                'en', favoriteList[index]['pronunciation']);
                           },
                           child: const Icon(
                             Icons.volume_up_outlined,
@@ -114,16 +186,18 @@ class _SavedWordScreenState extends State<SavedWordScreen> {
                         ),
                       ],
                     ),
-                    subtitle: const Row(
+                    subtitle: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.arrow_right_outlined,
+                          size: 30,
                         ),
                         SizedBox(
                           width: 300,
                           child: Text(
-                            'data.description',
+                            '${favoriteList[index]['meaning']}',
                             overflow: TextOverflow.visible,
+                            style: const TextStyle(fontSize: 18),
                           ),
                         ),
                       ],

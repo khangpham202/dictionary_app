@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:training/core/enum/country.dart';
-import 'package:training/modules/translatePage/bloc/language/language_bloc.dart';
+import 'package:training/modules/translatePage/bloc/country/country_bloc.dart';
 
 class LanguageSelector extends StatelessWidget {
   final Country selectedLanguage;
@@ -17,17 +17,17 @@ class LanguageSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LanguageBloc, LanguageState>(
+    return BlocBuilder<CountryBloc, LanguageState>(
       builder: (context, state) {
         return PopupMenuButton<Country>(
           constraints: const BoxConstraints(maxHeight: 400),
           onSelected: (Country value) {
             onLanguageChanged(value);
             if (isSourceLanguage) {
-              BlocProvider.of<LanguageBloc>(context)
+              BlocProvider.of<CountryBloc>(context)
                   .add(ChangeSourceLanguageEvent(value));
             } else {
-              BlocProvider.of<LanguageBloc>(context)
+              BlocProvider.of<CountryBloc>(context)
                   .add(ChangeTargetLanguageEvent(value));
             }
           },

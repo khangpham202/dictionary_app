@@ -6,6 +6,8 @@ import 'package:training/components/tarbar_view.dart';
 import 'package:training/core/router/route_constants.dart';
 import 'package:training/util/data_service.dart';
 
+import '../../../core/common/theme/theme.export.dart';
+
 class WordDetailScreen extends StatefulWidget {
   final String word;
   final String dictionaryType;
@@ -25,6 +27,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    searchController.text = widget.word;
   }
 
   @override
@@ -35,12 +38,14 @@ class _WordDetailScreenState extends State<WordDetailScreen>
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       body: SafeArea(
           child: Column(
         children: [
           Container(
-            color: const Color.fromRGBO(18, 55, 149, 0.914),
+            color: colorScheme.primary,
             height: MediaQuery.of(context).size.height / 11,
             child: Padding(
               padding: const EdgeInsets.all(8),
@@ -61,10 +66,9 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                       textFieldConfiguration: TextFieldConfiguration(
                         controller: searchController,
                         decoration: InputDecoration(
-                          fillColor: Colors.white,
+                          fillColor: colorScheme.onPrimary,
                           filled: true,
                           prefixIcon: const Icon(Icons.search),
-                          hintText: widget.word,
                           hintStyle: const TextStyle(
                             color: Colors.black,
                           ),
@@ -75,7 +79,7 @@ class _WordDetailScreenState extends State<WordDetailScreen>
                       ),
                       suggestionsCallback: (pattern) async {
                         return await WordSuggestion()
-                            .getEnglishWord()
+                            .getEnglishWordSuggestion()
                             .then((List<String> suggestions) {
                           return suggestions
                               .where((suggestion) =>
@@ -109,8 +113,8 @@ class _WordDetailScreenState extends State<WordDetailScreen>
             alignment: Alignment.centerLeft,
             child: TabBar(
               controller: _tabController,
-              indicatorColor: const Color.fromRGBO(18, 55, 149, 0.914),
-              labelColor: const Color.fromRGBO(18, 55, 149, 0.914),
+              indicatorColor: colorScheme.primary,
+              labelColor: colorScheme.primary,
               unselectedLabelColor: Colors.grey.shade400,
               isScrollable: true,
               tabs: [

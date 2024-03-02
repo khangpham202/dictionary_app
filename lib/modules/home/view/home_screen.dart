@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     selectedItemColor = const Color.fromARGB(255, 19, 21, 123);
     searchController.addListener(() {
       if (searchController.text.isNotEmpty) {
-        WordSuggestion().getEnglishWord().then((suggestionsList) {
+        WordSuggestion().getEnglishWordSuggestion().then((suggestionsList) {
           setState(() {
             suggestions = suggestionsList;
           });
@@ -50,8 +50,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     void showDictionaryFlowOption() {
       showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.5),
+        barrierDismissible: true,
+        barrierLabel:
+            MaterialLocalizations.of(context).modalBarrierDismissLabel,
+        transitionDuration: const Duration(milliseconds: 300),
         context: context,
         pageBuilder: (ctx, a1, a2) {
           return Container();
@@ -72,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.all(8),
                       child: Center(
                         child: Text(
-                          "Dictionaries",
+                          "Dictionary Flow",
                           style: TextStyle(
                             color: Color.fromARGB(255, 44, 46, 153),
                             fontWeight: FontWeight.w600,
@@ -107,9 +113,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: Color.fromARGB(255, 19, 21, 123),
                               ),
                               padding: const EdgeInsets.all(5),
-                              child: Text(
-                                dictionaryType,
-                                style: const TextStyle(
+                              child: const Text(
+                                'EV',
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
@@ -120,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    const Divider(),
+                    const Divider(color: Color.fromARGB(255, 118, 114, 114)),
                     GestureDetector(
                       onTap: () {
                         if (dictionaryType == "VE") {
@@ -160,7 +166,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ));
         },
-        transitionDuration: const Duration(milliseconds: 300),
       );
     }
 
@@ -168,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Column(children: [
           Container(
-            color: const Color.fromRGBO(18, 55, 149, 0.914),
+            color: colorScheme.primary,
             height: MediaQuery.of(context).size.height / 11,
             child: Padding(
               padding: const EdgeInsets.all(8),
@@ -181,19 +186,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: TypeAheadField(
                             textFieldConfiguration: TextFieldConfiguration(
                               controller: searchController,
-                              decoration: const InputDecoration(
-                                fillColor: Colors.white,
+                              decoration: InputDecoration(
+                                fillColor: colorScheme.onPrimary,
                                 filled: true,
-                                prefixIcon: Icon(Icons.search),
+                                prefixIcon: const Icon(Icons.search),
                                 hintText: 'Search any words',
                                 contentPadding:
-                                    EdgeInsets.symmetric(vertical: 10),
-                                border: OutlineInputBorder(),
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                border: const OutlineInputBorder(),
                               ),
                             ),
                             suggestionsCallback: (pattern) async {
                               return await WordSuggestion()
-                                  .getEnglishWord()
+                                  .getEnglishWordSuggestion()
                                   .then((List<String> suggestions) {
                                 return suggestions
                                     .where((suggestion) =>
@@ -226,18 +231,25 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: TypeAheadField(
                             textFieldConfiguration: TextFieldConfiguration(
                               controller: searchController,
-                              decoration: const InputDecoration(
-                                fillColor: Colors.white,
+                              decoration: InputDecoration(
+                                fillColor: colorScheme.onPrimary,
                                 filled: true,
-                                prefixIcon: Icon(Icons.search),
+                                prefixIcon: const Icon(Icons.search),
                                 hintText: 'Search any words',
                                 contentPadding:
-                                    EdgeInsets.symmetric(vertical: 10),
-                                border: OutlineInputBorder(),
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                border: const OutlineInputBorder(),
                               ),
                             ),
                             suggestionsCallback: (pattern) async {
-                              return [pattern];
+                              return await WordSuggestion()
+                                  .getVietnameseWordSuggestion()
+                                  .then((List<String> suggestions) {
+                                return suggestions
+                                    .where((suggestion) =>
+                                        suggestion.startsWith(pattern))
+                                    .toList();
+                              });
                             },
                             itemBuilder: (context, suggestion) {
                               return ListTile(

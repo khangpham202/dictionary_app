@@ -2,13 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   AppColors._();
-  //light Theme
-  static const kPrimaryLight = Color(0xff121F3E);
-  static const kSecondaryLight = Color(0xff003074);
-
-//Dark Theme
-  static const kPrimaryDark = Color(0xff356AD1);
-  static const kDarkBlack = Color(0xff1A1F2E);
+  static const kPrimary = Color.fromRGBO(18, 55, 149, 0.914);
+  static const kSecondary = Color(0xff003074);
 
 //Comon theme
   static const kYellow = Color(0xffFBBC05);

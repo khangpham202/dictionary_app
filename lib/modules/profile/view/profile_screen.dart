@@ -13,22 +13,17 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  FirebaseAuth auth = FirebaseAuth.instance;
-  String name = '', email = '', password = '';
+  String name = '';
   bool isLogin = false;
   final user = FirebaseAuth.instance.currentUser;
   @override
   void initState() {
     super.initState();
     if (user != null) {
-      setState(() {
-        isLogin = true;
-      });
+      isLogin = true;
       getData(user!.uid);
     } else {
-      setState(() {
-        isLogin = false;
-      });
+      isLogin = false;
     }
   }
 
@@ -41,9 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             docSnapshot.data() as Map<String, dynamic>?;
         if (mounted) {
           setState(() {
-            email = data?['email'];
             name = data?['name'];
-            password = data?['password'];
           });
         }
       } else {
@@ -54,6 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       body: isLogin
           ? Center(
@@ -74,8 +68,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const Gap(10),
                         Text(
                           'Xin chào! \n$name',
-                          style: const TextStyle(
-                              color: Colors.black,
+                          style: TextStyle(
+                              color: colorScheme.onSecondary,
                               fontSize: 17,
                               fontWeight: FontWeight.w600),
                         )
@@ -83,17 +77,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   const Gap(10),
-                  const ProfileComponent(
-                      icon: FontAwesomeIcons.userLarge,
-                      text: 'Account Information'),
+                  GestureDetector(
+                    onTap: () => context.go('/profile/accountInformation'),
+                    child: const ProfileComponent(
+                        icon: FontAwesomeIcons.userLarge,
+                        text: 'Account Information'),
+                  ),
                   GestureDetector(
                     onTap: () => context.go('/profile/savedWord'),
                     child: const ProfileComponent(
                         icon: FontAwesomeIcons.solidBookmark,
                         text: 'Saved words'),
                   ),
-                  const ProfileComponent(
-                      icon: FontAwesomeIcons.gear, text: 'Setting'),
+                  GestureDetector(
+                    onTap: () => context.go('/profile/settings'),
+                    child: const ProfileComponent(
+                        icon: FontAwesomeIcons.gear, text: 'Setting'),
+                  ),
                   const ProfileComponent(
                       icon: FontAwesomeIcons.shield, text: 'About us'),
                   const ProfileComponent(
@@ -101,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       text: 'Policy and Security '),
                   GestureDetector(
                     onTap: () async {
-                      await auth.signOut();
+                      await FirebaseAuth.instance.signOut();
                       if (!context.mounted) return;
                       context.go('/signIn');
                     },
@@ -176,6 +176,8 @@ class ProfileComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       children: [
         Container(
@@ -190,7 +192,7 @@ class ProfileComponent extends StatelessWidget {
                 offset: const Offset(1, 5),
               ),
             ],
-            color: Colors.white,
+            color: colorScheme.onPrimary,
           ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
@@ -203,12 +205,13 @@ class ProfileComponent extends StatelessWidget {
                     Icon(
                       icon,
                       size: 22,
+                      color: colorScheme.onSecondary,
                     ),
                     const Gap(10),
                     Text(
                       text,
-                      style: const TextStyle(
-                          color: Colors.black,
+                      style: TextStyle(
+                          color: colorScheme.onSecondary,
                           fontSize: 16,
                           fontWeight: FontWeight.w600),
                     )

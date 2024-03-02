@@ -1,10 +1,11 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:training/components/language_selector.dart';
 import 'package:training/core/common/model/translation.dart';
 import 'package:training/core/enum/country.dart';
-import 'package:training/modules/translatePage/bloc/language/language_bloc.dart';
+import 'package:training/modules/translatePage/bloc/country/country_bloc.dart';
 import 'package:training/util/api_service.dart';
 import 'package:training/util/speech.dart';
 
@@ -20,7 +21,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
   TextEditingController originalSentenceController = TextEditingController();
   bool isLanguageSwapped = false;
 
-  LanguageBloc languageBloc = LanguageBloc();
+  CountryBloc countryBloc = CountryBloc();
   late Country selectedSourceLanguage;
   late Country selectedTargetLanguage;
 
@@ -33,6 +34,11 @@ class _TranslateScreenState extends State<TranslateScreen> {
     super.initState();
   }
 
+  // Future<bool> checkInternet() async {
+  //   var connectivityResult = await Connectivity().checkConnectivity();
+  //   return connectivityResult != ConnectivityResult.none;
+  // }
+
   void swapLanguage() {
     setState(() {
       isLanguageSwapped = !isLanguageSwapped;
@@ -44,14 +50,16 @@ class _TranslateScreenState extends State<TranslateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return BlocProvider(
-      create: (context) => languageBloc,
+      create: (context) => countryBloc,
       child: Scaffold(
           body: SafeArea(
               child: Column(
         children: [
           Container(
-            color: const Color.fromRGBO(18, 55, 149, 0.914),
+            color: colorScheme.primary,
             height: MediaQuery.of(context).size.height / 12,
             child: Stack(
               alignment: Alignment.center,
@@ -156,7 +164,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
                           ),
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: const Color.fromRGBO(18, 55, 149, 0.914),
+                            color: colorScheme.primary,
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: Text(
@@ -192,55 +200,94 @@ class _TranslateScreenState extends State<TranslateScreen> {
             controller: originalSentenceController,
             decoration: InputDecoration(
               labelText: 'Type text or phase',
+              labelStyle: TextStyle(color: colorScheme.onSecondary),
               border: const OutlineInputBorder(),
               suffixIcon: GestureDetector(
                 onTap: () async {
-                  setState(() {
-                    isLoading = true;
-                  });
-                  late String isoSourceCountryCode,
-                      isoTargetCountryCode,
-                      translatedSentence;
-                  late Translation translation;
-                  String originalSentence = originalSentenceController.text;
-                  String selectedSourceLanguageCode =
-                      selectedSourceLanguage.countryCode;
-                  String selectedTargetLanguageCode =
-                      selectedTargetLanguage.countryCode;
-                  String formatedSourceLanguage = selectedSourceLanguage.format;
-                  String formatedTargetLanguage = selectedTargetLanguage.format;
-
-                  try {
-                    isoSourceCountryCode = await TranslationService()
-                        .getISOCountryCode(formatedSourceLanguage);
-                    isoTargetCountryCode = await TranslationService()
-                        .getISOCountryCode(formatedTargetLanguage);
-                    translatedSentence = await TranslationService().translate(
-                        originalSentence,
-                        selectedSourceLanguageCode,
-                        selectedTargetLanguageCode);
-                  } catch (error) {
-                    print(error);
-                  } finally {
+                  var connectivityResult =
+                      await Connectivity().checkConnectivity();
+                  if (connectivityResult == ConnectivityResult.mobile ||
+                      connectivityResult == ConnectivityResult.wifi) {
                     setState(() {
-                      isLoading = false;
+                      isLoading = true;
                     });
+                    late String isoSourceCountryCode,
+                        isoTargetCountryCode,
+                        translatedSentence;
+                    late Translation translation;
+                    String originalSentence = originalSentenceController.text;
+                    String selectedSourceLanguageCode =
+                        selectedSourceLanguage.countryCode;
+                    String selectedTargetLanguageCode =
+                        selectedTargetLanguage.countryCode;
+                    String formatedSourceLanguage =
+                        selectedSourceLanguage.format;
+                    String formatedTargetLanguage =
+                        selectedTargetLanguage.format;
+
+                    try {
+                      isoSourceCountryCode = await TranslationService()
+                          .getISOCountryCode(formatedSourceLanguage);
+                      isoTargetCountryCode = await TranslationService()
+                          .getISOCountryCode(formatedTargetLanguage);
+                      translatedSentence = await TranslationService().translate(
+                          originalSentence,
+                          selectedSourceLanguageCode,
+                          selectedTargetLanguageCode);
+                    } catch (error) {
+                      print(error);
+                    } finally {
+                      setState(() {
+                        isLoading = false;
+                      });
+                    }
+
+                    setState(() {
+                      translation = Translation(
+                        originalSentence,
+                        translatedSentence,
+                        Image.network(
+                            'https://flagcdn.com/24x18/${isoSourceCountryCode.toLowerCase()}.png'),
+                        Image.network(
+                            'https://flagcdn.com/24x18/${isoTargetCountryCode.toLowerCase()}.png'),
+                        '$formatedSourceLanguage to $formatedTargetLanguage',
+                      );
+                    });
+
+                    translationHistory.add(translation);
+                    originalSentenceController.clear();
+                  } else {
+                    if (!context.mounted) return;
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => Dialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: Container(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                      'No internet connection!!',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                    const Gap(5),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ));
                   }
-
-                  setState(() {
-                    translation = Translation(
-                      originalSentence,
-                      translatedSentence,
-                      Image.network(
-                          'https://flagcdn.com/24x18/${isoSourceCountryCode.toLowerCase()}.png'),
-                      Image.network(
-                          'https://flagcdn.com/24x18/${isoTargetCountryCode.toLowerCase()}.png'),
-                      '$formatedSourceLanguage to $formatedTargetLanguage',
-                    );
-                  });
-
-                  translationHistory.add(translation);
-                  originalSentenceController.clear();
                 },
                 child: isLoading
                     ? const CircularProgressIndicator()
